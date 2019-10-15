@@ -13,66 +13,6 @@ module.exports = class Frameworks extends Abstract {
   }
 
   /**
-  * @api {post} /assessment/api/v1/frameworks/uploadThemes/{frameworkExternalID} Upload Themes For Frameworks
-  * @apiVersion 1.0.0
-  * @apiName Upload Themes For Frameworks
-  * @apiGroup Frameworks
-  * @apiParam {File} themes Mandatory file upload with themes data.
-  * @apiSampleRequest /assessment/api/v1/frameworks/uploadThemes/EF-DCPCR-2018-001
-  * @apiHeader {String} X-authenticated-user-token Authenticity token  
-  * @apiUse successBody
-  * @apiUse errorBody
-  */
-
-  async uploadThemes(req) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const fileName = `Theme-Upload-Result`;
-        let fileStream = new FileStream(fileName);
-        let input = fileStream.initStream();
-
-        (async function () {
-          await fileStream.getProcessorPromise();
-          return resolve({
-            isResponseAStream: true,
-            fileNameWithPath: fileStream.fileNameWithPath()
-          });
-        })();
-
-
-        let frameworkDocument = await database.models.frameworks
-          .findOne({ externalId: req.params._id }, { _id: 1 })
-          .lean();
-
-        if (!frameworkDocument) {
-          return resolve({
-            status: 404,
-            message: "No framework found."
-          });
-        }
-
-        let headerSequence
-        let themes = await csv().fromString(req.files.themes.data.toString()).on('header', (headers) => { headerSequence = headers });
-
-        let frameworkThemes = await solutionsHelper.uploadTheme("frameworks", frameworkDocument._id, themes, headerSequence)
-
-        for (let pointerToFrameworkTheme = 0; pointerToFrameworkTheme < frameworkThemes.length; pointerToFrameworkTheme++) {
-          input.push(frameworkThemes[pointerToFrameworkTheme])
-        }
-
-        input.push(null)
-      }
-      catch (error) {
-        reject({
-          status: 500,
-          message: error,
-          errorObject: error
-        })
-      }
-    })
-  }
-
-  /**
  * @api {post} /assessment/api/v1/frameworks/create create Frameworks
  * @apiVersion 1.0.0
  * @apiName create Frameworks
