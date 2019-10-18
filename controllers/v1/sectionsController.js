@@ -1,23 +1,23 @@
 // const solutionsHelper = require(ROOT_PATH + "/module/solutions/helper");
-const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
+const sectionsHelper = require(ROOT_PATH + "/module/sections/helper");
 // const FileStream = require(ROOT_PATH + "/generics/fileStream");
 // const csv = require("csvtojson");
 
-module.exports = class DraftECM extends Abstract {
+module.exports = class Sections extends Abstract {
   constructor() {
-    super(draftECMSchema);
+    super(sectionsSchema);
   }
 
   static get name() {
-    return "draftECM";
+    return "sections";
   }
 
   /**
- * @api {post} /assessment-design/api/v1/draftECM/create create draftECM
+ * @api {post} /assessment-design/api/v1/sections/create create sections
  * @apiVersion 1.0.0
- * @apiName create draftECM
- * @apiGroup draftECM
- * @apiSampleRequest /assessment-design/api/v1/draftECM/create
+ * @apiName create sections
+ * @apiGroup sections
+ * @apiSampleRequest /assessment-design/api/v1/sections/create
  * @apiHeader {String} X-authenticated-user-token Authenticity token  
  * @apiUse successBody
  * @apiUse errorBody
@@ -27,12 +27,12 @@ module.exports = class DraftECM extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftECMDocument = await draftECMHelper.create(req.body)
+        let sectionsDocument = await sectionsHelper.create(req.body)
 
         return resolve({
           status: 200,
-          message: "Draft ECM created successfully.",
-          result: draftECMDocument
+          message: "Section created successfully.",
+          result: sectionsDocument
         });
 
       }
@@ -47,11 +47,11 @@ module.exports = class DraftECM extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/update?frameworkExternalId={frameworkExternalId} Update draftECM
+* @api {post} /assessment-design/api/v1/sections/update?frameworkExternalId={frameworkExternalId} Update sections
 * @apiVersion 1.0.0
-* @apiName update draftECM
-* @apiGroup draftECM
-* @apiSampleRequest /assessment-design/api/v1/draftECM/update?frameworkExternalId=TAF-2019
+* @apiName update sections
+* @apiGroup sections
+* @apiSampleRequest /assessment-design/api/v1/sections/update?frameworkExternalId=TAF-2019
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -61,12 +61,12 @@ module.exports = class DraftECM extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftECMDocument = await draftECMHelper.update(req.body, req.params._id)
+        let sectionsDocument = await sectionsHelper.update(req.body, req.params._id)
 
         return resolve({
           status: 200,
-          message: "Draft ECM updated successfully.",
-          result: draftECMDocument
+          message: "Section updated successfully.",
+          result: sectionsDocument
         });
       }
       catch (error) {

@@ -1,4 +1,5 @@
 const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
+const sectionsHelper = require(ROOT_PATH + "/module/sections/helper");
 module.exports = class frameworksHelper {
     static mandatoryField() {
         let mandatoryFields = {
@@ -85,6 +86,11 @@ module.exports = class frameworksHelper {
                 }
 
                 await draftECMHelper.create(draftECMData)
+                
+                await sectionsHelper.create({
+                    code: "DEFAULT",
+                    name: "default"
+                })
 
                 return resolve(frameworkDocument);
             }

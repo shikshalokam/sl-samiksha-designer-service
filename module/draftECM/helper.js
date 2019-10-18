@@ -13,7 +13,7 @@ module.exports = class draftECMHelper {
     static update(draftECMData, draftECMId) {
         return new Promise(async (resolve, reject) => {
             try {
-                let draftECMDocument = await database.models.draftECM.findOneAndUpdate({ "_id": draftECMId }, draftECMData)
+                let draftECMDocument = await database.models.draftECM.findOneAndUpdate({ "_id": draftECMId }, draftECMData,{new:true})
                 return resolve(draftECMDocument)
             } catch (error) {
                 return reject(error)
