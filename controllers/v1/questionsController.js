@@ -12,7 +12,7 @@ module.exports = class Questions extends Abstract {
   }
 
   /**
-   * @api {post} /assessment/api/v1/questions/bulkCreate bulkCreate Questions CSV
+   * @api {post} /assessment-design/api/v1/questions/bulkCreate bulkCreate Questions CSV
    * @apiVersion 1.0.0
    * @apiName bulkCreate Questions
    * @apiGroup Questions
@@ -245,7 +245,7 @@ module.exports = class Questions extends Abstract {
   }
 
   /**
-   * @api {post} /assessment/api/v1/questions/bulkUpdate Bulk update Questions CSV
+   * @api {post} /assessment-design/api/v1/questions/bulkUpdate Bulk update Questions CSV
    * @apiVersion 1.0.0
    * @apiName Bulk update Questions CSV
    * @apiGroup Questions

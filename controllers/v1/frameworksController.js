@@ -13,13 +13,66 @@ module.exports = class Frameworks extends Abstract {
   }
 
   /**
- * @api {post} /assessment/api/v1/frameworks/create create Frameworks
+ * @api {post} /assessment-design/api/v1/frameworks/create create Frameworks
  * @apiVersion 1.0.0
  * @apiName create Frameworks
  * @apiGroup Frameworks
- * @apiParam {File} Mandatory framework file of type json.
- * @apiSampleRequest /assessment/api/v1/frameworks/create
- * @apiHeader {String} X-authenticated-user-token Authenticity token  
+ * @apiSampleRequest /assessment-design/api/v1/frameworks/create
+ * @apiHeader {String} X-authenticated-user-token Authenticity token 
+* @apiParamExample {json} Request-Body:
+*{
+*    "externalId" : "Mantra-EXCEL-2019-001",
+*    "name" : "Mantra EXCEL School Assessment framework 2015",
+*    "description" : "Mantra EXCEL School Assessment framework 2015",
+*    "createdBy" : "a082787f-8f8f-42f2-a706-35457ca6f1fd",
+*    "resourceType" : [],
+*    "language" : [ 
+*        "English"
+*    ],
+*    "keywords" : [ 
+*        "Framework", 
+*        "Assessment"
+*    ],
+*    "concepts" : [],
+*    "createdFor" : [ 
+*        "0125747659358699520", 
+*        "0125748495625912324"
+*    ],
+*    "questionSequenceByEcm" : {
+*        "PI" : {
+*            "Survey Questions" : [ 
+*                "PI001", 
+*                "PI002", 
+*                "PI003", 
+*                "PI026", 
+*                "PI027", 
+*                "PI053", 
+*                "PI054"
+*            ]
+*        }
+*    },
+*    "levelToScoreMapping" : {
+*        "L1" : {
+*            "points" : 25,
+*            "label" : "Not Good"
+*        },
+*        "L2" : {
+*            "points" : 50,
+*            "label" : "Decent"
+*        },
+*        "L3" : {
+*            "points" : 75,
+*            "label" : "Good"
+*        },
+*        "L4" : {
+*            "points" : 100,
+*            "label" : "Best"
+*        }
+*    },
+*    "scoringSystem" : "percentage",
+*    "noOfRatingLevels" : 4,
+*    "isRubricDriven" : true
+*} 
  * @apiUse successBody
  * @apiUse errorBody
  */
@@ -28,60 +81,12 @@ module.exports = class Frameworks extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-
-        let frameworkData = JSON.parse(req.files.framework.data.toString());
-
-        if (!frameworkData.externalId) {
-          throw "External Id for framework is required"
-        }
-
-        if (!frameworkData.name) {
-          throw "Name for framework is required"
-        }
-
-        if (!frameworkData.description) {
-          throw "Description for framework is required"
-        }
-        if (!frameworkData.entityType) {
-          throw "Entity Type for framework is required"
-        }
-
-        let entityDocument = await database.models.entityTypes.findOne({
-          name: frameworkData.entityType
-        }, { _id: 1 }).lean()
-
-        let queryObject = {
-          externalId: frameworkData.externalId,
-          name: frameworkData.name,
-          description: frameworkData.description,
-          entityType: frameworkData.entityType
-        };
-
-
-        let frameworkMandatoryFields = frameworksHelper.mandatoryField()
-
-        let frameworkDocument = await database.models.frameworks.findOne(queryObject, { _id: 1 }).lean()
-
-
-        if (frameworkDocument) {
-          throw "Framework already exists"
-        }
-
-        Object.keys(frameworkMandatoryFields).forEach(eachMandatoryField => {
-          if (frameworkData[eachMandatoryField] === undefined) {
-            frameworkData[eachMandatoryField] = frameworkMandatoryFields[eachMandatoryField]
-          }
-        })
-
-        frameworkData["entityTypeId"] = entityDocument._id
-        frameworkData["createdBy"] = req.userDetails.id
-        frameworkData.isDeleted = false
-
-        frameworkDocument = await database.models.frameworks.create(frameworkData)
+        let frameworkDocument = await frameworksHelper.create(req.body, req.userDetails.id)
 
         return resolve({
           status: 200,
-          message: "Framework inserted successfully."
+          message: "Framework inserted successfully.",
+          result: frameworkDocument
         });
       }
       catch (error) {
@@ -95,13 +100,66 @@ module.exports = class Frameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment/api/v1/frameworks/update?frameworkExternalId={frameworkExternalId} Update Frameworks
+* @api {post} /assessment-design/api/v1/frameworks/update?frameworkExternalId={frameworkExternalId} Update Frameworks
 * @apiVersion 1.0.0
 * @apiName update Frameworks
 * @apiGroup Frameworks
-* @apiParam {File} Mandatory framework file of type json.
-* @apiSampleRequest /assessment/api/v1/frameworks/update?frameworkExternalId=TAF-2019
+* @apiSampleRequest /assessment-design/api/v1/frameworks/update?frameworkExternalId=TAF-2019
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiParamExample {json} Request-Body:
+*{
+*    "externalId" : "Mantra-EXCEL-2019-001",
+*    "name" : "Mantra EXCEL School Assessment framework 2015",
+*    "description" : "Mantra EXCEL School Assessment framework 2015",
+*    "createdBy" : "a082787f-8f8f-42f2-a706-35457ca6f1fd",
+*    "resourceType" : [],
+*    "language" : [ 
+*        "English"
+*    ],
+*    "keywords" : [ 
+*        "Framework", 
+*        "Assessment"
+*    ],
+*    "concepts" : [],
+*    "createdFor" : [ 
+*        "0125747659358699520", 
+*        "0125748495625912324"
+*    ],
+*    "questionSequenceByEcm" : {
+*        "PI" : {
+*            "Survey Questions" : [ 
+*                "PI001", 
+*                "PI002", 
+*                "PI003", 
+*                "PI026", 
+*                "PI027", 
+*                "PI053", 
+*                "PI054"
+*            ]
+*        }
+*    },
+*    "levelToScoreMapping" : {
+*        "L1" : {
+*            "points" : 25,
+*            "label" : "Not Good"
+*        },
+*        "L2" : {
+*            "points" : 50,
+*            "label" : "Decent"
+*        },
+*        "L3" : {
+*            "points" : 75,
+*            "label" : "Good"
+*        },
+*        "L4" : {
+*            "points" : 100,
+*            "label" : "Best"
+*        }
+*    },
+*    "scoringSystem" : "percentage",
+*    "noOfRatingLevels" : 4,
+*    "isRubricDriven" : true
+*}
 * @apiUse successBody
 * @apiUse errorBody
 */
@@ -110,32 +168,12 @@ module.exports = class Frameworks extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-
-        let frameworkData = JSON.parse(req.files.framework.data.toString());
-
-        let queryObject = {
-          externalId: req.query.frameworkExternalId
-        };
-
-        let frameworkDocument = await database.models.frameworks.findOne(queryObject, { themes: 0 }).lean()
-
-        if (!frameworkDocument) {
-          return resolve({
-            status: 400,
-            message: "Framework doesnot exist"
-          });
-        }
-
-        let updateObject = _.merge(_.omit(frameworkDocument, "createdAt"), frameworkData)
-        updateObject.updatedBy = req.userDetails.id
-
-        frameworkDocument = await database.models.frameworks.findOneAndUpdate({
-          _id: frameworkDocument._id
-        }, updateObject)
+        let frameworkDocument = await frameworksHelper.update(req.body, req.userDetails.id, req.query.frameworkExternalId)
 
         return resolve({
           status: 200,
-          message: "Framework updated successfully."
+          message: "Framework updated successfully.",
+          result: frameworkDocument
         });
       }
       catch (error) {

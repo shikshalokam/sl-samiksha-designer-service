@@ -24,7 +24,7 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment/api/v1/criteria/insert Add Criteria
+  * @api {post} /assessment-design/api/v1/criteria/insert Add Criteria
   * @apiVersion 1.0.0
   * @apiName Add Criteria
   * @apiGroup Criteria
@@ -165,7 +165,7 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment/api/v1/criteria/update/{criteriaId} Update Criteria
+  * @api {post} /assessment-design/api/v1/criteria/update/{criteriaId} Update Criteria
   * @apiVersion 1.0.0
   * @apiName Update Criteria
   * @apiGroup Criteria
@@ -305,7 +305,7 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment/api/v1/criteria/delete/{criteriaId} Delete Criteria
+  * @api {post} /assessment-design/api/v1/criteria/delete/{criteriaId} Delete Criteria
   * @apiVersion 1.0.0
   * @apiName Delete Criteria
   * @apiGroup Criteria
@@ -341,7 +341,7 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {get} /assessment/api/v1/criteria/details/{criteriaId} Get criteria details
+  * @api {get} /assessment-design/api/v1/criteria/details/{criteriaId} Get criteria details
   * @apiVersion 1.0.0
   * @apiName Criteria Details
   * @apiGroup Criteria
