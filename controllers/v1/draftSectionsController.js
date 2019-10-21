@@ -1,7 +1,4 @@
-// const solutionsHelper = require(ROOT_PATH + "/module/solutions/helper");
 const draftSectionsHelper = require(ROOT_PATH + "/module/draftSections/helper");
-// const FileStream = require(ROOT_PATH + "/generics/fileStream");
-// const csv = require("csvtojson");
 
 module.exports = class draftSections extends Abstract {
   constructor() {

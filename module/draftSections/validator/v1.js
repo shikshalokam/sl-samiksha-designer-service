@@ -9,6 +9,10 @@ module.exports = (req) => {
         create: function () {
             req.checkBody('code').exists().withMessage("invalid code")
             req.checkBody('name').exists().withMessage("invalid name")
+        },
+        delete: function () {
+            req.checkParams('_id').exists().withMessage("required draftSections id")
+            .isMongoId().withMessage("invalid draftSections id");
         }
     }
 

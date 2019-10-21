@@ -1,7 +1,4 @@
-// const solutionsHelper = require(ROOT_PATH + "/module/solutions/helper");
 const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
-// const FileStream = require(ROOT_PATH + "/generics/fileStream");
-// const csv = require("csvtojson");
 
 module.exports = class DraftECM extends Abstract {
   constructor() {

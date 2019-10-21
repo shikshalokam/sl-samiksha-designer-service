@@ -21,6 +21,10 @@ module.exports = (req) => {
             req.checkBody('isSubmitted').exists().withMessage("invalid isSubmitted")
             req.checkBody('modeOfCollection').exists().withMessage("invalid modeOfCollection")
             req.checkBody('canBeNotApplicable').exists().withMessage("invalid canBeNotApplicable")
+        },
+        delete: function () {
+            req.checkParams('_id').exists().withMessage("required draftECM id")
+            .isMongoId().withMessage("invalid draftECM id");
         }
     }
 

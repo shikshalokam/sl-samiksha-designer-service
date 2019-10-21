@@ -1,7 +1,4 @@
-// const solutionsHelper = require(ROOT_PATH + "/module/solutions/helper");
 const frameworksHelper = require(ROOT_PATH + "/module/frameworks/helper");
-// const FileStream = require(ROOT_PATH + "/generics/fileStream");
-// const csv = require("csvtojson");
 
 module.exports = class Frameworks extends Abstract {
   constructor() {

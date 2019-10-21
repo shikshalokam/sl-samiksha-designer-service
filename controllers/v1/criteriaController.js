@@ -1,6 +1,3 @@
-const csv = require("csvtojson");
-const FileStream = require(ROOT_PATH + "/generics/fileStream");
-
 module.exports = class Criteria extends Abstract {
 
   /**
