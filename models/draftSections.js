@@ -1,5 +1,5 @@
 module.exports = {
-  name: "sections",
+  name: "draftSections",
   schema: {
     code: String,
     name: String

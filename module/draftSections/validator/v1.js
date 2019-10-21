@@ -1,6 +1,6 @@
 module.exports = (req) => {
 
-    let sectionsValidator = {
+    let draftSectionsValidator = {
         update: function () {
             req.checkParams('_id').exists().withMessage("required draft ECM id")
             req.checkBody('code').exists().withMessage("invalid code")
@@ -12,6 +12,6 @@ module.exports = (req) => {
         }
     }
 
-    if (sectionsValidator[req.params.method]) sectionsValidator[req.params.method]();
+    if (draftSectionsValidator[req.params.method]) draftSectionsValidator[req.params.method]();
 
 };

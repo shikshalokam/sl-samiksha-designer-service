@@ -1,8 +1,8 @@
-module.exports = class sectionsHelper {
+module.exports = class draftSectionsHelper {
     static create(sectionsData) {
         return new Promise(async (resolve, reject) => {
             try {
-                let sectionsDocument = await database.models.sections.create(sectionsData)
+                let sectionsDocument = await database.models.draftSections.create(sectionsData)
                 return resolve(sectionsDocument)
             } catch (error) {
                 return reject(error)
@@ -13,7 +13,7 @@ module.exports = class sectionsHelper {
     static update(sectionsData, sectionsId) {
         return new Promise(async (resolve, reject) => {
             try {
-                let sectionsDocument = await database.models.sections.findOneAndUpdate({ "_id": sectionsId }, sectionsData,{new:true})
+                let sectionsDocument = await database.models.draftSections.findOneAndUpdate({ "_id": sectionsId }, sectionsData,{new:true})
                 return resolve(sectionsDocument)
             } catch (error) {
                 return reject(error)

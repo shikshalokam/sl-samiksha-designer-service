@@ -1,7 +1,7 @@
-const solutionsHelper = require(ROOT_PATH + "/module/solutions/helper");
+// const solutionsHelper = require(ROOT_PATH + "/module/solutions/helper");
 const frameworksHelper = require(ROOT_PATH + "/module/frameworks/helper");
-const FileStream = require(ROOT_PATH + "/generics/fileStream");
-const csv = require("csvtojson");
+// const FileStream = require(ROOT_PATH + "/generics/fileStream");
+// const csv = require("csvtojson");
 
 module.exports = class Frameworks extends Abstract {
   constructor() {
@@ -10,6 +10,46 @@ module.exports = class Frameworks extends Abstract {
 
   static get name() {
     return "frameworks";
+  }
+
+  /**
+* @api {post} /assessment-design/api/v1/frameworks/list/{criteriaId} list frameworks
+* @apiVersion 1.0.0
+* @apiName List frameworks
+* @apiGroup Frameworks
+* @apiSampleRequest /assessment-design/api/v1/frameworks/list/{frameworkId}
+* @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+  async list(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "list fetched successfully",
+        status: 200
+      })
+    })
+  }
+
+  /**
+  * @api {post} /assessment-design/api/v1/frameworks/details/{frameworksId} framework details
+  * @apiVersion 1.0.0
+  * @apiName Framework details
+  * @apiGroup Frameworks
+  * @apiSampleRequest /assessment-design/api/v1/frameworks/details/{frameworkId}
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  */
+
+  async details(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "details fetched successfully",
+        status: 200
+      })
+    })
   }
 
   /**
@@ -185,4 +225,22 @@ module.exports = class Frameworks extends Abstract {
       }
     })
   }
+
+   /**
+* @api {post} /assessment-design/api/v1/frameworks/delete/{frameworksId} Delete framework
+* @apiVersion 1.0.0
+* @apiName Delete framework
+* @apiGroup Frameworks
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+async delete(req) {
+  return new Promise(async (resolve, reject) => {
+    return resolve({
+      message: "deleted successfully",
+      status: 200
+    })
+  })
+}
 };

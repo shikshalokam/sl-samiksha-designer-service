@@ -24,6 +24,26 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
+* @api {post} /assessment-design/api/v1/criteria/list list criteria
+* @apiVersion 1.0.0
+* @apiName List criteria
+* @apiGroup Criteria
+* @apiSampleRequest /assessment-design/api/v1/criteria/list
+* @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+  async list(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "list fetched successfully",
+        status: 200
+      })
+    })
+  }
+
+  /**
   * @api {post} /assessment-design/api/v1/criteria/insert Add Criteria
   * @apiVersion 1.0.0
   * @apiName Add Criteria
@@ -269,7 +289,7 @@ module.exports = class Criteria extends Abstract {
 
       try {
 
-        let criteriaQueryObject = {"_id":ObjectId(req.params._id)};
+        let criteriaQueryObject = { "_id": ObjectId(req.params._id) };
         let criteria = req.body;
         criteria.owner = req.userDetails.id;
 
@@ -319,7 +339,7 @@ module.exports = class Criteria extends Abstract {
 
       try {
 
-        let criteriaQueryObject = {"_id":ObjectId(req.params._id)};
+        let criteriaQueryObject = { "_id": ObjectId(req.params._id) };
 
         let updateObject = {
           deletedAt: new Date()
@@ -330,7 +350,7 @@ module.exports = class Criteria extends Abstract {
           updateObject
         );
 
-        let response = { message:  "Criteria deleted successfully." };
+        let response = { message: "Criteria deleted successfully." };
 
         return resolve(response);
       } catch (error) {
@@ -356,22 +376,22 @@ module.exports = class Criteria extends Abstract {
       try {
 
         let criteriaQueryObject = {
-          "_id":ObjectId(req.params._id),
-          "deletedAt": { $exists: false }  
+          "_id": ObjectId(req.params._id),
+          "deletedAt": { $exists: false }
         };
 
         let criteriaDocument = await database.models.criteria.findOne(
           criteriaQueryObject
         ).lean();
 
-        if(!criteriaDocument){
+        if (!criteriaDocument) {
           return resolve({
             status: 400,
             message: "No criteria found for given params."
           });
         }
 
-        let response = { message:  "Criteria details fetched successfully.",result: criteriaDocument};
+        let response = { message: "Criteria details fetched successfully.", result: criteriaDocument };
 
         return resolve(response);
       } catch (error) {

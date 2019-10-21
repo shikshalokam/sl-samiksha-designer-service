@@ -13,6 +13,46 @@ module.exports = class DraftECM extends Abstract {
   }
 
   /**
+* @api {post} /assessment-design/api/v1/draftECM/list/{frameworkId} list draftECM
+* @apiVersion 1.0.0
+* @apiName list draftECM
+* @apiGroup draftECM
+* @apiSampleRequest /assessment-design/api/v1/draftECM/list/{frameworkId}
+* @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+  async list(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "list fetched successfully",
+        status: 200
+      })
+    })
+  }
+
+  /**
+  * @api {post} /assessment-design/api/v1/draftECM/details/{draftECMId} details draftECM
+  * @apiVersion 1.0.0
+  * @apiName details draftECM
+  * @apiGroup draftECM
+  * @apiSampleRequest /assessment-design/api/v1/draftECM/details/{frameworkId}
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  */
+
+  async details(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "details fetched successfully",
+        status: 200
+      })
+    })
+  }
+
+  /**
  * @api {post} /assessment-design/api/v1/draftECM/create create draftECM
  * @apiVersion 1.0.0
  * @apiName create draftECM
@@ -78,4 +118,23 @@ module.exports = class DraftECM extends Abstract {
       }
     })
   }
+
+  /**
+* @api {post} /assessment-design/api/v1/draftECM/delete/{draftECMId} Delete draftECM
+* @apiVersion 1.0.0
+* @apiName Delete draftECM
+* @apiGroup draftECM
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+  async delete(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "deleted successfully",
+        status: 200
+      })
+    })
+  }
+
 };

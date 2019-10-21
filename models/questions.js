@@ -6,6 +6,9 @@ module.exports = {
       index: true,
       unique: true
     },
+    criteriaId: "ObjectId",
+    frameworkId: "ObjectId",
+    evidenceMethod: "String",
     question: Array,
     tip: "String",
     hint: "String",
