@@ -39,7 +39,7 @@ module.exports = (req) => {
             req.checkParams('_id').exists().withMessage("required criteria id")
                 .isMongoId().withMessage("invalid criteria id");
         },
-        insert: function () {
+        create: function () {
             req.checkBody('externalId').exists().withMessage("invalid externalId")
             req.checkBody('owner').exists().withMessage("invalid owner")
             req.checkBody('timesUsed').exists().withMessage("invalid timesUsed")

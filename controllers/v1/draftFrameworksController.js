@@ -10,9 +10,9 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/frameworks/list/{criteriaId} list frameworks
+* @api {post} /assessment-design/api/v1/frameworks/list/{userId} list frameworks
 * @apiVersion 1.0.0
-* @apiName List frameworks
+* @apiName List frameworks by userId
 * @apiGroup Frameworks
 * @apiSampleRequest /assessment-design/api/v1/frameworks/list/{frameworkId}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
@@ -137,7 +137,7 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/frameworks/update?frameworkExternalId={frameworkExternalId} Update Frameworks
+* @api {post} /assessment-design/api/v1/frameworks/update/{frameworkId} Update Frameworks
 * @apiVersion 1.0.0
 * @apiName update Frameworks
 * @apiGroup Frameworks
