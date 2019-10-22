@@ -1,7 +1,4 @@
-const csv = require("csvtojson");
-const FileStream = require(ROOT_PATH + "/generics/fileStream");
-
-module.exports = class Criteria extends Abstract {
+module.exports = class DraftCriteria extends Abstract {
 
   /**
    * @apiDefine errorBody
@@ -16,18 +13,38 @@ module.exports = class Criteria extends Abstract {
    */
 
   constructor() {
-    super(criteriaSchema);
+    super(draftCriteriaSchema);
   }
 
   static get name() {
-    return "criteria";
+    return "draftCriteria";
   }
 
   /**
-  * @api {post} /assessment/api/v1/criteria/insert Add Criteria
+* @api {post} /assessment-design/api/v1/draftCriteria/list list criteria
+* @apiVersion 1.0.0
+* @apiName List criteria by userId
+* @apiGroup DraftCriteria
+* @apiSampleRequest /assessment-design/api/v1/draftCriteria/list
+* @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+  async list(req) {
+    return new Promise(async (resolve, reject) => {
+      return resolve({
+        message: "list fetched successfully",
+        status: 200
+      })
+    })
+  }
+
+  /**
+  * @api {post} /assessment-design/api/v1/draftCriteria/insert Add Criteria
   * @apiVersion 1.0.0
   * @apiName Add Criteria
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiParamExample {json} Request-Body:
 * {
   "externalId": "",
@@ -122,7 +139,7 @@ module.exports = class Criteria extends Abstract {
 * @apiUse errorBody
   */
 
-  insert(req) {
+  create(req) {
 
     return new Promise(async (resolve, reject) => {
 
@@ -130,7 +147,7 @@ module.exports = class Criteria extends Abstract {
 
         let result = {}
         let criteria = req.body
-        criteria.owner = req.userDetails.id;
+        criteria.userId = req.userDetails.id;
 
         let rubricStructure = {
           name: criteria.rubric.name,
@@ -145,7 +162,7 @@ module.exports = class Criteria extends Abstract {
         })
 
         criteria.rubric = rubricStructure
-        let generatedCriteriaDocument = await database.models.criteria.create(
+        let generatedCriteriaDocument = await database.models.draftCriteria.create(
           criteria
         );
 
@@ -165,10 +182,10 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment/api/v1/criteria/update/{criteriaId} Update Criteria
+  * @api {post} /assessment-design/api/v1/draftCriteria/update/{criteriaId} Update Criteria
   * @apiVersion 1.0.0
   * @apiName Update Criteria
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiParamExample {json} Request-Body:
 * {
   "externalId": "",
@@ -269,7 +286,7 @@ module.exports = class Criteria extends Abstract {
 
       try {
 
-        let criteriaQueryObject = {"_id":ObjectId(req.params._id)};
+        let criteriaQueryObject = { "_id": ObjectId(req.params._id) };
         let criteria = req.body;
         criteria.owner = req.userDetails.id;
 
@@ -289,7 +306,7 @@ module.exports = class Criteria extends Abstract {
 
         let updateObject = criteria
 
-        await database.models.criteria.findOneAndUpdate(
+        await database.models.draftCriteria.findOneAndUpdate(
           criteriaQueryObject,
           updateObject
         );
@@ -305,10 +322,10 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment/api/v1/criteria/delete/{criteriaId} Delete Criteria
+  * @api {post} /assessment-design/api/v1/draftCriteria/delete/{criteriaId} Delete Criteria
   * @apiVersion 1.0.0
   * @apiName Delete Criteria
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiUse successBody
   * @apiUse errorBody
   */
@@ -319,18 +336,18 @@ module.exports = class Criteria extends Abstract {
 
       try {
 
-        let criteriaQueryObject = {"_id":ObjectId(req.params._id)};
+        let criteriaQueryObject = { "_id": ObjectId(req.params._id) };
 
         let updateObject = {
           deletedAt: new Date()
         }
 
-        await database.models.criteria.findOneAndUpdate(
+        await database.models.draftCriteria.findOneAndUpdate(
           criteriaQueryObject,
           updateObject
         );
 
-        let response = { message:  "Criteria deleted successfully." };
+        let response = { message: "Criteria deleted successfully." };
 
         return resolve(response);
       } catch (error) {
@@ -341,10 +358,10 @@ module.exports = class Criteria extends Abstract {
   }
 
   /**
-  * @api {get} /assessment/api/v1/criteria/details/{criteriaId} Get criteria details
+  * @api {get} /assessment-design/api/v1/draftCriteria/details/{criteriaId} Get criteria details
   * @apiVersion 1.0.0
   * @apiName Criteria Details
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiUse successBody
   * @apiUse errorBody
   */
@@ -356,22 +373,22 @@ module.exports = class Criteria extends Abstract {
       try {
 
         let criteriaQueryObject = {
-          "_id":ObjectId(req.params._id),
-          "deletedAt": { $exists: false }  
+          "_id": ObjectId(req.params._id),
+          "deletedAt": { $exists: false }
         };
 
-        let criteriaDocument = await database.models.criteria.findOne(
+        let criteriaDocument = await database.models.draftCriteria.findOne(
           criteriaQueryObject
         ).lean();
 
-        if(!criteriaDocument){
+        if (!criteriaDocument) {
           return resolve({
             status: 400,
             message: "No criteria found for given params."
           });
         }
 
-        let response = { message:  "Criteria details fetched successfully.",result: criteriaDocument};
+        let response = { message: "Criteria details fetched successfully.", result: criteriaDocument };
 
         return resolve(response);
       } catch (error) {
@@ -380,6 +397,8 @@ module.exports = class Criteria extends Abstract {
 
     })
   }
+
+
 
 };
 
