@@ -22,6 +22,13 @@ module.exports = class DraftFrameworks extends Abstract {
 
   async list(req) {
     return new Promise(async (resolve, reject) => {
+      try {
+        let frameworkDocument = await database.models.draftFrameworks.find({
+          userId:req.userDetails.id
+        }, { _id: 1 }).lean()
+      } catch(error){
+
+      }
       return resolve({
         message: "list fetched successfully",
         status: 200
