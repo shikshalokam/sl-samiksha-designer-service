@@ -14,13 +14,13 @@ module.exports = (req) => {
         },
         create: function () {
             req.checkBody('frameworkId').exists().withMessage("invalid frameworkId")
-            req.checkBody('externalId').exists().withMessage("invalid externalId")
-            req.checkBody('name').exists().withMessage("invalid name")
-            req.checkBody('description').exists().withMessage("invalid description")
-            req.checkBody('tip').exists().withMessage("invalid tip")
-            req.checkBody('isSubmitted').exists().withMessage("invalid is submitted")
-            req.checkBody('modeOfCollection').exists().withMessage("invalid mode of collection")
-            req.checkBody('canBeNotApplicable').exists().withMessage("invalid can be not applicable")
+            // req.checkBody('externalId').exists().withMessage("invalid externalId")
+            // req.checkBody('name').exists().withMessage("invalid name")
+            // req.checkBody('description').exists().withMessage("invalid description")
+            // req.checkBody('tip').exists().withMessage("invalid tip")
+            // req.checkBody('isSubmitted').exists().withMessage("invalid is submitted")
+            // req.checkBody('modeOfCollection').exists().withMessage("invalid mode of collection")
+            // req.checkBody('canBeNotApplicable').exists().withMessage("invalid can be not applicable")
         },
         delete: function () {
             req.checkParams('_id').exists().withMessage("required draftECM id")

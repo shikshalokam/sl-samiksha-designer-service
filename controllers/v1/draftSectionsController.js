@@ -1,6 +1,6 @@
 const draftSectionsHelper = require(ROOT_PATH + "/module/draftSections/helper");
 
-module.exports = class draftSections extends Abstract {
+module.exports = class DraftSections extends Abstract {
   constructor() {
     super(draftSectionsSchema);
   }
@@ -64,7 +64,9 @@ module.exports = class draftSections extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftSectionsDocument = await draftSectionsHelper.create(req.body)
+        let draftSectionsData = _.merge(req.body,{ userId:req.userDetails.id })
+
+        let draftSectionsDocument = await draftSectionsHelper.create(draftSectionsData)
 
         return resolve({
           status: 200,

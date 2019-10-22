@@ -17,8 +17,8 @@ module.exports = {
       required: true
     },
     userId: {
-      type: String,
-      required: true,
+      type:String,
+      required:true
     },
     resourceType: {
       type: Array,
@@ -67,7 +67,15 @@ module.exports = {
     },
     themes: {
       type: Array,
-      default: ["English"]
+      default: [{
+        "type": "DEFAULT-THEME",
+        "label": "DEFAULT-THEME",
+        "externalId": "DEFAULT-THEME",
+        "name": "DEFAULT-THEME",
+        "weightage": 100,
+        "children":[]
+      }
+      ]
     },
     noOfRatingLevels: {
       type: Number,

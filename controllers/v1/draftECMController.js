@@ -13,7 +13,7 @@ module.exports = class DraftECM extends Abstract {
 * @api {post} /assessment-design/api/v1/draftECM/list/{frameworkId} list draftECM
 * @apiVersion 1.0.0
 * @apiName list draftECM
-* @apiGroup draftECM
+* @apiGroup DraftECM
 * @apiSampleRequest /assessment-design/api/v1/draftECM/list/{frameworkId}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
@@ -33,7 +33,7 @@ module.exports = class DraftECM extends Abstract {
   * @api {post} /assessment-design/api/v1/draftECM/details/{draftECMId} details draftECM
   * @apiVersion 1.0.0
   * @apiName details draftECM
-  * @apiGroup draftECM
+  * @apiGroup DraftECM
   * @apiSampleRequest /assessment-design/api/v1/draftECM/details/{frameworkId}
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
@@ -53,7 +53,7 @@ module.exports = class DraftECM extends Abstract {
  * @api {post} /assessment-design/api/v1/draftECM/create create draftECM
  * @apiVersion 1.0.0
  * @apiName create draftECM
- * @apiGroup draftECM
+ * @apiGroup DraftECM
  * @apiSampleRequest /assessment-design/api/v1/draftECM/create
  * @apiHeader {String} X-authenticated-user-token Authenticity token  
  * @apiUse successBody
@@ -64,7 +64,9 @@ module.exports = class DraftECM extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftECMDocument = await draftECMHelper.create(req.body)
+        let ecmData = _.merge(req.body,{ userId:req.userDetails.id })
+
+        let draftECMDocument = await draftECMHelper.create(ecmData)
 
         return resolve({
           status: 200,
@@ -87,7 +89,7 @@ module.exports = class DraftECM extends Abstract {
 * @api {post} /assessment-design/api/v1/draftECM/update?frameworkExternalId={frameworkExternalId} Update draftECM
 * @apiVersion 1.0.0
 * @apiName update draftECM
-* @apiGroup draftECM
+* @apiGroup DraftECM
 * @apiSampleRequest /assessment-design/api/v1/draftECM/update?frameworkExternalId=TAF-2019
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
@@ -120,7 +122,7 @@ module.exports = class DraftECM extends Abstract {
 * @api {post} /assessment-design/api/v1/draftECM/delete/{draftECMId} Delete draftECM
 * @apiVersion 1.0.0
 * @apiName Delete draftECM
-* @apiGroup draftECM
+* @apiGroup DraftECM
 * @apiUse successBody
 * @apiUse errorBody
 */

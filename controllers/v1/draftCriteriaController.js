@@ -21,11 +21,11 @@ module.exports = class DraftCriteria extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/criteria/list list criteria
+* @api {post} /assessment-design/api/v1/draftCriteria/list list criteria
 * @apiVersion 1.0.0
 * @apiName List criteria by userId
-* @apiGroup Criteria
-* @apiSampleRequest /assessment-design/api/v1/criteria/list
+* @apiGroup DraftCriteria
+* @apiSampleRequest /assessment-design/api/v1/draftCriteria/list
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -41,10 +41,10 @@ module.exports = class DraftCriteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/criteria/insert Add Criteria
+  * @api {post} /assessment-design/api/v1/draftCriteria/insert Add Criteria
   * @apiVersion 1.0.0
   * @apiName Add Criteria
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiParamExample {json} Request-Body:
 * {
   "externalId": "",
@@ -147,7 +147,7 @@ module.exports = class DraftCriteria extends Abstract {
 
         let result = {}
         let criteria = req.body
-        criteria.owner = req.userDetails.id;
+        criteria.userId = req.userDetails.id;
 
         let rubricStructure = {
           name: criteria.rubric.name,
@@ -182,10 +182,10 @@ module.exports = class DraftCriteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/criteria/update/{criteriaId} Update Criteria
+  * @api {post} /assessment-design/api/v1/draftCriteria/update/{criteriaId} Update Criteria
   * @apiVersion 1.0.0
   * @apiName Update Criteria
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiParamExample {json} Request-Body:
 * {
   "externalId": "",
@@ -322,10 +322,10 @@ module.exports = class DraftCriteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/criteria/delete/{criteriaId} Delete Criteria
+  * @api {post} /assessment-design/api/v1/draftCriteria/delete/{criteriaId} Delete Criteria
   * @apiVersion 1.0.0
   * @apiName Delete Criteria
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiUse successBody
   * @apiUse errorBody
   */
@@ -358,10 +358,10 @@ module.exports = class DraftCriteria extends Abstract {
   }
 
   /**
-  * @api {get} /assessment-design/api/v1/criteria/details/{criteriaId} Get criteria details
+  * @api {get} /assessment-design/api/v1/draftCriteria/details/{criteriaId} Get criteria details
   * @apiVersion 1.0.0
   * @apiName Criteria Details
-  * @apiGroup Criteria
+  * @apiGroup DraftCriteria
   * @apiUse successBody
   * @apiUse errorBody
   */

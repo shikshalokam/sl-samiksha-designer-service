@@ -10,11 +10,11 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/frameworks/list/{userId} list frameworks
+* @api {post} /assessment-design/api/v1/draftFrameworks/list/{userId} list frameworks
 * @apiVersion 1.0.0
 * @apiName List frameworks by userId
-* @apiGroup Frameworks
-* @apiSampleRequest /assessment-design/api/v1/frameworks/list/{frameworkId}
+* @apiGroup DraftFrameworks
+* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/list/{frameworkId}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -37,11 +37,11 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/frameworks/details/{frameworksId} framework details
+  * @api {post} /assessment-design/api/v1/draftFrameworks/details/{frameworksId} framework details
   * @apiVersion 1.0.0
   * @apiName Framework details
-  * @apiGroup Frameworks
-  * @apiSampleRequest /assessment-design/api/v1/frameworks/details/{frameworkId}
+  * @apiGroup DraftFrameworks
+  * @apiSampleRequest /assessment-design/api/v1/draftFrameworks/details/{frameworkId}
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
@@ -57,11 +57,11 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
- * @api {post} /assessment-design/api/v1/frameworks/create create Frameworks
+ * @api {post} /assessment-design/api/v1/draftFrameworks/create create Frameworks
  * @apiVersion 1.0.0
  * @apiName create Frameworks
- * @apiGroup Frameworks
- * @apiSampleRequest /assessment-design/api/v1/frameworks/create
+ * @apiGroup DraftFrameworks
+ * @apiSampleRequest /assessment-design/api/v1/draftFrameworks/create
  * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiParamExample {json} Request-Body:
 *{
@@ -144,11 +144,11 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/frameworks/update/{frameworkId} Update Frameworks
+* @api {post} /assessment-design/api/v1/draftFrameworks/update/{frameworkId} Update Frameworks
 * @apiVersion 1.0.0
 * @apiName update Frameworks
-* @apiGroup Frameworks
-* @apiSampleRequest /assessment-design/api/v1/frameworks/update?frameworkExternalId=TAF-2019
+* @apiGroup DraftFrameworks
+* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/update?frameworkExternalId=TAF-2019
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiParamExample {json} Request-Body:
 *{
@@ -231,10 +231,10 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
    /**
-* @api {post} /assessment-design/api/v1/frameworks/delete/{frameworksId} Delete framework
+* @api {post} /assessment-design/api/v1/draftFrameworks/delete/{frameworksId} Delete framework
 * @apiVersion 1.0.0
 * @apiName Delete framework
-* @apiGroup Frameworks
+* @apiGroup DraftFrameworks
 * @apiUse successBody
 * @apiUse errorBody
 */

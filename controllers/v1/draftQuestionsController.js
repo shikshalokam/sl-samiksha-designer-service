@@ -8,10 +8,10 @@ module.exports = class DraftQuestions extends Abstract {
   }
 
     /**
-* @api {post} /assessment-design/api/v1/questions/list/{frameworkId} Question list
+* @api {post} /assessment-design/api/v1/draftQuestions/list/{frameworkId} Question list
 * @apiVersion 1.0.0
 * @apiName Question list
-* @apiGroup Question
+* @apiGroup DraftQuestion
 * @apiSampleRequest /assessment-design/api/v1/questions/list/{frameworkId}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
@@ -28,10 +28,10 @@ async list(req) {
 }
 
 /**
-* @api {post} /assessment-design/api/v1/questions/details/{questionId} Question details
+* @api {post} /assessment-design/api/v1/draftQuestions/details/{questionId} Question details
 * @apiVersion 1.0.0
 * @apiName Question details
-* @apiGroup Question
+* @apiGroup DraftQuestion
 * @apiSampleRequest /assessment-design/api/v1/questions/details/{questionId}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
@@ -48,10 +48,10 @@ async details(req) {
 }
 
 /**
-* @api {post} /assessment-design/api/v1/questions/create Question create
+* @api {post} /assessment-design/api/v1/draftQuestions/create Question create
 * @apiVersion 1.0.0
 * @apiName Question create
-* @apiGroup Question
+* @apiGroup DraftQuestion
 * @apiSampleRequest /assessment-design/api/v1/questions/create
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
@@ -68,10 +68,10 @@ async create(req) {
 }
 
 /**
-* @api {post} /assessment-design/api/v1/questions/update Question update
+* @api {post} /assessment-design/api/v1/draftQuestions/update Question update
 * @apiVersion 1.0.0
 * @apiName Question update
-* @apiGroup Question
+* @apiGroup DraftQuestion
 * @apiSampleRequest /assessment-design/api/v1/questions/update
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
@@ -88,10 +88,10 @@ async update(req) {
 }
 
  /**
-* @api {post} /assessment-design/api/v1/questions/delete/{questionId} Delete question
+* @api {post} /assessment-design/api/v1/draftQuestions/delete/{questionId} Delete question
 * @apiVersion 1.0.0
 * @apiName Delete question
-* @apiGroup Question
+* @apiGroup DraftQuestion
 * @apiSampleRequest /assessment-design/api/v1/questions/delete/{questionId}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody

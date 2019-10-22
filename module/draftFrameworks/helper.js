@@ -42,30 +42,30 @@ module.exports = class draftFrameworksHelper {
                     }
                 })
 
-                frameworkData["createdBy"] = userId
+                frameworkData["userId"] = userId
 
-                frameworkData.themes = {
-                    "type": "theme",
-                    "label": "theme",
-                    "externalId": "DEFAULT",
-                    "name": "default theme",
-                    "weightage": 100,
-                    "children": [
-                        {
-                            "type": "subtheme",
-                            "label": "subtheme",
-                            "externalId": "DEFAULT",
-                            "name": "Default subtheme",
-                            "weightage": 100,
-                            "criteria": [
-                                {
-                                    "criteriaId": null,
-                                    "weightage": 100
-                                }
-                            ]
-                        }
-                    ]
-                }
+                // frameworkData.themes = {
+                //     "type": "theme",
+                //     "label": "theme",
+                //     "externalId": "DEFAULT",
+                //     "name": "default theme",
+                //     "weightage": 100,
+                //     "children": [
+                //         {
+                //             "type": "subtheme",
+                //             "label": "subtheme",
+                //             "externalId": "DEFAULT",
+                //             "name": "Default subtheme",
+                //             "weightage": 100,
+                //             "criteria": [
+                //                 {
+                //                     "criteriaId": null,
+                //                     "weightage": 100
+                //                 }
+                //             ]
+                //         }
+                //     ]
+                // }
 
 
                 frameworkData.isDeleted = false
@@ -83,13 +83,16 @@ module.exports = class draftFrameworksHelper {
                     "isSubmitted": false,
                     "modeOfCollection": "default",
                     "canBeNotApplicable": false,
+                    "userId":userId
                 }
 
                 await draftECMHelper.create(draftECMData)
                 
                 await sectionsHelper.create({
+                    "frameworkId": frameworkDocument._id,
                     code: "DEFAULT",
-                    name: "default"
+                    name: "default",
+                    "userId":userId
                 })
 
                 return resolve(frameworkDocument);
