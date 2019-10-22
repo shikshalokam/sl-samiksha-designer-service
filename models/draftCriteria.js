@@ -1,5 +1,5 @@
 module.exports = {
-  name: "criteria",
+  name: "draftCriteria",
   schema: {
     externalId: String,
     owner: String,
@@ -16,7 +16,6 @@ module.exports = {
     concepts: ["json"],
     createdFor: [String],
     rubric: Object,
-    evidences: ["json"],
     flag: Object,
     criteriaType: String,
     frameworkCriteriaId : "ObjectId"

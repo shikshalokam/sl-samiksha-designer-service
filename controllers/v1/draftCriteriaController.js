@@ -1,4 +1,4 @@
-module.exports = class Criteria extends Abstract {
+module.exports = class DraftCriteria extends Abstract {
 
   /**
    * @apiDefine errorBody
@@ -13,11 +13,11 @@ module.exports = class Criteria extends Abstract {
    */
 
   constructor() {
-    super(criteriaSchema);
+    super(draftCriteriaSchema);
   }
 
   static get name() {
-    return "criteria";
+    return "draftCriteria";
   }
 
   /**
@@ -162,7 +162,7 @@ module.exports = class Criteria extends Abstract {
         })
 
         criteria.rubric = rubricStructure
-        let generatedCriteriaDocument = await database.models.criteria.create(
+        let generatedCriteriaDocument = await database.models.draftCriteria.create(
           criteria
         );
 
@@ -306,7 +306,7 @@ module.exports = class Criteria extends Abstract {
 
         let updateObject = criteria
 
-        await database.models.criteria.findOneAndUpdate(
+        await database.models.draftCriteria.findOneAndUpdate(
           criteriaQueryObject,
           updateObject
         );
@@ -342,7 +342,7 @@ module.exports = class Criteria extends Abstract {
           deletedAt: new Date()
         }
 
-        await database.models.criteria.findOneAndUpdate(
+        await database.models.draftCriteria.findOneAndUpdate(
           criteriaQueryObject,
           updateObject
         );
@@ -377,7 +377,7 @@ module.exports = class Criteria extends Abstract {
           "deletedAt": { $exists: false }
         };
 
-        let criteriaDocument = await database.models.criteria.findOne(
+        let criteriaDocument = await database.models.draftCriteria.findOne(
           criteriaQueryObject
         ).lean();
 

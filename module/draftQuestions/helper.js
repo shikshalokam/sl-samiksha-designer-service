@@ -1,5 +1,5 @@
 
-module.exports = class questionsHelper {
+module.exports = class draftQuestionsHelper {
 
   static createQuestions(parsedQuestion, questionCollection, criteriaObject, evidenceCollectionMethodObject, questionSection) {
 
@@ -146,7 +146,7 @@ module.exports = class questionsHelper {
             }
           })
 
-          let createQuestion = await database.models.questions.create(
+          let createQuestion = await database.models.draftQuestions.create(
             allValues
           )
 
@@ -168,7 +168,7 @@ module.exports = class questionsHelper {
                 ["children"]: createQuestion._id
               }
 
-              await database.models.questions.findOneAndUpdate(
+              await database.models.draftQuestions.findOneAndUpdate(
                 queryParentQuestionObject,
                 updateParentQuestionObject
               )
@@ -186,7 +186,7 @@ module.exports = class questionsHelper {
                 ["instanceQuestions"]: createQuestion._id
               }
 
-              await database.models.questions.findOneAndUpdate(
+              await database.models.draftQuestions.findOneAndUpdate(
                 queryInstanceParentQuestionObject,
                 updateInstanceParentQuestionObject
               )
@@ -263,7 +263,7 @@ module.exports = class questionsHelper {
 
         let questionDataModel = Object.keys(questionsSchema.schema)
 
-        let existingQuestion = await database.models.questions
+        let existingQuestion = await database.models.draftQuestions
           .findOne(
             { _id: ObjectId(parsedQuestion["_SYSTEM_ID"]) }, {
               createdAt: 0,
@@ -404,7 +404,7 @@ module.exports = class questionsHelper {
           }
         })
 
-        let updateQuestion = await database.models.questions.findOneAndUpdate(
+        let updateQuestion = await database.models.draftQuestions.findOneAndUpdate(
           { _id: existingQuestion._id },
           existingQuestion,
           { _id: 1 }
@@ -418,7 +418,7 @@ module.exports = class questionsHelper {
 
           if (parsedQuestion["_parentQuestionId"] != "") {
 
-            await database.models.questions.findOneAndUpdate(
+            await database.models.draftQuestions.findOneAndUpdate(
               {
                 _id: parsedQuestion["_parentQuestionId"]
               },
@@ -436,7 +436,7 @@ module.exports = class questionsHelper {
 
           if (parsedQuestion["_instanceParentQuestionId"] != "" && parsedQuestion["responseType"] != "matrix") {
 
-            await database.models.questions.findOneAndUpdate(
+            await database.models.draftQuestions.findOneAndUpdate(
               {
                 _id: parsedQuestion["_instanceParentQuestionId"],
                 responseType: "matrix"

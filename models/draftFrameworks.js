@@ -1,5 +1,5 @@
 module.exports = {
-  name: "frameworks",
+  name: "draftFrameworks",
   schema: {
     externalId: String,
     name: String,

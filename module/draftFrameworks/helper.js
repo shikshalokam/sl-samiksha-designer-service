@@ -1,6 +1,6 @@
 const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
 const sectionsHelper = require(ROOT_PATH + "/module/draftSections/helper");
-module.exports = class frameworksHelper {
+module.exports = class draftFrameworksHelper {
     static mandatoryField() {
         let mandatoryFields = {
             author: "",
@@ -30,7 +30,7 @@ module.exports = class frameworksHelper {
 
                 let frameworkMandatoryFields = this.mandatoryField()
 
-                let frameworkDocument = await database.models.frameworks.findOne(queryObject, { _id: 1 }).lean()
+                let frameworkDocument = await database.models.draftFrameworks.findOne(queryObject, { _id: 1 }).lean()
 
                 if (frameworkDocument) {
                     throw "Framework already exists"
@@ -70,7 +70,7 @@ module.exports = class frameworksHelper {
 
                 frameworkData.isDeleted = false
 
-                frameworkDocument = await database.models.frameworks.create(frameworkData)
+                frameworkDocument = await database.models.draftFrameworks.create(frameworkData)
 
                 let draftECMData = {
                     "frameworkId": frameworkDocument._id,
@@ -112,7 +112,7 @@ module.exports = class frameworksHelper {
                     externalId: frameworkExternalId
                 };
 
-                let frameworkDocument = await database.models.frameworks.findOne(queryObject, { themes: 0 }).lean()
+                let frameworkDocument = await database.models.draftFrameworks.findOne(queryObject, { themes: 0 }).lean()
 
                 if (!frameworkDocument) {
                     return resolve({
@@ -124,7 +124,7 @@ module.exports = class frameworksHelper {
                 let updateObject = _.merge(_.omit(frameworkDocument, "createdAt"), frameworkData)
                 updateObject.updatedBy = userId
 
-                frameworkDocument = await database.models.frameworks.findOneAndUpdate({
+                frameworkDocument = await database.models.draftFrameworks.findOneAndUpdate({
                     _id: frameworkDocument._id
                 }, updateObject, { new: true })
 

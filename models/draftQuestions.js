@@ -1,5 +1,5 @@
 module.exports = {
-  name: "questions",
+  name: "draftQuestions",
   schema: {
     externalId: {
       type: String,

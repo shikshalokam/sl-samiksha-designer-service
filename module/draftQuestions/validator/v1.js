@@ -1,6 +1,6 @@
 module.exports = (req) => {
 
-    let questionValidator = {
+    let draftQuestionValidator = {
         list: function () {
             req.checkParams('_id').exists().withMessage("required framework id")
                 .isMongoId().withMessage("invalid framework id");
@@ -123,6 +123,6 @@ module.exports = (req) => {
         }
     }
 
-    if (questionValidator[req.params.method]) questionValidator[req.params.method]();
+    if (draftQuestionValidator[req.params.method]) draftQuestionValidator[req.params.method]();
 
 };

@@ -1,12 +1,12 @@
-const frameworksHelper = require(ROOT_PATH + "/module/frameworks/helper");
+const frameworksHelper = require(ROOT_PATH + "/module/draftFrameworks/helper");
 
-module.exports = class Frameworks extends Abstract {
+module.exports = class DraftFrameworks extends Abstract {
   constructor() {
-    super(frameworksSchema);
+    super(draftFrameworksSchema);
   }
 
   static get name() {
-    return "frameworks";
+    return "draftFrameworks";
   }
 
   /**

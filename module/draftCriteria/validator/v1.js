@@ -1,6 +1,6 @@
 module.exports = (req) => {
 
-    let criteriaValidator = {
+    let draftCriteriaValidator = {
         update: function () {
             req.checkParams('_id').exists().withMessage("required criteria id")
                 .isMongoId().withMessage("invalid criteria id");
@@ -69,6 +69,6 @@ module.exports = (req) => {
         },
     }
 
-    if (criteriaValidator[req.params.method]) criteriaValidator[req.params.method]();
+    if (draftCriteriaValidator[req.params.method]) draftCriteriaValidator[req.params.method]();
 
 };

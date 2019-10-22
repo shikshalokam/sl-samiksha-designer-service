@@ -1,6 +1,6 @@
 module.exports = (req) => {
 
-    let frameworkValidator = {
+    let draftFrameworkValidator = {
         uploadThemes: function () {
             req.checkParams('_id').exists().withMessage("required framework id");
         },
@@ -41,6 +41,6 @@ module.exports = (req) => {
         },
     }
 
-    if (frameworkValidator[req.params.method]) frameworkValidator[req.params.method]();
+    if (draftFrameworkValidator[req.params.method]) draftFrameworkValidator[req.params.method]();
 
 };

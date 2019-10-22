@@ -1,10 +1,10 @@
-module.exports = class Questions extends Abstract {
+module.exports = class DraftQuestions extends Abstract {
   constructor() {
-    super(questionsSchema);
+    super(draftQuestionsSchema);
   }
 
   static get name() {
-    return "questions";
+    return "draftQuestions";
   }
 
     /**
