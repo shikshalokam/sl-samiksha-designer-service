@@ -23,7 +23,7 @@ module.exports = class DraftCriteria extends Abstract {
   /**
 * @api {post} /assessment-design/api/v1/criteria/list list criteria
 * @apiVersion 1.0.0
-* @apiName List criteria
+* @apiName List criteria by userId
 * @apiGroup Criteria
 * @apiSampleRequest /assessment-design/api/v1/criteria/list
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
@@ -139,7 +139,7 @@ module.exports = class DraftCriteria extends Abstract {
 * @apiUse errorBody
   */
 
-  insert(req) {
+  create(req) {
 
     return new Promise(async (resolve, reject) => {
 
@@ -397,6 +397,8 @@ module.exports = class DraftCriteria extends Abstract {
 
     })
   }
+
+
 
 };
 
