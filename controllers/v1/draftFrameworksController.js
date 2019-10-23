@@ -128,10 +128,9 @@ module.exports = class DraftFrameworks extends Abstract {
         })
 
       } catch (error) {
-        reject({
+        return reject({
           status: 500,
-          message: error,
-          errorObject: error
+          message: error
         })
       }
     })
@@ -170,8 +169,7 @@ module.exports = class DraftFrameworks extends Abstract {
       } catch (error) {
         reject({
           status: 500,
-          message: error,
-          errorObject: error
+          message: error
         })
       }
 
@@ -209,14 +207,13 @@ module.exports = class DraftFrameworks extends Abstract {
         return resolve({
           status: 200,
           message: "Framework updated successfully.",
-          result: frameworkDocument.updatedData
+          result: frameworkDocument
         });
       }
       catch (error) {
         reject({
-          status: 500,
-          message: error,
-          errorObject: error
+          status: error.status,
+          message: error.message
         })
       }
     })
@@ -249,9 +246,8 @@ module.exports = class DraftFrameworks extends Abstract {
         })
       } catch (error) {
         reject({
-          status: 500,
-          message: error,
-          errorObject: error
+          status: error.status,
+          message: error.message
         })
       }
     })

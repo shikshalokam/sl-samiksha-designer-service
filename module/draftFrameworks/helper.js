@@ -1,46 +1,27 @@
 const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
 const sectionsHelper = require(ROOT_PATH + "/module/draftSections/helper");
 module.exports = class draftFrameworksHelper {
-    static mandatoryField() {
-        let mandatoryFields = {
-            author: "",
-            resourceType: ["Assessment Framework"],
-            language: ["English"],
-            keywords: ["Framework", "Assessment"],
-            concepts: [],
-            createdFor: [],
-            isRubricDriven: true,
-            isDeleted: false,
-            parentId: null,
-        }
-
-        return mandatoryFields
-    }
 
     static create(frameworkData, userId) {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let queryObject = {
-                    externalId: frameworkData.externalId,
-                    name: frameworkData.name,
-                    description: frameworkData.description,
-                    entityType: frameworkData.entityType
-                };
+                let frameworkDocument;
 
-                let frameworkMandatoryFields = this.mandatoryField()
+                if (!_.isEmpty(frameworkData)) {
+                    let queryObject = {
+                        externalId: frameworkData.externalId,
+                        name: frameworkData.name,
+                        description: frameworkData.description
+                    };
 
-                let frameworkDocument = await database.models.draftFrameworks.findOne(queryObject, { _id: 1 }).lean()
+                    frameworkDocument = await database.models.draftFrameworks.findOne(queryObject, { _id: 1 }).lean()
 
-                if (frameworkDocument) {
-                    throw "Framework already exists"
+                    if (frameworkDocument) {
+                        throw "Framework already exists"
+                    }
                 }
 
-                Object.keys(frameworkMandatoryFields).forEach(eachMandatoryField => {
-                    if (frameworkData[eachMandatoryField] === undefined) {
-                        frameworkData[eachMandatoryField] = frameworkMandatoryFields[eachMandatoryField]
-                    }
-                })
 
                 frameworkData["userId"] = userId
 
@@ -70,13 +51,8 @@ module.exports = class draftFrameworksHelper {
                 })
 
                 return resolve(frameworkDocument);
-            }
-            catch (error) {
-                reject({
-                    status: 500,
-                    message: error,
-                    errorObject: error
-                })
+            } catch (error) {
+                return reject(error)
             }
         })
     }
@@ -88,25 +64,19 @@ module.exports = class draftFrameworksHelper {
                 let frameworkDocument = await database.models.draftFrameworks.findOne(findQuery, { _id: 1 }).lean()
 
                 if (!frameworkDocument) {
-                    return resolve({
+                    throw {
                         status: 404,
                         message: "Framework doesnot exist"
-                    });
+                    }
                 }
 
                 frameworkDocument = await database.models.draftFrameworks.findOneAndUpdate({
                     _id: frameworkDocument._id
                 }, { $set: updateData }, { new: true }).lean()
 
-                return resolve({
-                    updatedData: frameworkDocument
-                });
+                return resolve(frameworkDocument);
             } catch (error) {
-                reject({
-                    status: 500,
-                    message: error,
-                    errorObject: error
-                })
+                reject(error)
             }
         })
     }
