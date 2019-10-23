@@ -9,7 +9,6 @@ module.exports = class DraftFrameworks extends Abstract {
     return "draftFrameworks";
   }
 
-
   /**
 * @api {post} /assessment-design/api/v1/draftFrameworks/create create Frameworks
 * @apiVersion 1.0.0
@@ -83,7 +82,7 @@ module.exports = class DraftFrameworks extends Abstract {
 
         return resolve({
           status: 200,
-          message: "Framework inserted successfully.",
+          message: "Framework created successfully.",
           result: frameworkDocument
         });
       }
@@ -113,10 +112,9 @@ module.exports = class DraftFrameworks extends Abstract {
 
       try {
 
-        console.log(req.userDetails.id)
-
         let frameworkDocument = await database.models.draftFrameworks.find({
-          userId: req.userDetails.id
+          userId: req.userDetails.id,
+          isDeleted: false
         }, { _id: 1, externalId: 1, name: 1, description: 1 }).lean()
 
         if (frameworkDocument.length < 1) {
@@ -157,7 +155,7 @@ module.exports = class DraftFrameworks extends Abstract {
         let draftFrameworkDocument = await database.models.draftFrameworks.findOne({
           _id: req.params._id,
           userId: req.userDetails.id
-        }, { _id: 1, externalId: 1, name: 1, description: 1 }).lean()
+        }).lean()
 
         if (!draftFrameworkDocument) {
           throw { status: 404, message: "No framework found" };
@@ -200,12 +198,18 @@ module.exports = class DraftFrameworks extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let frameworkDocument = await frameworksHelper.update(req.body, req.userDetails.id, req.params._id)
+        let findQuery = {
+          _id: req.params._id,
+          userId: req.userDetails.id
+        }
+
+
+        let frameworkDocument = await frameworksHelper.update(findQuery, req.body)
 
         return resolve({
           status: 200,
           message: "Framework updated successfully.",
-          result: frameworkDocument
+          result: frameworkDocument.updatedData
         });
       }
       catch (error) {
@@ -232,10 +236,12 @@ module.exports = class DraftFrameworks extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        await database.models.draftFrameworks.deleteOne({
+        let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails._id
-        })
+          userId: req.userDetails.id
+        }
+
+        await frameworksHelper.update(findQuery, { isDeleted: true })
 
         return resolve({
           message: "deleted successfully",

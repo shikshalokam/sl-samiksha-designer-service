@@ -83,14 +83,11 @@ module.exports = class draftFrameworksHelper {
         })
     }
 
-    static update(frameworkData, userId, frameworkId) {
+    static update(findQuery, updateData) {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let frameworkDocument = await database.models.draftFrameworks.findOne({
-                    _id: frameworkId,
-                    userId: userId
-                }, { themes: 0 }).lean()
+                let frameworkDocument = await database.models.draftFrameworks.findOne(findQuery, { _id: 1 }).lean()
 
                 if (!frameworkDocument) {
                     return resolve({
@@ -101,15 +98,12 @@ module.exports = class draftFrameworksHelper {
 
                 frameworkDocument = await database.models.draftFrameworks.findOneAndUpdate({
                     _id: frameworkDocument._id
-                }, { $set: frameworkData }, { new: true })
+                }, { $set: updateData }, { new: true }).lean()
 
                 return resolve({
-                    status: 200,
-                    message: "Framework updated successfully.",
-                    result: frameworkDocument
+                    updatedData: frameworkDocument
                 });
-            }
-            catch (error) {
+            } catch (error) {
                 reject({
                     status: 500,
                     message: error,
