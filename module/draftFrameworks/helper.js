@@ -44,30 +44,6 @@ module.exports = class draftFrameworksHelper {
 
                 frameworkData["userId"] = userId
 
-                // frameworkData.themes = {
-                //     "type": "theme",
-                //     "label": "theme",
-                //     "externalId": "DEFAULT",
-                //     "name": "default theme",
-                //     "weightage": 100,
-                //     "children": [
-                //         {
-                //             "type": "subtheme",
-                //             "label": "subtheme",
-                //             "externalId": "DEFAULT",
-                //             "name": "Default subtheme",
-                //             "weightage": 100,
-                //             "criteria": [
-                //                 {
-                //                     "criteriaId": null,
-                //                     "weightage": 100
-                //                 }
-                //             ]
-                //         }
-                //     ]
-                // }
-
-
                 frameworkData.isDeleted = false
 
                 frameworkDocument = await database.models.draftFrameworks.create(frameworkData)
@@ -83,16 +59,16 @@ module.exports = class draftFrameworksHelper {
                     "isSubmitted": false,
                     "modeOfCollection": "default",
                     "canBeNotApplicable": false,
-                    "userId":userId
+                    "userId": userId
                 }
 
                 await draftECMHelper.create(draftECMData)
-                
+
                 await sectionsHelper.create({
                     "frameworkId": frameworkDocument._id,
                     code: "DEFAULT",
                     name: "default",
-                    "userId":userId
+                    "userId": userId
                 })
 
                 return resolve(frameworkDocument);
@@ -107,29 +83,25 @@ module.exports = class draftFrameworksHelper {
         })
     }
 
-    static update(frameworkData, userId, frameworkExternalId) {
+    static update(frameworkData, userId, frameworkId) {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let queryObject = {
-                    externalId: frameworkExternalId
-                };
-
-                let frameworkDocument = await database.models.draftFrameworks.findOne(queryObject, { themes: 0 }).lean()
+                let frameworkDocument = await database.models.draftFrameworks.findOne({
+                    _id: frameworkId,
+                    userId: userId
+                }, { themes: 0 }).lean()
 
                 if (!frameworkDocument) {
                     return resolve({
-                        status: 400,
+                        status: 404,
                         message: "Framework doesnot exist"
                     });
                 }
 
-                let updateObject = _.merge(_.omit(frameworkDocument, "createdAt"), frameworkData)
-                updateObject.updatedBy = userId
-
                 frameworkDocument = await database.models.draftFrameworks.findOneAndUpdate({
                     _id: frameworkDocument._id
-                }, updateObject, { new: true })
+                }, { $set: frameworkData }, { new: true })
 
                 return resolve({
                     status: 200,
