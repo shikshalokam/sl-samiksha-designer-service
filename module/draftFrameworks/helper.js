@@ -44,8 +44,6 @@ module.exports = class draftFrameworksHelper {
 
                 frameworkData["userId"] = userId
 
-                frameworkData.isDeleted = false
-
                 frameworkDocument = await database.models.draftFrameworks.create(frameworkData)
 
                 let draftECMData = {
