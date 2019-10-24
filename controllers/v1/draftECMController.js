@@ -58,11 +58,11 @@ module.exports = class DraftECM extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/list/{draftFrameworkId} list draftECM
+* @api {post} /assessment-design/api/v1/draftECM/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit list draftECM
 * @apiVersion 1.0.0
 * @apiName list draftECM
 * @apiGroup Draft Ecm
-* @apiSampleRequest /assessment-design/api/v1/draftECM/list/5daec85d58e6e53dbdd84e0e
+* @apiSampleRequest /assessment-design/api/v1/draftECM/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
 * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiUse successBody
 * @apiUse errorBody

@@ -97,11 +97,11 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftFrameworks/list list frameworks
+* @api {post} /assessment-design/api/v1/draftFrameworks/list?search=:search&page=:page&limit=:limit list frameworks
 * @apiVersion 1.0.0
 * @apiName List frameworks by userId
 * @apiGroup Draft Frameworks
-* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/list
+* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/list?search=a&page=1&limit=10
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody

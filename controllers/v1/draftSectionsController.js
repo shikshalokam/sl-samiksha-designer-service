@@ -52,13 +52,13 @@ module.exports = class DraftSections extends Abstract {
 
 
   /**
- * @api {post} /assessment-design/api/v1/draftSections/list/{draftFrameworkId} list draftSections
+ * @api {post} /assessment-design/api/v1/draftSections/list/{draftFrameworkId}?search=:searchText&page=:page&limit=:limit list draftSections
  * @apiVersion 1.0.0
  * @apiName list draftSections
  * @apiGroup Draft Sections
  * @apiSampleRequest /assessment-design/api/v1/draftSections/list
  * @apiHeader {String} X-authenticated-user-token Authenticity token  
- * @apiSampleRequest /assessment-design/api/v1/draftSections/list/5daec85d58e6e53dbdd84e0e
+ * @apiSampleRequest /assessment-design/api/v1/draftSections/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
  * @apiUse successBody
  * @apiUse errorBody
  */
