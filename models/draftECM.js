@@ -21,7 +21,7 @@ module.exports = {
       type: String,
       required: true
     },
-    frameworkId: {
+    draftFrameworkId: {
       type: "ObjectId",
       required: true
     },
@@ -42,7 +42,7 @@ module.exports = {
       default: "onfield"
     },
     isDeleted: {
-      type: String,
+      type: Boolean,
       default: false
     },
     canBeNotApplicable: {

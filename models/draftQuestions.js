@@ -61,12 +61,12 @@ module.exports = {
     createdBy: {
       type: String,
       default: "",
-      required: true
+      // required: true
     },
     updatedBy: {
       type: String,
       default: "",
-      required: true
+      // required: true
     },
     options: {
       type: Array,
@@ -168,5 +168,9 @@ module.exports = {
       type: String,
       required: true
     },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    }
   }
 };

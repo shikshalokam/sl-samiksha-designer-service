@@ -112,19 +112,27 @@ module.exports = class DraftFrameworks extends Abstract {
 
       try {
 
-        let frameworkDocument = await database.models.draftFrameworks.find({
-          userId: req.userDetails.id,
-          isDeleted: false
-        }, { _id: 1, externalId: 1, name: 1, description: 1 }).lean()
+        let matchQuery = {}
 
-        if (frameworkDocument.length < 1) {
-          throw { status: 404, message: "No framework found" };
+        matchQuery["$match"] = {}
+        matchQuery["$match"]["isDeleted"] = false
+        matchQuery["$match"]["userId"] = req.userDetails.id
+
+        matchQuery["$match"]["$or"] = []
+        matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') }, { "externalId": new RegExp(req.searchText, 'i') })
+
+        let frameworksList = await frameworksHelper.list(matchQuery, req.pageSize, req.pageNo)
+
+        let messageData = "Frameworks fetched successfully";
+
+        if (!frameworksList[0].count) {
+          frameworksList[0].count = 0
+          messageData = "No framework found"
         }
 
         return resolve({
-          message: "list fetched successfully",
-          status: 200,
-          result: frameworkDocument
+          result: frameworksList[0],
+          message: messageData
         })
 
       } catch (error) {
@@ -168,8 +176,8 @@ module.exports = class DraftFrameworks extends Abstract {
 
       } catch (error) {
         reject({
-          status: 500,
-          message: error
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
 
@@ -201,7 +209,6 @@ module.exports = class DraftFrameworks extends Abstract {
           userId: req.userDetails.id
         }
 
-
         let frameworkDocument = await frameworksHelper.update(findQuery, req.body)
 
         return resolve({
@@ -212,8 +219,8 @@ module.exports = class DraftFrameworks extends Abstract {
       }
       catch (error) {
         reject({
-          status: error.status,
-          message: error.message
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
     })
@@ -246,8 +253,8 @@ module.exports = class DraftFrameworks extends Abstract {
         })
       } catch (error) {
         reject({
-          status: error.status,
-          message: error.message
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
     })

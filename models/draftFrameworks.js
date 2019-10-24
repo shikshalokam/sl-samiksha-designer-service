@@ -4,21 +4,21 @@ module.exports = {
     externalId: {
       type: String,
       default: "SAMPLE-EXTERNAL-ID",
-      required: true
+      // required: true
     },
     name: {
       type: String,
       default: "DRAFT FRAMEWORK",
-      required: true
+      // required: true
     },
     description: {
       type: String,
       default: "SAMPLE DESCRIPTION",
-      required: true
+      // required: true
     },
     userId: {
-      type:String,
-      required:true
+      type: String,
+      // required: true
     },
     resourceType: {
       type: Array,
@@ -73,7 +73,7 @@ module.exports = {
         "externalId": "DEFAULT-THEME",
         "name": "DEFAULT-THEME",
         "weightage": 100,
-        "children":[]
+        "children": []
       }
       ]
     },
@@ -90,7 +90,7 @@ module.exports = {
       default: "SYSTEM"
     },
     isDeleted: {
-      type: String,
+      type: Boolean,
       default: false
     },
     createdBy: {

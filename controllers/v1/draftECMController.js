@@ -22,7 +22,7 @@ module.exports = class DraftECM extends Abstract {
   "tip": "Some tip for the criteria.",
   "name": "Learning Walk",
   "description": "DRAFT-ECM-DESCRIPTION",
-  "frameworkId":ObjectId("5dafe18d3dac8566cbc62608"),
+  "draftFrameworkId":ObjectId("5dafe18d3dac8566cbc62608"),
   "isSubmitted": "false",
   "modeOfCollection": "onfield",
   "canBeNotApplicable": false,
@@ -58,11 +58,11 @@ module.exports = class DraftECM extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/list list draftECM
+* @api {post} /assessment-design/api/v1/draftECM/list/{draftFrameworkId} list draftECM
 * @apiVersion 1.0.0
 * @apiName list draftECM
 * @apiGroup Draft Ecm
-* @apiSampleRequest /assessment-design/api/v1/draftECM/list
+* @apiSampleRequest /assessment-design/api/v1/draftECM/list/5daec85d58e6e53dbdd84e0e
 * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiUse successBody
 * @apiUse errorBody
@@ -72,25 +72,35 @@ module.exports = class DraftECM extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftEcmDocument = await database.models.draftECM.find({
-          userId: req.userDetails.id,
-          isDeleted: false
-        }, { _id: 1, externalId: 1, name: 1, description: 1 }).lean()
 
-        if (draftEcmDocument.length < 1) {
-          throw { status: 404, message: "No draft ecm found" };
+        let matchQuery = {}
+
+        matchQuery["$match"] = {}
+        matchQuery["$match"]["draftFrameworkId"] = ObjectId(req.params._id)
+        matchQuery["$match"]["isDeleted"] = false
+        matchQuery["$match"]["userId"] = req.userDetails.id
+
+        matchQuery["$match"]["$or"] = []
+        matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') }, { "code": new RegExp(req.searchText, 'i') })
+
+        let draftEcmList = await draftECMHelper.list(matchQuery, req.pageSize, req.pageNo)
+
+        let messageData = "Draft Ecm fetched successfully";
+
+        if (!draftEcmList[0].count) {
+          draftEcmList[0].count = 0
+          messageData = "No draft ecm found"
         }
 
         return resolve({
-          message: "Draft ECM listed successfully",
-          status: 200,
-          result: draftEcmDocument
+          result: draftEcmList[0],
+          message: messageData
         })
 
       } catch (error) {
         return reject({
-          status: 500,
-          message: error
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
     })
@@ -128,8 +138,8 @@ module.exports = class DraftECM extends Abstract {
 
       } catch (error) {
         reject({
-          status: 500,
-          message: error
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
     })
@@ -171,8 +181,8 @@ module.exports = class DraftECM extends Abstract {
       }
       catch (error) {
         reject({
-          status: error.status,
-          message: error.message
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
     })
@@ -205,8 +215,8 @@ module.exports = class DraftECM extends Abstract {
         })
       } catch (error) {
         reject({
-          status: error.status,
-          message: error.message
+          status: error.status || 500,
+          message: error.message || "Oops! something went wrong."
         })
       }
     })
