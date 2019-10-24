@@ -28,7 +28,7 @@ module.exports = class draftFrameworksHelper {
                 frameworkDocument = await database.models.draftFrameworks.create(frameworkData)
 
                 let draftECMData = {
-                    "frameworkId": frameworkDocument._id,
+                    "draftFrameworkId": frameworkDocument._id,
                     "externalId": "DEFAULT",
                     "tip": "default tip",
                     "name": "default name",
@@ -44,7 +44,7 @@ module.exports = class draftFrameworksHelper {
                 await draftECMHelper.create(draftECMData)
 
                 await sectionsHelper.create({
-                    "frameworkId": frameworkDocument._id,
+                    "draftFrameworkId": frameworkDocument._id,
                     code: "DEFAULT",
                     name: "default",
                     "userId": userId
@@ -77,6 +77,52 @@ module.exports = class draftFrameworksHelper {
                 return resolve(frameworkDocument);
             } catch (error) {
                 reject(error)
+            }
+        })
+    }
+
+    static list(filteredData, pageSize, pageNo) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftFrameworkDocument = []
+
+                let projection1 = {}
+                projection1["$project"] = {
+                    _id: 1,
+                    externalId: 1,
+                    name: 1,
+                    description: 1
+                };
+
+                let facetQuery = {}
+                facetQuery["$facet"] = {}
+
+                facetQuery["$facet"]["totalCount"] = [
+                    { "$count": "count" }
+                ]
+
+                facetQuery["$facet"]["data"] = [
+                    { $skip: pageSize * (pageNo - 1) },
+                    { $limit: pageSize }
+                ]
+
+                let projection2 = {}
+                projection2["$project"] = {
+                    "data": 1,
+                    "count": {
+                        $arrayElemAt: ["$totalCount.count", 0]
+                    }
+                }
+
+                draftFrameworkDocument.push(filteredData, projection1, facetQuery, projection2)
+
+                let draftFrameworkDocuments = await database.models.draftFrameworks.aggregate(draftFrameworkDocument)
+
+                return resolve(draftFrameworkDocuments)
+
+            } catch (error) {
+                return reject(error);
             }
         })
     }

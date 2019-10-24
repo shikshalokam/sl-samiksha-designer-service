@@ -1,9 +1,9 @@
-module.exports = class draftECMHelper {
-    static create(draftECMData) {
+module.exports = class draftCriteriaHelper {
+    static create(draftCriteriaData) {
         return new Promise(async (resolve, reject) => {
             try {
-                let draftECMDocument = await database.models.draftECM.create(draftECMData)
-                return resolve(draftECMDocument)
+                let draftCriteriaDocument = await database.models.draftCriteria.create(draftCriteriaData)
+                return resolve(draftCriteriaDocument)
             } catch (error) {
                 return reject(error)
             }
@@ -14,20 +14,20 @@ module.exports = class draftECMHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let draftEcmDocument = await database.models.draftECM.findOne(findQuery, { _id: 1 }).lean()
+                let draftCriteriaDocument = await database.models.draftCriteria.findOne(findQuery, { _id: 1 }).lean()
 
-                if (!draftEcmDocument) {
+                if (!draftCriteriaDocument) {
                     throw {
                         status: 404,
-                        message: "Draft Ecm doesnot exist"
+                        message: "Draft Criteria doesnot exist"
                     }
                 }
 
-                draftEcmDocument = await database.models.draftECM.findOneAndUpdate({
-                    _id: draftEcmDocument._id
+                draftCriteriaDocument = await database.models.draftCriteria.findOneAndUpdate({
+                    _id: draftCriteriaDocument._id
                 }, { $set: updateData }, { new: true }).lean()
 
-                return resolve(draftEcmDocument);
+                return resolve(draftCriteriaDocument);
             } catch (error) {
                 reject(error)
             }
@@ -38,7 +38,7 @@ module.exports = class draftECMHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let draftEcmDocument = []
+                let draftCriteriaDocument = []
 
                 let projection1 = {}
                 projection1["$project"] = {
@@ -65,11 +65,11 @@ module.exports = class draftECMHelper {
                     }
                 }
 
-                draftEcmDocument.push(filteredData, projection1, facetQuery, projection2)
+                draftCriteriaDocument.push(filteredData, projection1, facetQuery, projection2)
 
-                let draftEcmDocuments = await database.models.draftECM.aggregate(draftEcmDocument)
+                let draftCriteriaDocuments = await database.models.draftCriteria.aggregate(draftCriteriaDocument)
 
-                return resolve(draftEcmDocuments)
+                return resolve(draftCriteriaDocuments)
 
             } catch (error) {
                 return reject(error);

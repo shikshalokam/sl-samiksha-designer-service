@@ -29,7 +29,7 @@ module.exports = {
     score: {
       type: String,
       default: "",
-      required: true
+      // required: true
     },
     remarks: {
       type: String,
@@ -107,9 +107,17 @@ module.exports = {
       default: "auto",
       required: true
     },
-    frameworkCriteriaId: {
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
+    // frameworkCriteriaId: {
+    //   type: "ObjectId",
+    //   default: "",
+    //   required: true
+    // },
+    draftFrameworkId: {
       type: "ObjectId",
-      default: "",
       required: true
     }
   }

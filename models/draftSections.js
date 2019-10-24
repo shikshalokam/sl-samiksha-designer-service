@@ -13,9 +13,13 @@ module.exports = {
       type: String,
       required: true
     },
-    frameworkId: {
+    draftFrameworkId: {
       type: "ObjectId",
       required: true
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false
     },
   }
 };
