@@ -97,6 +97,14 @@ module.exports = {
       type: String,
       default: "SYSTEM"
     },
+    entityType: {
+      type: String,
+      default: "Default entity type"
+    },
+    entityTypeId: {
+      type: "ObjectId",
+      default: ObjectId("5ce23d633c330302e720e65f")
+    },
     status: {
       type: String,
       default: "draft"
