@@ -99,7 +99,7 @@ module.exports = {
     },
     entityType: {
       type: String,
-      default: "teacher"
+      default: "school"
     },
     entityTypeId: {
       type: "ObjectId",
