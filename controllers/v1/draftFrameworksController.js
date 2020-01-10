@@ -118,23 +118,22 @@ module.exports = class DraftFrameworks extends Abstract {
         matchQuery["$match"]["isDeleted"] = false
         matchQuery["$match"]["userId"] = req.userDetails.id
 
+        if(req.query.listType){
+          matchQuery["$match"]["status"] = req.query.listType;
+        }
+
         matchQuery["$match"]["$or"] = []
         matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') }, { "externalId": new RegExp(req.searchText, 'i') })
-
         let frameworksList = await frameworksHelper.list(matchQuery, req.pageSize, req.pageNo)
-
         let messageData = "Frameworks fetched successfully";
-
         if (!frameworksList[0].count) {
           frameworksList[0].count = 0
           messageData = "No framework found"
         }
-
         return resolve({
           result: frameworksList[0],
           message: messageData
         })
-
       } catch (error) {
         return reject({
           status: 500,
