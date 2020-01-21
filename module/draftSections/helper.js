@@ -76,4 +76,69 @@ module.exports = class draftSectionsHelper {
             }
         })
     }
+
+    static draftSectionDocument(findQuery = "all", projection = "all") {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let filteredData = {};
+
+                if( findQuery !== "all" ) {
+                    filteredData = findQuery;
+                }
+
+                let projectedData = {};
+
+                if( projection !== "all" ) {
+                    projectedData = projection;
+                }
+                let draftSectionDocuments = await database.models.draftSections.find(
+                    filteredData,
+                    projectedData
+                ).lean();
+
+                return resolve(draftSectionDocuments);
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
+
+    /**
+    * Validate draft sections.
+    * @method
+    * @name validate
+    * @param {Object} filteredData  
+    * @param {String} filteredData.userId - logged in user id.
+    * @param {String} filteredData.status - status of draft sections.
+    * @param {String} filteredData._id - draft sections id.
+    * @returns {Object} draft sections validation status.
+    */
+
+    static validate(filteredData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftSectionDocuments = 
+                await this.draftSectionDocument(filteredData,{
+                    _id : 1,
+                    code : 1
+                });
+
+                if( !draftSectionDocuments[0]) {
+                    throw {
+                        message : 
+                        messageConstants.apiResponses.DRAFT_SECTION_NOT_FOUND
+                    };
+                } 
+
+                let validate = true;
+
+                return resolve(validate);
+
+            } catch (error) {
+                return reject(error);
+            }
+        })
+    }
 }

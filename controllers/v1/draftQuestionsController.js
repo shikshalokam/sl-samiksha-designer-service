@@ -196,6 +196,8 @@ module.exports = class DraftQuestions extends Abstract {
           userId: req.userDetails.id
         }
 
+        req.body["updatedBy"] = req.userDetails.id;
+
         let draftQuestionDocument = await draftQuestionHelper.update(findQuery, req.body)
 
         return resolve({

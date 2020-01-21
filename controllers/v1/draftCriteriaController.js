@@ -212,6 +212,8 @@ module.exports = class DraftCriteria extends Abstract {
           userId: req.userDetails.id
         }
 
+        req.body["updatedBy"] = req.userDetails.id;
+
         let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, req.body)
 
         return resolve({

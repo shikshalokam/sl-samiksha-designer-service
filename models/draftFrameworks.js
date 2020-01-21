@@ -3,22 +3,18 @@ module.exports = {
   schema: {
     externalId: {
       type: String,
-      default: "SAMPLE-EXTERNAL-ID",
-      // required: true
+      default: "SAMPLE-EXTERNAL-ID"
     },
     name: {
       type: String,
-      default: "DRAFT FRAMEWORK",
-      // required: true
+      default: "DRAFT FRAMEWORK"
     },
     description: {
       type: String,
-      default: "SAMPLE DESCRIPTION",
-      // required: true
+      default: "SAMPLE DESCRIPTION"
     },
     userId: {
-      type: String,
-      // required: true
+      type: String
     },
     resourceType: {
       type: Array,
@@ -70,10 +66,10 @@ module.exports = {
       default: [{
         "type": "DEFAULT-THEME",
         "label": "DEFAULT-THEME",
-        "externalId": "DEFAULT-THEME",
+        "externalId": "DT",
         "name": "DEFAULT-THEME",
         "weightage": 100,
-        "children": []
+        "criteria": []
       }
       ]
     },
@@ -108,6 +104,14 @@ module.exports = {
     status: {
       type: String,
       default: "draft"
+    },
+    updatedBy: {
+      type: String,
+      default: ""
+    },
+    comments: {
+      type: String,
+      default: ""
     }
   }
 };

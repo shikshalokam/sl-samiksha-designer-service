@@ -110,7 +110,7 @@ module.exports = {
     },
     instanceIdentifier: {
       type: String,
-      default: "DRAFT-INSTANCE-IDENTIFIER"
+      default: ""
     },
     noOfInstances: {
       type: Number,
@@ -171,6 +171,18 @@ module.exports = {
     isDeleted: {
       type: Boolean,
       default: false
-    }
+    },
+    updatedBy: {
+      type: String,
+      default: ""
+    },
+    comments: {
+      type: String,
+      default: ""
+    },
+    status: {
+      type: String,
+      default: "draft"
+    },
   }
 };
