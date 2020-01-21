@@ -27,6 +27,18 @@ module.exports = function () {
     }
   });
 
+   // Load all message constants
+   global.messageConstants = {};
+    
+   fs.readdirSync(ROOT_PATH + "/generics/messageConstants")
+   .forEach(function (file) {
+     if (file.match(/\.js$/) !== null) {
+       let name = file.replace('.js', '');
+       global.messageConstants[name] = 
+       require(ROOT_PATH + "/generics/messageConstants/" + file);
+     }
+   });
+
   //load base v1 controllers
   fs.readdirSync(ROOT_PATH + '/controllers/v1/').forEach(function (file) {
     if (file.match(/\.js$/) !== null) {

@@ -162,6 +162,8 @@ module.exports = class DraftSections extends Abstract {
           userId: req.userDetails.id
         }
 
+        req.body["updatedBy"] = req.userDetails.id;
+
         let draftECMDocument = await draftSectionsHelper.update(findQuery, req.body)
 
         return resolve({
