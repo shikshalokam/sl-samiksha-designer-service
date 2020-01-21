@@ -48,6 +48,18 @@ module.exports = {
     canBeNotApplicable: {
       type: Boolean,
       default: false
-    }
+    },
+    updatedBy: {
+      type: String,
+      default: ""
+    },
+    comments: {
+      type: String,
+      default: ""
+    },
+    status: {
+      type: String,
+      default: "draft"
+    },
   }
 };

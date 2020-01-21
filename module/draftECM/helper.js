@@ -10,6 +10,33 @@ module.exports = class draftECMHelper {
         })
     }
 
+    static draftEcmDocument(findQuery = "all", projection = "all") {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let filteredData = {};
+
+                if( findQuery !== "all" ) {
+                    filteredData = findQuery;
+                }
+
+                let projectedData = {};
+
+                if( projection !== "all" ) {
+                    projectedData = projection;
+                }
+                let draftEcmDocuments = await database.models.draftECM.find(
+                    filteredData,
+                    projectedData
+                ).lean();
+
+                return resolve(draftEcmDocuments);
+            } catch (error) {
+                reject(error);
+            }
+        })
+    }
+
     static update(findQuery, updateData) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -70,6 +97,44 @@ module.exports = class draftECMHelper {
                 let draftEcmDocuments = await database.models.draftECM.aggregate(draftEcmDocument)
 
                 return resolve(draftEcmDocuments)
+
+            } catch (error) {
+                return reject(error);
+            }
+        })
+    }
+
+    /**
+    * Validate draft ecm.
+    * @method
+    * @name validate
+    * @param {Object} filteredData  
+    * @param {String} filteredData.userId - logged in user id.
+    * @param {String} filteredData.status - status of draft ecm.
+    * @param {String} filteredData._id - draft ecm id.
+    * @returns {Object} draft ecm validation status.
+    */
+
+    static validate(filteredData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftEcmDocuments = 
+                await this.draftEcmDocument(filteredData,{
+                    _id : 1,
+                    code : 1
+                });
+
+                if( !draftEcmDocuments[0]) {
+                    throw {
+                        message : 
+                        messageConstants.apiResponses.DRAFT_ECM_NOT_FOUND
+                    }
+                } 
+
+                let validate = true;
+
+                return resolve(validate);
 
             } catch (error) {
                 return reject(error);

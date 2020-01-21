@@ -1,3 +1,12 @@
+/**
+ * name : draftFrameworks.js
+ * author : Aman
+ * created-date : 22-Nov-2018
+ * Description : Draft frameworks.
+ */
+
+
+// Dependencies.
 const frameworksHelper = require(ROOT_PATH + "/module/draftFrameworks/helper");
 
 module.exports = class DraftFrameworks extends Abstract {
@@ -118,7 +127,7 @@ module.exports = class DraftFrameworks extends Abstract {
         matchQuery["$match"]["isDeleted"] = false
         matchQuery["$match"]["userId"] = req.userDetails.id
 
-        if(req.query.listType){
+        if (req.query.listType) {
           matchQuery["$match"]["status"] = req.query.listType;
         }
 
@@ -208,7 +217,12 @@ module.exports = class DraftFrameworks extends Abstract {
           userId: req.userDetails.id
         }
 
-        let frameworkDocument = await frameworksHelper.update(findQuery, req.body)
+        req.body["updatedBy"] = req.userDetails.id;
+
+        let frameworkDocument = await frameworksHelper.update(
+          findQuery, 
+          req.body
+        )
 
         return resolve({
           status: 200,
@@ -258,4 +272,5 @@ module.exports = class DraftFrameworks extends Abstract {
       }
     })
   }
+ 
 };

@@ -126,4 +126,83 @@ module.exports = class draftFrameworksHelper {
             }
         })
     }
+
+    static draftFrameworksDocument(findQuery = "all", projection = "all") {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let filteredData = {};
+
+                if( findQuery !== "all" ) {
+                    filteredData = findQuery;
+                }
+
+                let projectedData = {};
+
+                if( projection !== "all" ) {
+                    projectedData = projection;
+                }
+                let draftFrameworkDocuments = await database.models.draftFrameworks.find(
+                    filteredData,
+                    projectedData
+                ).lean()
+
+                return resolve(draftFrameworkDocuments);
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+     /**
+    * Validate draft framework.
+    * @method
+    * @name validate
+    * @param {Object} filteredData  
+    * @param {String} filteredData.userId - logged in user id.
+    * @param {String} filteredData.status - status of draft framework.
+    * @param {String} filteredData._id - draft framework id.
+    * @returns {Object} draft framework validation status.
+    */
+
+    static validate(filteredData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftFrameworkDocuments = 
+                await this.draftFrameworksDocument(filteredData,{
+                    _id : 1,
+                    externalId :1
+                });
+
+                if( !draftFrameworkDocuments[0]) {
+                    throw {
+                        message : 
+                        messageConstants.apiResponses.DRAFT_FRAMEWORK_NOT_FOUND
+                    }
+                } 
+
+                let uniqueDraftFramework = 
+                await this.draftFrameworksDocument({
+                    externalId : draftFrameworkDocuments[0].externalId
+                },{
+                    _id : 1
+                });
+
+                if( uniqueDraftFramework.length > 1 ) {
+                    throw {
+                        message : 
+                        messageConstants.apiResponses.UNIQUE_DRAFT_FRAMEWORK_EXTERNAL_ID
+                    }
+                }
+
+                let validate = true;
+
+                return resolve(validate);
+
+            } catch (error) {
+                return reject(error);
+            }
+        })
+    }
 }
