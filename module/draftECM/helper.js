@@ -141,4 +141,76 @@ module.exports = class draftECMHelper {
             }
         })
     }
+
+      /**
+    * Publish draft ecm.
+    * @method
+    * @name publish
+    * @param {Object} frameworkData  
+    * @param {String} filteredData.userId - logged in user id.
+    * @param {String} filteredData.status - status of draft ecm.
+    * @param {String} filteredData.draftFrameworkId - draft framework id.
+    * @returns {Object} evidencesMethod and ecmInternalIdsToExternalIds.
+    */
+
+   static publish(frameworkData) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let draftEcmDocuments = 
+            await this.draftEcmDocument(
+                frameworkData,{
+                "_id" : 1,
+                "tip" : 1,
+                "name" : 1,
+                "description" : 1,
+                "startTime" : 1,
+                "endTime" : 1,
+                "isSubmitted" : 1,
+                "modeOfCollection" : 1,
+                "canBeNotApplicable" : 1,
+                "code": 1 
+            });
+
+            if( !draftEcmDocuments.length > 0 ) {
+                throw {
+                    message : 
+                    messageConstants.apiResponses.DRAFT_ECM_NOT_FOUND
+                }
+            }
+
+            let evidencesMethod = {};
+            let ecmInternalIdsToExternalIds = {};
+            let ecmIds = [];
+            
+            draftEcmDocuments.forEach(draftEcm=>{
+                draftEcm["externalId"] = draftEcm.code;
+                evidencesMethod[draftEcm.code] = _.omit(draftEcm,["_id","code"]);
+                ecmInternalIdsToExternalIds[draftEcm._id] = draftEcm.code;
+                ecmIds.push(draftEcm._id)
+            })
+
+            await database.models.draftECM.updateMany(
+                { 
+                    _id : { $in : ecmIds}
+                },{
+                    $set : {
+                        status : "published"
+                    }
+                }
+            )
+
+
+            return resolve({
+                evidencesMethod : evidencesMethod,
+                ecmInternalIdsToExternalIds : ecmInternalIdsToExternalIds
+            });
+
+        } catch (error) {
+            return reject(error);
+        }
+    })
+   }
+
+
 }

@@ -141,8 +141,8 @@ module.exports = {
       default: "dd-mm-yyyy"
     },
     autoCapture: {
-      type: String,
-      default: "SAMPLE-AUTO-CAPTURE"
+      type: Boolean,
+      default: false
     },
     rubricLevel: {
       type: String,

@@ -141,4 +141,65 @@ module.exports = class draftSectionsHelper {
             }
         })
     }
+
+     /**
+    * Publish draft section.
+    * @method
+    * @name publish
+    * @param {Object} frameworkData  
+    * @param {String} filteredData.userId - logged in user id.
+    * @param {String} filteredData.status - status of draft ecm.
+    * @param {String} filteredData.draftFrameworkId - draft framework id.
+    * @returns {Object} sections.
+    */
+
+   static publish(frameworkData) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let draftSectionsDocuments = 
+            await this.draftSectionDocument(frameworkData,{
+                "_id" : 1,
+                "code" : 1,
+                "name" : 1,
+            });
+
+            if( !draftSectionsDocuments.length > 0 ) {
+                throw {
+                    message : 
+                    messageConstants.apiResponses.DRAFT_SECTION_NOT_FOUND
+                }
+            }
+
+            let sections = {};
+            let sectionInternalIdsToExternalIds = {};
+            let sectionIds = [];
+            
+            draftSectionsDocuments.forEach(draftSection=>{
+                sections[draftSection.code] = draftSection.name;
+                sectionInternalIdsToExternalIds[draftSection._id] = draftSection.code;
+                sectionIds.push(draftSection._id);
+            })
+
+            await database.models.draftSections.updateMany(
+                { 
+                    _id : { $in : sectionIds}
+                },{
+                    $set : {
+                        status : "published"
+                    }
+                }
+            )
+
+
+            return resolve({
+                sections : sections,
+                sectionInternalIdsToExternalIds : sectionInternalIdsToExternalIds
+            });
+
+        } catch (error) {
+            return reject(error);
+        }
+    })
+   }
 }
