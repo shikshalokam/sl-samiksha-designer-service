@@ -2,7 +2,7 @@
  * name : draftValidation.js
  * author : Aman
  * created-date : 21-Jan-2020
- * Description : Validate draft framework,ecm,criteria,section,question.
+ * Description : Validate draft framework,ecm,criteria,section,question provided.
  */
 
 

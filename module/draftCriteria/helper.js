@@ -1,3 +1,6 @@
+let samikshaService = require(ROOT_PATH + "/generics/helpers/samiksha");
+const mongoose = require("mongoose");
+
 module.exports = class draftCriteriaHelper {
     static create(draftCriteriaData) {
         return new Promise(async (resolve, reject) => {
@@ -155,4 +158,72 @@ module.exports = class draftCriteriaHelper {
             }
         })
     }
+
+     /**
+    * Publish draft criteria.
+    * @method
+    * @name publish
+    * @param {Object} filteredData - filtered data for getting draftCriteria id.
+    * @param {String} token - logged in user token.
+    * @param {String} userId - logged in user id.
+    * @returns {Object} returns criterias and draftCriteriaInternalToExternalId
+    */
+
+    static publish(filteredData,token,userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+    
+                let draftCriteriaDocuments = 
+                await this.draftCriteriaDocument(filteredData);
+    
+                if( !draftCriteriaDocuments.length > 0) {
+                    throw {
+                        message : 
+                        messageConstants.apiResponses.DRAFT_CRITERIA_NOT_FOUND
+                    };
+                }
+
+                let draftCriteriaIds = [];
+                let draftCriteriaInternalToExternalId = {}
+
+                let draftCriteriaData = [...draftCriteriaDocuments].map(draftCriteria=>{
+                    draftCriteriaIds.push(draftCriteria._id);
+                    draftCriteria["owner"] = userId;
+                    draftCriteriaInternalToExternalId[draftCriteria._id.toString()] = 
+                    draftCriteria.externalId;
+
+                    return _.omit(
+                        draftCriteria,
+                      [
+                        "_id","draftFrameworkId","status","comments"
+                      ]
+                    )
+                })
+
+                let criterias = 
+                await samikshaService.createCriteria(token,draftCriteriaData);
+
+                criterias = criterias.map(criteria=>{
+                    return {
+                        criteriaId : new mongoose.Types.ObjectId(criteria._id),
+                        "weightage" : 0
+                    }
+                });
+
+                await database.models.draftCriteria.updateMany({
+                    _id : {$in : draftCriteriaIds},
+                    },{
+                    $set:{status : "published"}
+                })
+
+                return resolve({
+                    criterias : criterias,
+                    draftCriteriaInternalToExternalId : draftCriteriaInternalToExternalId
+                });
+    
+            } catch (error) {
+                return reject(error);
+            }
+        })
+        }
 }

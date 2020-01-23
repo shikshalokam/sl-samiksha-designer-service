@@ -1,3 +1,4 @@
+let samikshaService = require(ROOT_PATH + "/generics/helpers/samiksha");
 module.exports = class draftQuestionsHelper {
   static create(draftQuestionData) {
     return new Promise(async (resolve, reject) => {
@@ -77,6 +78,16 @@ module.exports = class draftQuestionsHelper {
     })
   }
 
+
+      /**
+    * Publish draft questions.
+    * @method
+    * @name draftQuestionDocument
+    * @param {Object} [findQuery = "all"] - filtered data for draft questions.
+    * @param {Object} [ projection = "all"] - required field data.
+    * @returns {Array} Array of draft questions.
+    */
+
   static draftQuestionDocument(findQuery = "all", projection = "all") {
     return new Promise(async (resolve, reject) => {
         try {
@@ -95,7 +106,7 @@ module.exports = class draftQuestionsHelper {
             let draftQuestionDocuments = await database.models.draftQuestions.find(
                 filteredData,
                 projectedData
-            ).lean();
+            ).lean()
 
             return resolve(draftQuestionDocuments);
         } catch (error) {
@@ -147,6 +158,124 @@ module.exports = class draftQuestionsHelper {
         }
     })
   }
+
+
+      /**
+    * Publish draft questions.
+    * @method
+    * @name publish
+    * @param {Object} frameworkData  
+    * @param {String} filteredData.userId - logged in user id.
+    * @param {String} filteredData.status - status of draft questions.
+    * @param {String} filteredData.draftFrameworkId - draft framework id.
+    * @returns {Object} evidencesMethod and ecmInternalIdsToExternalIds.
+    */
+
+   static publish(frameworkData,ecm,section,token,criteriaInternalToExternal) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let draftQuestionsDocuments = 
+            await this.draftQuestionDocument(frameworkData);
+
+
+            if( !draftQuestionsDocuments.length > 0 ) {
+                throw {
+                    message : 
+                    messageConstants.apiResponses.DRAFT_QUESTION_NOT_FOUND
+                }
+            }
+
+            let draftQuestionsData = [...draftQuestionsDocuments].map(draftQuestion=>{
+            return _.omit(
+              draftQuestion,
+              [
+                "_id",
+                "draftFrameworkId",
+                "draftCriteriaId",
+                "draftEvidenceMethodId",
+                "draftSectionId"
+              ]
+            )
+           })
+
+            let createQuestions = await samikshaService.createQuestions(token,draftQuestionsData);
+
+            let questionExternalIdToInternal = createQuestions.reduce((ac, question) => ({
+              ...ac, [question.externalId]: {
+                _id : question._id
+              },
+             }), {});
+
+             let criterias = {};
+             let questions = [];
+
+             draftQuestionsDocuments.forEach(draftQuestion=>{
+               if(!criterias[criteriaInternalToExternal[draftQuestion.draftCriteriaId.toString()]]) {
+                 criterias[criteriaInternalToExternal[draftQuestion.draftCriteriaId.toString()]] = {};
+                 criterias[criteriaInternalToExternal[draftQuestion.draftCriteriaId.toString()]]["evidences"] = [];
+               }
+
+               let criteriaEvidences = criterias[criteriaInternalToExternal[draftQuestion.draftCriteriaId.toString()]]["evidences"];
+               let indexOfEvidenceMethodInCriteria = 
+               criteriaEvidences.findIndex(evidence => evidence && evidence.code === ecm[draftQuestion.draftEvidenceMethodId.toString()]);
+
+                if (indexOfEvidenceMethodInCriteria < 0) {
+                  criteriaEvidences.push(
+                    {
+                    code : ecm[draftQuestion.draftEvidenceMethodId.toString()],
+                    sections :  new Array
+                    }
+                  );
+                  indexOfEvidenceMethodInCriteria = criteriaEvidences.length - 1;
+                }
+
+                let indexOfSectionInEvidenceMethod = 
+                criteriaEvidences[indexOfEvidenceMethodInCriteria].sections.findIndex(section => section && section.code === section[draftQuestion.draftSectionId.toString()]);
+
+                if (indexOfSectionInEvidenceMethod < 0) {
+                  criteriaEvidences[indexOfEvidenceMethodInCriteria].sections.push({ code : section[draftQuestion.draftSectionId.toString()], questions: new Array });
+                  indexOfSectionInEvidenceMethod = criteriaEvidences[indexOfEvidenceMethodInCriteria].sections.length - 1;
+                }
+
+                criteriaEvidences[indexOfEvidenceMethodInCriteria].sections[indexOfSectionInEvidenceMethod].questions.push(
+                  new ObjectId(questionExternalIdToInternal[draftQuestion.externalId]._id)
+                );
+
+                questions.push({
+                  externalId : draftQuestion.externalId,
+                  _id : questionExternalIdToInternal[draftQuestion.externalId]._id
+                });
+
+             })
+
+             let criteriaIds = Object.keys(criterias);
+
+             for(let pointerToCriteria = 0;
+                 pointerToCriteria<criteriaIds.length;
+                pointerToCriteria++
+             ) {
+              
+              /* TODO -> Dirty fix 
+                Criteria questions should be array of objectId but instead stored
+                as array of strings. 
+              */ 
+
+              await samikshaService.criteriaUpdate(token,
+                criterias[criteriaIds[pointerToCriteria]],
+                criteriaIds[pointerToCriteria])
+              }
+
+             return resolve({
+               criterias : criterias,
+               questions : questions
+              });
+
+        } catch (error) {
+            return reject(error);
+        }
+    })
+   }
 
 }
 

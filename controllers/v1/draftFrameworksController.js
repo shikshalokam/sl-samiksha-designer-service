@@ -208,6 +208,15 @@ module.exports = class DraftFrameworks extends Abstract {
 * @apiUse errorBody
 */
 
+   /**
+    * Publish draft criteria.
+    * @method
+    * @name update
+    * @param {Object} req.userDetails - logged in user details.
+    * @param {String} req.userDetails.id - logged in user id. 
+    * @returns {Object} 
+    */
+
   async update(req) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -272,5 +281,37 @@ module.exports = class DraftFrameworks extends Abstract {
       }
     })
   }
+
+    /**
+* @api {post} /assessment-design/api/v1/draftFrameworks/publish/{frameworkId}?entityType={entityType} publish framework
+* @apiVersion 1.0.0
+* @apiName Publish framework
+* @apiGroup Draft Frameworks
+* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/publish/5daec85d58e6e53dbdd84e0e?entityType={entityType}
+* @apiUse successBody
+* @apiUse errorBody
+*/
+
+async publish(req) {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let publishedFramework = await frameworksHelper.publish(
+        req.params._id,
+        req.userDetails.id,
+        req.userDetails.userToken,
+        req.query.entityType ? req.query.entityType : "school"
+      );
+      return resolve({
+        result : publishedFramework
+      });
+    } catch (error) {
+      reject({
+        status: error.status || 500,
+        message: error.message || "Oops! something went wrong."
+      })
+    }
+  })
+}
  
 };
