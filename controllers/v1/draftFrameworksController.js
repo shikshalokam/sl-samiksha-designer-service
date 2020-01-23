@@ -281,6 +281,7 @@ module.exports = class DraftFrameworks extends Abstract {
       }
     })
   }
+<<<<<<< HEAD
 
     /**
 * @api {post} /assessment-design/api/v1/draftFrameworks/publish/{frameworkId}?entityType={entityType} publish framework
@@ -313,5 +314,7 @@ async publish(req) {
     }
   })
 }
+=======
+>>>>>>> f2c6d749d7f20ca3567b80290175399b1c89bc4f
  
 };

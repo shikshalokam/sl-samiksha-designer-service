@@ -141,6 +141,7 @@ module.exports = class draftECMHelper {
             }
         })
     }
+<<<<<<< HEAD
 
       /**
     * Publish draft ecm.
@@ -213,4 +214,6 @@ module.exports = class draftECMHelper {
    }
 
 
+=======
+>>>>>>> f2c6d749d7f20ca3567b80290175399b1c89bc4f
 }
