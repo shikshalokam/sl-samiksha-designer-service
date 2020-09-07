@@ -4,21 +4,17 @@ module.exports = {
     externalId: {
       type: String,
       default: "SAMPLE-EXTERNAL-ID",
-      // required: true
     },
     name: {
       type: String,
       default: "DRAFT FRAMEWORK",
-      // required: true
     },
     description: {
       type: String,
       default: "SAMPLE DESCRIPTION",
-      // required: true
     },
     userId: {
       type: String,
-      // required: true
     },
     resourceType: {
       type: Array,

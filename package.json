@@ -1,7 +1,7 @@
 {
-  "name": "shikshalokam",
+  "name": "SL-Design-Service",
   "version": "1.0.0",
-  "description": "shikshalokam",
+  "description": "Design Service api details",
   "main": "app.js",
   "bin": {
     "migrations": "module/migrations/bin/migrations.js"

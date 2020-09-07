@@ -1,4 +1,22 @@
+/**
+ * name : module/helper.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft criteria related information.
+ */
 module.exports = class draftCriteriaHelper {
+
+
+    /**
+    * To create draft criteria
+    * @method
+    * @name  create
+    * @param {Object} draftCriteriaData - contains criteria details.
+    * @param {String} draftCriteriaData.name - name of the criteria.
+    * @param {String} draftCriteriaData.description - description of criteria.
+    * @param {String} draftCriteriaData.draftFrameworkId - draft frameworkId.
+    * @returns {json} Response consists of new criteria infromation
+    */
     static create(draftCriteriaData) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -10,6 +28,17 @@ module.exports = class draftCriteriaHelper {
         })
     }
 
+     /**
+    * To update draft criteria
+    * @method
+    * @name  update
+    * @param {Object} findQuery - query information.
+    * @param {Object} updateData - update data.
+    * @param {String} updateData.description - description of criteria.
+    * @param {String} updateData.draftFrameworkId - draft frameworkId.
+    * @param {String} updateData.name - name of criteria
+    * @returns {json} Response consists of updated criteria details
+    */
     static update(findQuery, updateData) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -18,8 +47,8 @@ module.exports = class draftCriteriaHelper {
 
                 if (!draftCriteriaDocument) {
                     throw {
-                        status: 404,
-                        message: "Draft Criteria doesnot exist"
+                        status: HTTP_STATUS_CODE["not_found"].status,
+                        message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_NOT_FOUND
                     }
                 }
 
@@ -34,6 +63,15 @@ module.exports = class draftCriteriaHelper {
         })
     }
 
+    /**
+    * To list criteria's
+    * @method
+    * @name  list
+    * @param {Object} filteredData - query information.
+    * @param {String} pageSize - page size of the request.
+    * @param {String} pageNo - page number of the request.
+    * @returns {json} Response consists of list of criteria's
+    */
     static list(filteredData, pageSize, pageNo) {
         return new Promise(async (resolve, reject) => {
             try {

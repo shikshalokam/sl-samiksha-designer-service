@@ -1,7 +1,7 @@
 module.exports = async (req, res, next) => {
-    if (req.userDetails && req.userDetails.id && req.path.includes("programOperations")) {
+    if (req.userDetails && req.userDetails.userId && req.path.includes("programOperations")) {
 
-        let entityAssessorDocumentByUser = await database.models.entityAssessors.find({userId:req.userDetails.id},{solutionId:1}).lean();
+        let entityAssessorDocumentByUser = await database.models.entityAssessors.find({userId:req.userDetails.userId},{solutionId:1}).lean();
 
         let solutions = await database.models.solutions.find({ "_id": {$in: entityAssessorDocumentByUser.map(solution=>solution.solutionId)} }, {
             programId: 1,

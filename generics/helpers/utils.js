@@ -1,3 +1,18 @@
+/**
+ * name : utils.js
+ * author : Aman Karki
+ * Date : 20-July-2020
+ * Description : All utility functions.
+ */
+
+/**
+ * convert camel case to title case.
+ * @function
+ * @name camelCaseToTitleCase
+ * @param {String} in_camelCaseString - String of camel case.
+ * @returns {String} returns a titleCase string. ex: helloThereMister, o/p: Hello There Mister
+*/
+
 function camelCaseToTitleCase(in_camelCaseString) {
   var result = in_camelCaseString // "ToGetYourGEDInTimeASongAboutThe26ABCsIsOfTheEssenceButAPersonalIDCardForUser456InRoom26AContainingABC26TimesIsNotAsEasyAs123ForC3POOrR2D2Or2R2D"
     .replace(/([a-z])([A-Z][a-z])/g, "$1 $2") // "To Get YourGEDIn TimeASong About The26ABCs IsOf The Essence ButAPersonalIDCard For User456In Room26AContainingABC26Times IsNot AsEasy As123ForC3POOrR2D2Or2R2D"
@@ -19,9 +34,37 @@ function camelCaseToTitleCase(in_camelCaseString) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
+/**
+ * Convert hyphen case string to camelCase.
+ * @function
+ * @name hyphenCaseToCamelCase
+ * @param {String} string - String in hyphen case.
+ * @returns {String} returns a camelCase string.
+*/
+
+function hyphenCaseToCamelCase(string) {
+  return string.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+}
+
+/**
+ * convert string to lowerCase.
+ * @function
+ * @name lowerCase
+ * @param {String} str 
+ * @returns {String} returns a lowercase string. ex: HELLO, o/p: hello
+*/
+
 function lowerCase(str) {
   return str.toLowerCase()
 }
+
+/**
+ * check whether the given string is url.
+ * @function
+ * @name checkIfStringIsUrl - check whether string is url or not.
+ * @param {String} str 
+ * @returns {Boolean} returns a Boolean value. ex:"http://example.com:3000/pathname/?search=test" , o/p:true
+*/
 
 function checkIfStringIsUrl(str) {
   var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -33,140 +76,22 @@ function checkIfStringIsUrl(str) {
   return pattern.test(str);
 }
 
-function generateRandomCharacters(numberOfChar) {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456789!@#%&*";
-  for (var i = 0; i < numberOfChar; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
+/**
+ * check whether the url is a valid sunbird API
+ * @function
+ * @name checkIfURLIsSunbirdAPI
+ * @param {String} url 
+ * @returns {Boolean} returns whether url is valid sunbird API or not.  
+*/
 
-  return text;
-}
-
-function getCriteriaIds(themes) {
-  let allCriteriaIds = [];
-  themes.forEach(theme => {
-    let criteriaIdArray = [];
-    if (theme.children) {
-      criteriaIdArray = this.getCriteriaIds(theme.children);
-    } else {
-      criteriaIdArray = theme.criteria;
-    }
-    criteriaIdArray.forEach(eachCriteria => {
-      if (eachCriteria.criteriaId) {
-        allCriteriaIds.push(eachCriteria.criteriaId);
-      } else {
-        allCriteriaIds.push(eachCriteria);
-      }
-    })
-  })
-  return allCriteriaIds;
-}
-
-function getCriteriaIdsAndWeightage(themes) {
-  let allCriteriaIds = [];
-  themes.forEach(theme => {
-    let criteriaIdArray = [];
-    if (theme.children) {
-      criteriaIdArray = this.getCriteriaIdsAndWeightage(theme.children);
-    } else {
-      criteriaIdArray = theme.criteria;
-    }
-    criteriaIdArray.forEach(eachCriteria => {
-      allCriteriaIds.push({
-        criteriaId: eachCriteria.criteriaId,
-        weightage: eachCriteria.weightage
-      });
-    })
-  })
-  return allCriteriaIds;
-}
-
-function getUserRole(userDetails, caseSensitive = false) {
-  if (userDetails && userDetails.allRoles.length) {
-    _.pull(userDetails.allRoles, 'PUBLIC');
-    let role = userDetails.allRoles[0];
-    if (caseSensitive == true) {
-      return mapUserRole(role)
-    }
-    return role;
-  } else {
-    return
-  }
-}
-
-function getReadableUserRole(userDetails) {
-  if (userDetails && userDetails.allRoles.length) {
-
-    _.pull(userDetails.allRoles, 'PUBLIC');
-
-    let readableRoles = {
-      ASSESSOR: "Assessors",
-      LEAD_ASSESSOR: "Lead Assessors",
-      PROJECT_MANAGER: "Project Managers",
-      PROGRAM_MANAGER: "Program Managers"
-    }
-
-    return readableRoles[userDetails.allRoles[0]] || "";
-  } else {
-    return
-  }
-}
-
-function mapUserRole(role) {
-  let allRoles = assessmentRoles()
-  return allRoles[role];
-}
-
-function assessmentRoles() {
-  let allRoles = {
-    ASSESSOR: "assessors",
-    LEAD_ASSESSOR: "leadAssessors",
-    PROJECT_MANAGER: "projectManagers",
-    PROGRAM_MANAGER: "programManagers"
-  }
-  return allRoles;
-}
-
-function getAllQuestionId(criteria) {
-  let questionIds = [];
-  criteria.forEach(eachCriteria => {
-    eachCriteria.evidences.forEach(eachEvidence => {
-      eachEvidence.sections.forEach(eachSection => {
-        eachSection.questions.forEach(eachQuestion => {
-          questionIds.push(eachQuestion)
-        })
-      })
-    })
-  })
-  return questionIds
-}
-
-function valueParser(dataToBeParsed) {
-
-  let parsedData = {}
-
-  Object.keys(dataToBeParsed).forEach(eachDataToBeParsed => {
-    parsedData[eachDataToBeParsed] = dataToBeParsed[eachDataToBeParsed].trim()
-  })
-  return parsedData
-}
-
-function arrayIdsTobjectIds(ids) {
-  return ids.map(id => ObjectId(id));
+function checkIfURLIsSunbirdAPI(url) {
+  return (url.startsWith(process.env.SUNBIRD_URL)) ? true : false;
 }
 
 module.exports = {
   camelCaseToTitleCase: camelCaseToTitleCase,
   lowerCase: lowerCase,
   checkIfStringIsUrl: checkIfStringIsUrl,
-  generateRandomCharacters: generateRandomCharacters,
-  getCriteriaIds: getCriteriaIds,
-  getUserRole: getUserRole,
-  getReadableUserRole: getReadableUserRole,
-  mapUserRole: mapUserRole,
-  valueParser: valueParser,
-  getAllQuestionId: getAllQuestionId,
-  getCriteriaIdsAndWeightage: getCriteriaIdsAndWeightage,
-  assessmentRoles: assessmentRoles,
-  arrayIdsTobjectIds: arrayIdsTobjectIds
+  hyphenCaseToCamelCase: hyphenCaseToCamelCase,
+  checkIfURLIsSunbirdAPI: checkIfURLIsSunbirdAPI
 };

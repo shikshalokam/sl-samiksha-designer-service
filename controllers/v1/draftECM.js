@@ -1,8 +1,15 @@
-const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
+
+/**
+ * name : controllers/draftECM.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft ecm related information.
+ */
+const draftECMHelper = require(MODULES_BASE_PATH + "/draftECM/helper");
 
 module.exports = class DraftECM extends Abstract {
   constructor() {
-    super(draftECMSchema);
+    super("draftECM");
   }
 
   static get name() {
@@ -11,13 +18,14 @@ module.exports = class DraftECM extends Abstract {
 
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/create create draftECM
+* @api {post} /design/api/v1/draftECM/create create draftECM
 * @apiVersion 1.0.0
 * @apiName create draftECM
 * @apiGroup Draft Ecm
-* @apiSampleRequest /assessment-design/api/v1/draftECM/create
+* @apiSampleRequest /design/api/v1/draftECM/create
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
-* @apiParamExample {json} Request-Body:{
+* @apiParamExample {json} Request-Body:
+{
   "code": "LW"
   "tip": "Some tip for the criteria.",
   "name": "Learning Walk",
@@ -36,33 +44,37 @@ module.exports = class DraftECM extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let ecmData = _.merge(req.body, { userId: req.userDetails.id })
+        let ecmData = _.merge(req.body, { userId: req.userDetails.userId })
 
         let draftECMDocument = await draftECMHelper.create(ecmData)
 
         return resolve({
-          status: 200,
-          message: "Draft ECM created successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.DRAFT_ECM_CREATED,
           result: draftECMDocument
         });
 
       }
       catch (error) {
-        reject({
-          status: 500,
-          message: error,
-          errorObject: error
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit list draftECM
+* @api {post} /design/api/v1/draftECM/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit list draftECM
 * @apiVersion 1.0.0
 * @apiName list draftECM
 * @apiGroup Draft Ecm
-* @apiSampleRequest /assessment-design/api/v1/draftECM/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
+* @apiSampleRequest /design/api/v1/draftECM/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
 * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiUse successBody
 * @apiUse errorBody
@@ -78,18 +90,18 @@ module.exports = class DraftECM extends Abstract {
         matchQuery["$match"] = {}
         matchQuery["$match"]["draftFrameworkId"] = ObjectId(req.params._id)
         matchQuery["$match"]["isDeleted"] = false
-        matchQuery["$match"]["userId"] = req.userDetails.id
+        matchQuery["$match"]["userId"] = req.userDetails.userId
 
         matchQuery["$match"]["$or"] = []
         matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') }, { "code": new RegExp(req.searchText, 'i') })
 
         let draftEcmList = await draftECMHelper.list(matchQuery, req.pageSize, req.pageNo)
 
-        let messageData = "Draft Ecm fetched successfully";
+        let messageData = CONSTANTS.apiResponses.DRAFT_ECM_FOUND;
 
         if (!draftEcmList[0].count) {
           draftEcmList[0].count = 0
-          messageData = "No draft ecm found"
+          messageData =  CONSTANTS.apiResponses.DRAFT_ECM_NOT_FOUND; 
         }
 
         return resolve({
@@ -99,19 +111,24 @@ module.exports = class DraftECM extends Abstract {
 
       } catch (error) {
         return reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftECM/details/{draftECMId} details draftECM
+  * @api {post} /design/api/v1/draftECM/details/{draftECMId} details draftECM
   * @apiVersion 1.0.0
   * @apiName details draftECM
   * @apiGroup Draft Ecm
-  * @apiSampleRequest /assessment-design/api/v1/draftECM/details/5daff8ae9b71b24fcad7b182
+  * @apiSampleRequest /design/api/v1/draftECM/details/5daff8ae9b71b24fcad7b182
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
@@ -123,37 +140,43 @@ module.exports = class DraftECM extends Abstract {
 
         let draftEcmDocument = await database.models.draftECM.findOne({
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }).lean()
 
         if (!draftEcmDocument) {
-          throw { status: 404, message: "No draft ecm found" };
+          throw { status: HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.DRAFT_ECM_NOT_FOUND };
         }
 
         return resolve({
-          message: "Draft ecm details fetched successfully",
-          status: 200,
+          message: CONSTANTS.apiResponses.DRAFT_ECM_FOUND,
+          status: HTTP_STATUS_CODE["ok"].status,
           result: draftEcmDocument
         })
 
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/update/{draftECMId} Update draftECM
+* @api {post} /design/api/v1/draftECM/update/{draftECMId} Update draftECM
 * @apiVersion 1.0.0
 * @apiName update Draft ECM
 * @apiGroup Draft Ecm
-* @apiSampleRequest /assessment-design/api/v1/draftECM/update/5daff8ae9b71b24fcad7b182
+* @apiSampleRequest /design/api/v1/draftECM/update/5daff8ae9b71b24fcad7b182
 * @apiHeader {String} X-authenticated-user-token Authenticity token
-* @apiParamExample {json} Request-Body:{
+* @apiParamExample {json} Request-Body:
+{
   "code": "BL"
   "tip": "Some tip for the criteria.",
   "name": "Book look",
@@ -168,32 +191,37 @@ module.exports = class DraftECM extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         let draftECMDocument = await draftECMHelper.update(findQuery, req.body)
 
         return resolve({
-          status: 200,
-          message: "Draft ECM updated successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.DRAFT_ECM_UPDATED,
           result: draftECMDocument
         });
       }
       catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftECM/delete/{draftECMId} Delete draftECM
+* @api {post} /design/api/v1/draftECM/delete/{draftECMId} Delete draftECM
 * @apiVersion 1.0.0
 * @apiName Delete draftECM
 * @apiGroup Draft Ecm
-* @apiSampleRequest /assessment-design/api/v1/draftECM/delete/5daff8ae9b71b24fcad7b182
+* @apiSampleRequest /design/api/v1/draftECM/delete/5daff8ae9b71b24fcad7b182
 * @apiUse successBody
 * @apiUse errorBody
 */
@@ -204,20 +232,25 @@ module.exports = class DraftECM extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         await draftECMHelper.update(findQuery, { isDeleted: true })
 
         return resolve({
-          message: "deleted successfully",
-          status: 200
+          message: CONSTANTS.apiResponses.DRAFT_ECM_DELETED,
+          status: HTTP_STATUS_CODE["ok"].status
         })
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }

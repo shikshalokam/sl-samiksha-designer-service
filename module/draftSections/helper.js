@@ -1,4 +1,21 @@
+/**
+ * name : module/helper.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft sections related information
+ */
+
 module.exports = class draftSectionsHelper {
+
+    /**
+    * To create draft section
+    * @method
+    * @name  create
+    * @param {Object} sectionsData - section details.
+    * @param {String} sectionsData.code - code of the section.
+    * @param {String} sectionsData.draftFrameworkId - draftFrameworkId of the section.
+    * @returns {json} Response consists of draft section details
+    */
     static create(sectionsData) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -10,6 +27,15 @@ module.exports = class draftSectionsHelper {
         })
     }
 
+    /**
+    * To update draft section
+    * @method
+    * @name  update
+    * @param {Object} sectionsData - section details.
+    * @param {String} sectionsData.code - code of the section.
+    * @param {String} sectionsData.draftFrameworkId - draftFrameworkId of the section.
+    * @returns {json} Response consists of draft section details
+    */
     static update(findQuery, updateData) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -18,7 +44,7 @@ module.exports = class draftSectionsHelper {
 
                 if (!draftSectionDocument) {
                     throw {
-                        status: 404,
+                        status: HTTP_STATUS_CODE["not_found"].status,
                         message: "Draft Section doesnot exist"
                     }
                 }
@@ -34,6 +60,15 @@ module.exports = class draftSectionsHelper {
         })
     }
 
+    /**
+    * To list draft section
+    * @method
+    * @name  list
+    * @param {Object} filteredData - query details.
+    * @param {String} pageSize - page size.
+    * @param {String} pageNo - page number.
+    * @returns {json} Response consists of list of section's
+    */
     static list(filteredData, pageSize, pageNo) {
         return new Promise(async (resolve, reject) => {
             try {

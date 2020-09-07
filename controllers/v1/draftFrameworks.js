@@ -1,8 +1,17 @@
-const frameworksHelper = require(ROOT_PATH + "/module/draftFrameworks/helper");
+
+
+/**
+ * name : controllers/draftFrameworks.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft framework related information.
+ */
+
+const frameworksHelper = require(MODULES_BASE_PATH + "/draftFrameworks/helper");
 
 module.exports = class DraftFrameworks extends Abstract {
   constructor() {
-    super(draftFrameworksSchema);
+    super("draftFrameworks");
   }
 
   static get name() {
@@ -10,11 +19,11 @@ module.exports = class DraftFrameworks extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftFrameworks/create create Frameworks
+* @api {post} /design/api/v1/draftFrameworks/create create Frameworks
 * @apiVersion 1.0.0
 * @apiName create Frameworks
 * @apiGroup Draft Frameworks
-* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/create
+* @apiSampleRequest /design/api/v1/draftFrameworks/create
 * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiParamExample {json} Request-Body:
 *{
@@ -78,30 +87,36 @@ module.exports = class DraftFrameworks extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let frameworkDocument = await frameworksHelper.create(req.body, req.userDetails.id)
+        let frameworkDocument = await frameworksHelper.create(req.body, req.userDetails.userId)
 
         return resolve({
-          status: 200,
-          message: "Framework created successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.FRAMEWORK_CREATED,
           result: frameworkDocument
         });
       }
       catch (error) {
-        reject({
-          status: 500,
-          message: error,
-          errorObject: error
-        })
+     
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+
       }
     })
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftFrameworks/list?search=:search&page=:page&limit=:limit list frameworks
+* @api {post} /design/api/v1/draftFrameworks/list?search=:search&page=:page&limit=:limit list frameworks
 * @apiVersion 1.0.0
 * @apiName List frameworks by userId
 * @apiGroup Draft Frameworks
-* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/list?search=a&page=1&limit=10
+* @apiSampleRequest /design/api/v1/draftFrameworks/list?search=a&page=1&limit=10
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -116,7 +131,7 @@ module.exports = class DraftFrameworks extends Abstract {
 
         matchQuery["$match"] = {}
         matchQuery["$match"]["isDeleted"] = false
-        matchQuery["$match"]["userId"] = req.userDetails.id
+        matchQuery["$match"]["userId"] = req.userDetails.userId
 
         if(req.query.listType){
           matchQuery["$match"]["status"] = req.query.listType;
@@ -125,10 +140,10 @@ module.exports = class DraftFrameworks extends Abstract {
         matchQuery["$match"]["$or"] = []
         matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') }, { "externalId": new RegExp(req.searchText, 'i') })
         let frameworksList = await frameworksHelper.list(matchQuery, req.pageSize, req.pageNo)
-        let messageData = "Frameworks fetched successfully";
+        let messageData =  CONSTANTS.apiResponses.FRAMEWORK_FETCHED;
         if (!frameworksList[0].count) {
           frameworksList[0].count = 0
-          messageData = "No framework found"
+          messageData = CONSTANTS.apiResponses.FRAMEWORK_NOT_FOUND;
         }
         return resolve({
           result: frameworksList[0],
@@ -136,19 +151,24 @@ module.exports = class DraftFrameworks extends Abstract {
         })
       } catch (error) {
         return reject({
-          status: 500,
-          message: error
-        })
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftFrameworks/details/{frameworkId} framework details
+  * @api {post} /design/api/v1/draftFrameworks/details/{frameworkId} framework details
   * @apiVersion 1.0.0
   * @apiName Framework details
   * @apiGroup Draft Frameworks
-  * @apiSampleRequest /assessment-design/api/v1/draftFrameworks/details/5daec85d58e6e53dbdd84e0f
+  * @apiSampleRequest /design/api/v1/draftFrameworks/details/5daec85d58e6e53dbdd84e0f
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
@@ -160,35 +180,40 @@ module.exports = class DraftFrameworks extends Abstract {
 
         let draftFrameworkDocument = await database.models.draftFrameworks.findOne({
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }).lean()
 
         if (!draftFrameworkDocument) {
-          throw { status: 404, message: "No framework found" };
+          throw { status: HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.FRAMEWORK_NOT_FOUND };
         }
 
         return resolve({
-          message: "details fetched successfully",
-          status: 200,
+          message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED,
+          status: HTTP_STATUS_CODE["ok"].status,
           result: draftFrameworkDocument
         })
 
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
-      }
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
 
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+
+      }
     })
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftFrameworks/update/{frameworkId} Update Frameworks
+* @api {post} /design/api/v1/draftFrameworks/update/{frameworkId} Update Frameworks
 * @apiVersion 1.0.0
 * @apiName update Frameworks
 * @apiGroup Draft Frameworks
-* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/update/5daec85d58e6e53dbdd84e0e
+* @apiSampleRequest /design/api/v1/draftFrameworks/update/5daec85d58e6e53dbdd84e0e
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiParamExample {json} Request-Body:
 *{
@@ -205,32 +230,37 @@ module.exports = class DraftFrameworks extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         let frameworkDocument = await frameworksHelper.update(findQuery, req.body)
 
         return resolve({
-          status: 200,
-          message: "Framework updated successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.FRAMEWORK_UPDATED,
           result: frameworkDocument
         });
       }
       catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftFrameworks/delete/{frameworksId} Delete framework
+* @api {post} /design/api/v1/draftFrameworks/delete/{frameworksId} Delete framework
 * @apiVersion 1.0.0
 * @apiName Delete framework
 * @apiGroup Draft Frameworks
-* @apiSampleRequest /assessment-design/api/v1/draftFrameworks/delete/5daec85d58e6e53dbdd84e0e
+* @apiSampleRequest /design/api/v1/draftFrameworks/delete/5daec85d58e6e53dbdd84e0e
 * @apiUse successBody
 * @apiUse errorBody
 */
@@ -241,20 +271,25 @@ module.exports = class DraftFrameworks extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         await frameworksHelper.update(findQuery, { isDeleted: true })
 
         return resolve({
-          message: "deleted successfully",
-          status: 200
+          message: CONSTANTS.apiResponses.FRAMEWORK_DELETED,
+          status: HTTP_STATUS_CODE["ok"].status
         })
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }

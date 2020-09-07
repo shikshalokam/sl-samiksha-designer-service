@@ -1,9 +1,17 @@
-const draftQuestionHelper = require(ROOT_PATH + "/module/draftQuestions/helper");
+
+/**
+ * name : controllers/draftQuestions.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft questions informations.
+ */
+
+const draftQuestionHelper = require(MODULES_BASE_PATH + "/draftQuestions/helper");
 
 
 module.exports = class DraftQuestions extends Abstract {
   constructor() {
-    super(draftQuestionsSchema);
+    super("draftQuestions");
   }
 
   static get name() {
@@ -11,7 +19,7 @@ module.exports = class DraftQuestions extends Abstract {
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftQuestions/create Question create
+* @api {post} /design/api/v1/draftQuestions/create Question create
 * @apiVersion 1.0.0
 * @apiName Question create
 * @apiGroup Draft Questions
@@ -58,7 +66,7 @@ module.exports = class DraftQuestions extends Abstract {
     "page":"SAMPLE-PAGE",
     "questionNumber":"SAMPLE-QUESTION-NUMBER"
 }
-* @apiSampleRequest /assessment-design/api/v1/draftQuestions/create
+* @apiSampleRequest /design/api/v1/draftQuestions/create
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -68,33 +76,37 @@ module.exports = class DraftQuestions extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftQuestionData = _.merge(req.body, { userId: req.userDetails.id })
+        let draftQuestionData = _.merge(req.body, { userId: req.userDetails.userId })
 
         let draftQuestionDocument = await draftQuestionHelper.create(draftQuestionData)
 
         return resolve({
-          status: 200,
-          message: "Draft Question created successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.DRAFT_QUESTION_CREATED,
           result: draftQuestionDocument
         });
 
       }
       catch (error) {
-        reject({
-          status: 500,
-          message: error,
-          errorObject: error
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-* @api {get} /assessment-design/api/v1/draftQuestions/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit Question list
+* @api {get} /design/api/v1/draftQuestions/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit Question list
 * @apiVersion 1.0.0
 * @apiName Question list
 * @apiGroup Draft Questions
-* @apiSampleRequest /assessment-design/api/v1/draftQuestions/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
+* @apiSampleRequest /design/api/v1/draftQuestions/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -109,18 +121,18 @@ module.exports = class DraftQuestions extends Abstract {
         matchQuery["$match"] = {}
         matchQuery["$match"]["draftFrameworkId"] = ObjectId(req.params._id)
         matchQuery["$match"]["isDeleted"] = false
-        matchQuery["$match"]["userId"] = req.userDetails.id
+        matchQuery["$match"]["userId"] = req.userDetails.userId
 
         matchQuery["$match"]["$or"] = []
         matchQuery["$match"]["$or"].push({ "externalId": new RegExp(req.searchText, 'i') })
 
         let draftQuestionsList = await draftQuestionHelper.list(matchQuery, req.pageSize, req.pageNo)
 
-        let messageData = "Draft questions fetched successfully";
+        let messageData = CONSTANTS.apiResponses.DRAFT_QUESTION_FETCHED;
 
         if (!draftQuestionsList[0].count) {
           draftQuestionsList[0].count = 0
-          messageData = "No draft questions found"
+          messageData = CONSTANTS.apiResponses.DRAFT_QUESTION_NOT_FOUND;
         }
 
         return resolve({
@@ -130,19 +142,24 @@ module.exports = class DraftQuestions extends Abstract {
 
       } catch (error) {
         return reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftQuestions/details/{draftQuestionId} Question details
+  * @api {post} /design/api/v1/draftQuestions/details/{draftQuestionId} Question details
   * @apiVersion 1.0.0
   * @apiName Question details
   * @apiGroup Draft Questions
-  * @apiSampleRequest /assessment-design/api/v1/draftQuestions/details/5db108b4e740c01b5bbe6faa
+  * @apiSampleRequest /design/api/v1/draftQuestions/details/5db108b4e740c01b5bbe6faa
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
@@ -154,34 +171,39 @@ module.exports = class DraftQuestions extends Abstract {
 
         let draftQuestionDocument = await database.models.draftQuestions.findOne({
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }).lean()
 
         if (!draftQuestionDocument) {
-          throw { status: 404, message: "No draft question found" };
+          throw { status: HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.DRAFT_QUESTION_NOT_FOUND };
         }
 
         return resolve({
-          message: "Draft question details fetched successfully",
-          status: 200,
+          message: CONSTANTS.apiResponses.DRAFT_QUESTION_DETAILS_FETCHED,
+          status: HTTP_STATUS_CODE["ok"].status,
           result: draftQuestionDocument
         })
 
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftQuestions/update/{draftQuestionId} Question update
+  * @api {post} /design/api/v1/draftQuestions/update/{draftQuestionId} Question update
   * @apiVersion 1.0.0
   * @apiName Question update
   * @apiGroup Draft Questions
-  * @apiSampleRequest /assessment-design/api/v1/draftQuestions/update/5db108b4e740c01b5bbe6faa
+  * @apiSampleRequest /design/api/v1/draftQuestions/update/5db108b4e740c01b5bbe6faa
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
@@ -193,32 +215,37 @@ module.exports = class DraftQuestions extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         let draftQuestionDocument = await draftQuestionHelper.update(findQuery, req.body)
 
         return resolve({
-          status: 200,
-          message: "Draft Question updated successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.DRAFT_QUESTION_UPDATED,
           result: draftQuestionDocument
         });
       }
       catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
- * @api {post} /assessment-design/api/v1/draftQuestions/delete/{draftQuestionId} Delete question
+ * @api {post} /design/api/v1/draftQuestions/delete/{draftQuestionId} Delete question
  * @apiVersion 1.0.0
  * @apiName Delete question
  * @apiGroup Draft Questions
- * @apiSampleRequest /assessment-design/api/v1/draftQuestions/delete/5db108b4e740c01b5bbe6faa
+ * @apiSampleRequest /design/api/v1/draftQuestions/delete/5db108b4e740c01b5bbe6faa
  * @apiHeader {String} X-authenticated-user-token Authenticity token  
  * @apiUse successBody
  * @apiUse errorBody
@@ -230,20 +257,25 @@ module.exports = class DraftQuestions extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         await draftQuestionHelper.update(findQuery, { isDeleted: true })
 
         return resolve({
-          message: "Draft question deleted successfully",
-          status: 200
+          message: CONSTANTS.apiResponses.DRAFT_QUESTION_DELETED,
+          status: HTTP_STATUS_CODE["ok"].status
         })
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }

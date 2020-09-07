@@ -1,4 +1,13 @@
-const draftCriteriaHelper = require(ROOT_PATH + "/module/draftCriteria/helper");
+
+/**
+ * name : controllers/draftCriteria.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft criteria related information.
+ */
+
+
+const draftCriteriaHelper = require(MODULES_BASE_PATH + "/draftCriteria/helper");
 
 module.exports = class DraftCriteria extends Abstract {
 
@@ -15,7 +24,7 @@ module.exports = class DraftCriteria extends Abstract {
    */
 
   constructor() {
-    super(draftCriteriaSchema);
+    super("draftCriteria");
   }
 
   static get name() {
@@ -23,7 +32,7 @@ module.exports = class DraftCriteria extends Abstract {
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftCriteria/create Add Criteria
+  * @api {post} /design/api/v1/draftCriteria/create Add Criteria
   * @apiVersion 1.0.0
   * @apiName Add Criteria
   * @apiGroup Draft Criteria
@@ -82,33 +91,38 @@ module.exports = class DraftCriteria extends Abstract {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftCriteriaData = _.merge(req.body, { userId: req.userDetails.id })
+        let draftCriteriaData = _.merge(req.body, { userId: req.userDetails.userId })
 
         let draftCriteriaDocument = await draftCriteriaHelper.create(draftCriteriaData)
 
+        
         return resolve({
-          status: 200,
-          message: "Draft Criteria created successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.DRAFT_CRITERIA_CREATED,
           result: draftCriteriaDocument
         });
 
       }
       catch (error) {
-        reject({
-          status: 500,
-          message: error,
-          errorObject: error
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-* @api {post} /assessment-design/api/v1/draftCriteria/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit list criteria
+* @api {post} /design/api/v1/draftCriteria/list/{draftFrameworkId}?search=:search&page=:page&limit=:limit list criteria
 * @apiVersion 1.0.0
 * @apiName List criteria by userId
 * @apiGroup Draft Criteria
-* @apiSampleRequest /assessment-design/api/v1/draftCriteria/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
+* @apiSampleRequest /design/api/v1/draftCriteria/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
@@ -123,18 +137,18 @@ module.exports = class DraftCriteria extends Abstract {
         matchQuery["$match"] = {}
         matchQuery["$match"]["draftFrameworkId"] = ObjectId(req.params._id)
         matchQuery["$match"]["isDeleted"] = false
-        matchQuery["$match"]["userId"] = req.userDetails.id
+        matchQuery["$match"]["userId"] = req.userDetails.userId
 
         matchQuery["$match"]["$or"] = []
         matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "code": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') })
 
         let draftCriteriaList = await draftCriteriaHelper.list(matchQuery, req.pageSize, req.pageNo)
 
-        let messageData = "Draft criterias fetched successfully";
+        let messageData = CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED;
 
         if (!draftCriteriaList[0].count) {
           draftCriteriaList[0].count = 0
-          messageData = "No draft criterias found"
+          messageData = CONSTANTS.apiResponses.DRAFT_CRITERIAS_NOT_FOUND;
         }
 
         return resolve({
@@ -144,19 +158,24 @@ module.exports = class DraftCriteria extends Abstract {
 
       } catch (error) {
         return reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-* @api {get} /assessment-design/api/v1/draftCriteria/details/{criteriaId} Get criteria details
+* @api {get} /design/api/v1/draftCriteria/details/{criteriaId} Get criteria details
 * @apiVersion 1.0.0
 * @apiName Criteria Details
 * @apiGroup Draft Criteria
-* @apiSampleRequest /assessment-design/api/v1/draftCriteria/details/5db0292179e31f1b85d11ca9
+* @apiSampleRequest /design/api/v1/draftCriteria/details/5db0292179e31f1b85d11ca9
 * @apiUse successBody
 * @apiUse errorBody
 */
@@ -167,30 +186,35 @@ module.exports = class DraftCriteria extends Abstract {
 
         let draftCriteriaDocument = await database.models.draftCriteria.findOne({
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }).lean()
 
         if (!draftCriteriaDocument) {
-          throw { status: 404, message: "No draft criteria found" };
+          throw { status:  HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_NOT_FOUND };
         }
 
         return resolve({
-          message: "Draft criteria details fetched successfully",
-          status: 200,
+          message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED,
+          status: HTTP_STATUS_CODE["ok"].status,
           result: draftCriteriaDocument
         })
 
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftCriteria/update/{criteriaId} Update Criteria
+  * @api {post} /design/api/v1/draftCriteria/update/{criteriaId} Update Criteria
   * @apiVersion 1.0.0
   * @apiName Update Criteria
   * @apiGroup Draft Criteria
@@ -198,7 +222,7 @@ module.exports = class DraftCriteria extends Abstract {
   * {
     "externalId": "sample-external-id",
   * }
-  * @apiSampleRequest /assessment-design/api/v1/draftCriteria/update/5db0292179e31f1b85d11ca9
+  * @apiSampleRequest /design/api/v1/draftCriteria/update/5db0292179e31f1b85d11ca9
   * @apiUse successBody
   * @apiUse errorBody
 */
@@ -209,32 +233,37 @@ module.exports = class DraftCriteria extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, req.body)
 
         return resolve({
-          status: 200,
-          message: "Draft Criteria updated successfully.",
+          status: HTTP_STATUS_CODE["ok"].status,
+          message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_UPDATED,
           result: draftCriteriaDocument
         });
       }
       catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }
 
   /**
-  * @api {post} /assessment-design/api/v1/draftCriteria/delete/{criteriaId} Delete Criteria
+  * @api {post} /design/api/v1/draftCriteria/delete/{criteriaId} Delete Criteria
   * @apiVersion 1.0.0
   * @apiName Delete Criteria
   * @apiGroup Draft Criteria
-  * @apiSampleRequest /assessment-design/api/v1/draftCriteria/delete/5db0292179e31f1b85d11ca9
+  * @apiSampleRequest /design/api/v1/draftCriteria/delete/5db0292179e31f1b85d11ca9
   * @apiUse successBody
   * @apiUse errorBody
   */
@@ -245,20 +274,25 @@ module.exports = class DraftCriteria extends Abstract {
 
         let findQuery = {
           _id: req.params._id,
-          userId: req.userDetails.id
+          userId: req.userDetails.userId
         }
 
         await draftCriteriaHelper.update(findQuery, { isDeleted: true })
 
         return resolve({
-          message: "Draft criteria deleted successfully",
-          status: 200
+          message: CONSTANTS.apiResponses.DRAFT_CRITERIA_DELETED,
+          status: HTTP_STATUS_CODE["ok"].status
         })
       } catch (error) {
-        reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong."
-        })
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
     })
   }

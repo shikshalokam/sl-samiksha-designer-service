@@ -111,11 +111,6 @@ module.exports = {
       type: Boolean,
       default: false
     },
-    // frameworkCriteriaId: {
-    //   type: "ObjectId",
-    //   default: "",
-    //   required: true
-    // },
     draftFrameworkId: {
       type: "ObjectId",
       required: true
