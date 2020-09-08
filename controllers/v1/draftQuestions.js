@@ -23,7 +23,7 @@ module.exports = class DraftQuestions extends Abstract {
 * @apiVersion 1.0.0
 * @apiName Question create
 * @apiGroup Draft Questions
-* @apiParamExample {json} Request-Body:
+* @apiParamExample {json} Request:
 {
 	"externalId":"SAMPLE-EXTERNAL-ID",
     "draftCriteriaId":"5db0292179e31f1b85d11ca9",
@@ -70,6 +70,59 @@ module.exports = class DraftQuestions extends Abstract {
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft Question created successfully.",
+    "status": 200,
+    "result": {
+        "externalId": "SAMPLE-EXTERNAL-ID",
+        "question": [],
+        "tip": "DRAFT-QUESTION-TIP",
+        "hint": "DRAFT-QUESTION-HINT",
+        "responseType": "DRAFT-RESPONSE-TYPE",
+        "value": "DRAFT-VALUE",
+        "isCompleted": false,
+        "showRemarks": false,
+        "remarks": "DRAFT-REMARKS",
+        "createdBy": "",
+        "updatedBy": "",
+        "options": [],
+        "children": [],
+        "questionGroup": [
+            "A1"
+        ],
+        "questionType": "DRAFT-QUESTION-TYPE",
+        "modeOfCollection": "DRAFT-MODE-OF-COLLECTION",
+        "usedForScoring": "percentage",
+        "fileName": [],
+        "accessibility": "DRAFT-ACCESSIBILITY",
+        "instanceIdentifier": "DRAFT-INSTANCE-IDENTIFIER",
+        "noOfInstances": 0,
+        "notApplicable": false,
+        "canBeNotApplicable": false,
+        "instanceQuestionsString": "",
+        "instanceQuestions": [],
+        "isAGeneralQuestion": false,
+        "dateFormat": "dd-mm-yyyy",
+        "autoCapture": "SAMPLE-AUTO-CAPTURE",
+        "rubricLevel": "RUBRIC-LEVEL",
+        "sectionHeader": "SAMPLE-SECTION-HEADER",
+        "allowAudioRecording": false,
+        "page": "SAMPLE-PAGE",
+        "questionNumber": "SAMPLE-QUESTION-NUMBER",
+        "isDeleted": false,
+        "_id": "5f5769c9659c7e3e78f05dc9",
+        "deleted": false,
+        "draftCriteriaId": "5db0292179e31f1b85d11ca9",
+        "draftFrameworkId": "5daec85d58e6e53dbdd84e0e",
+        "draftEvidenceMethodId": "5daff8ae9b71b24fcad7b182",
+        "draftSectionId": "5db01480bd197138284799cf",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:23:53.676Z",
+        "createdAt": "2020-09-08T11:23:53.676Z",
+        "__v": 0
+    }
+}
 */
 
   async create(req) {
@@ -110,6 +163,22 @@ module.exports = class DraftQuestions extends Abstract {
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft questions fetched successfully.",
+    "status": 200,
+    "result": {
+        "data": [
+            {
+                "_id": "5f5769c9659c7e3e78f05dc9",
+                "externalId": "SAMPLE-EXTERNAL-ID",
+                "question": [],
+                "responseType": "DRAFT-RESPONSE-TYPE"
+            }
+        ],
+        "count": 1
+    }
+}
 */
 
   async list(req) {
@@ -163,26 +232,67 @@ module.exports = class DraftQuestions extends Abstract {
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
+  * @apiParamExample {json} Response:
+  {
+    "message": "Draft question details fetched successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f5769c9659c7e3e78f05dc9",
+        "externalId": "SAMPLE-EXTERNAL-ID",
+        "question": [],
+        "tip": "DRAFT-QUESTION-TIP",
+        "hint": "DRAFT-QUESTION-HINT",
+        "responseType": "DRAFT-RESPONSE-TYPE",
+        "value": "DRAFT-VALUE",
+        "isCompleted": false,
+        "showRemarks": false,
+        "remarks": "DRAFT-REMARKS",
+        "createdBy": "",
+        "updatedBy": "",
+        "options": [],
+        "children": [],
+        "questionGroup": [
+            "A1"
+        ],
+        "questionType": "DRAFT-QUESTION-TYPE",
+        "modeOfCollection": "DRAFT-MODE-OF-COLLECTION",
+        "usedForScoring": "percentage",
+        "fileName": [],
+        "accessibility": "DRAFT-ACCESSIBILITY",
+        "instanceIdentifier": "DRAFT-INSTANCE-IDENTIFIER",
+        "noOfInstances": 0,
+        "notApplicable": false,
+        "canBeNotApplicable": false,
+        "instanceQuestionsString": "",
+        "instanceQuestions": [],
+        "isAGeneralQuestion": false,
+        "dateFormat": "dd-mm-yyyy",
+        "autoCapture": "SAMPLE-AUTO-CAPTURE",
+        "rubricLevel": "RUBRIC-LEVEL",
+        "sectionHeader": "SAMPLE-SECTION-HEADER",
+        "allowAudioRecording": false,
+        "page": "SAMPLE-PAGE",
+        "questionNumber": "SAMPLE-QUESTION-NUMBER",
+        "isDeleted": false,
+        "deleted": false,
+        "draftCriteriaId": "5db0292179e31f1b85d11ca9",
+        "draftFrameworkId": "5daec85d58e6e53dbdd84e0e",
+        "draftEvidenceMethodId": "5daff8ae9b71b24fcad7b182",
+        "draftSectionId": "5db01480bd197138284799cf",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:23:53.676Z",
+        "createdAt": "2020-09-08T11:23:53.676Z",
+        "__v": 0
+    }
+ }
   */
 
   async details(req) {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftQuestionDocument = await database.models.draftQuestions.findOne({
-          _id: req.params._id,
-          userId: req.userDetails.userId
-        }).lean()
-
-        if (!draftQuestionDocument) {
-          throw { status: HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.DRAFT_QUESTION_NOT_FOUND };
-        }
-
-        return resolve({
-          message: CONSTANTS.apiResponses.DRAFT_QUESTION_DETAILS_FETCHED,
-          status: HTTP_STATUS_CODE["ok"].status,
-          result: draftQuestionDocument
-        })
+        let draftQuestionDocument = await draftQuestionHelper.details(req.params._id, req.userDetails.userId);
+        return resolve(draftQuestionDocument)
 
       } catch (error) {
         return reject({
@@ -203,10 +313,63 @@ module.exports = class DraftQuestions extends Abstract {
   * @apiVersion 1.0.0
   * @apiName Question update
   * @apiGroup Draft Questions
-  * @apiSampleRequest /design/api/v1/draftQuestions/update/5db108b4e740c01b5bbe6faa
+  * @apiSampleRequest /design/api/v1/draftQuestions/update/5f5769c9659c7e3e78f05dc9
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
+  * @apiParamExample {json} Response:
+  {
+    "message": "Draft Question updated successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f5769c9659c7e3e78f05dc9",
+        "externalId": "Ia/1",
+        "question": [],
+        "tip": "DRAFT-QUESTION-TIP",
+        "hint": "DRAFT-QUESTION-HINT",
+        "responseType": "DRAFT-RESPONSE-TYPE",
+        "value": "DRAFT-VALUE",
+        "isCompleted": false,
+        "showRemarks": false,
+        "remarks": "DRAFT-REMARKS",
+        "createdBy": "",
+        "updatedBy": "",
+        "options": [],
+        "children": [],
+        "questionGroup": [
+            "A1"
+        ],
+        "questionType": "DRAFT-QUESTION-TYPE",
+        "modeOfCollection": "DRAFT-MODE-OF-COLLECTION",
+        "usedForScoring": "percentage",
+        "fileName": [],
+        "accessibility": "DRAFT-ACCESSIBILITY",
+        "instanceIdentifier": "DRAFT-INSTANCE-IDENTIFIER",
+        "noOfInstances": 0,
+        "notApplicable": false,
+        "canBeNotApplicable": false,
+        "instanceQuestionsString": "",
+        "instanceQuestions": [],
+        "isAGeneralQuestion": false,
+        "dateFormat": "dd-mm-yyyy",
+        "autoCapture": "SAMPLE-AUTO-CAPTURE",
+        "rubricLevel": "RUBRIC-LEVEL",
+        "sectionHeader": "SAMPLE-SECTION-HEADER",
+        "allowAudioRecording": false,
+        "page": "SAMPLE-PAGE",
+        "questionNumber": "SAMPLE-QUESTION-NUMBER",
+        "isDeleted": false,
+        "deleted": false,
+        "draftCriteriaId": "5db0292179e31f1b85d11ca9",
+        "draftFrameworkId": "5daec85d58e6e53dbdd84e0e",
+        "draftEvidenceMethodId": "5daff8ae9b71b24fcad7b182",
+        "draftSectionId": "5db01480bd197138284799cf",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:31:37.812Z",
+        "createdAt": "2020-09-08T11:23:53.676Z",
+        "__v": 0
+    }
+}
   */
 
   async update(req) {
@@ -249,6 +412,11 @@ module.exports = class DraftQuestions extends Abstract {
  * @apiHeader {String} X-authenticated-user-token Authenticity token  
  * @apiUse successBody
  * @apiUse errorBody
+ * @apiParamExample {json} Response:
+ {
+    "message": "Draft question deleted successfully.",
+    "status": 200
+ }
  */
 
   async delete(req) {

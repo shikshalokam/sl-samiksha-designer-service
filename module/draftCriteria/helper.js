@@ -114,4 +114,36 @@ module.exports = class draftCriteriaHelper {
             }
         })
     }
+
+    /**
+    * To get details draft criteria
+    * @method
+    * @name  details
+    * @param {String} criteriaId - draft criteria id.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of criteria details
+    */
+   static details(criteriaId, userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let draftCriteriaDocument = await database.models.draftCriteria.findOne({
+                _id: criteriaId,
+                userId: userId
+              }).lean()
+
+              if (!draftCriteriaDocument) {
+                throw new Error(CONSTANTS.apiResponses.DRAFT_CRITERIAS_NOT_FOUND);
+              }
+      
+              return resolve({
+                message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED,
+                result: draftCriteriaDocument,
+              })
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 }

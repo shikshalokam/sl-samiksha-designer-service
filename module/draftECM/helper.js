@@ -114,4 +114,38 @@ module.exports = class draftECMHelper {
             }
         })
     }
+
+
+    /**
+    * To get details of draft ecm
+    * @method
+    * @name  details
+    * @param {String} ecmId - draft ecm id.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of ecm details
+    */
+    static details(ecmId, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftEcmDocument = await database.models.draftECM.findOne({
+                    _id: ecmId,
+                    userId: userId
+                }).lean()
+
+                if (!draftEcmDocument) {
+                    throw new Error(CONSTANTS.apiResponses.DRAFT_ECM_NOT_FOUND);
+                }
+
+                return resolve({
+                    message: CONSTANTS.apiResponses.DRAFT_ECM_FOUND,
+                    result: draftEcmDocument
+                })
+
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 }

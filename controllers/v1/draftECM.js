@@ -24,13 +24,13 @@ module.exports = class DraftECM extends Abstract {
 * @apiGroup Draft Ecm
 * @apiSampleRequest /design/api/v1/draftECM/create
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
-* @apiParamExample {json} Request-Body:
+* @apiParamExample {json} Request:
 {
   "code": "LW"
   "tip": "Some tip for the criteria.",
   "name": "Learning Walk",
   "description": "DRAFT-ECM-DESCRIPTION",
-  "draftFrameworkId":ObjectId("5dafe18d3dac8566cbc62608"),
+  "draftFrameworkId":5db13f61ab5de05e77d51c4d",
   "isSubmitted": "false",
   "modeOfCollection": "onfield",
   "canBeNotApplicable": false,
@@ -38,6 +38,31 @@ module.exports = class DraftECM extends Abstract {
   }
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft ECM created successfully.",
+    "status": 200,
+    "result": {
+        "code": "LW",
+        "tip": "Some tip for the criteria.",
+        "name": "Learning Walk",
+        "description": "DRAFT-ECM-DESCRIPTION",
+        "startTime": "Tue Sep 08 2020 15:27:40 GMT+0530 (IST)",
+        "endTime": "Tue Sep 08 2020 15:27:40 GMT+0530 (IST)",
+        "isSubmitted": false,
+        "modeOfCollection": "onfield",
+        "isDeleted": false,
+        "canBeNotApplicable": false,
+        "_id": "5f5755fde22f3031851187da",
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T09:59:25.735Z",
+        "createdAt": "2020-09-08T09:59:25.735Z",
+        "__v": 0
+    }
+}
+*
 */
 
   async create(req) {
@@ -78,6 +103,22 @@ module.exports = class DraftECM extends Abstract {
 * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft Ecm fetched successfully.",
+    "status": 200,
+    "result": {
+        "data": [
+            {
+                "_id": "5f55e4b159d529165d956fcf",
+                "code": "DRAFT-ECM-CODE",
+                "name": "DRAFT-ECM-NAME",
+                "description": "DRAFT-ECM-DESCRIPTION"
+            }
+        ],
+        "count": 3
+    }
+}
 */
 
   async list(req) {
@@ -132,26 +173,39 @@ module.exports = class DraftECM extends Abstract {
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
+  * @apiParamExample {json} Response:
+  {
+    "message": "Draft Ecm fetched successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f575db5ad990a36381b6cfb",
+        "code": "LW",
+        "tip": "Some tip for the criteria.",
+        "name": "Learning Walk",
+        "description": "DRAFT-ECM-DESCRIPTION",
+        "startTime": "Tue Sep 08 2020 15:46:14 GMT+0530 (IST)",
+        "endTime": "Tue Sep 08 2020 15:46:14 GMT+0530 (IST)",
+        "isSubmitted": false,
+        "modeOfCollection": "onfield",
+        "isDeleted": false,
+        "canBeNotApplicable": false,
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T10:32:21.194Z",
+        "createdAt": "2020-09-08T10:32:21.194Z",
+        "__v": 0
+    }
+}
   */
 
   async details(req) {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftEcmDocument = await database.models.draftECM.findOne({
-          _id: req.params._id,
-          userId: req.userDetails.userId
-        }).lean()
+        let draftEcmDetails = await draftECMHelper.details(req.params._id, req.userDetails.userId);
 
-        if (!draftEcmDocument) {
-          throw { status: HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.DRAFT_ECM_NOT_FOUND };
-        }
-
-        return resolve({
-          message: CONSTANTS.apiResponses.DRAFT_ECM_FOUND,
-          status: HTTP_STATUS_CODE["ok"].status,
-          result: draftEcmDocument
-        })
+        return resolve(draftEcmDetails)
 
       } catch (error) {
         return reject({
@@ -175,14 +229,45 @@ module.exports = class DraftECM extends Abstract {
 * @apiGroup Draft Ecm
 * @apiSampleRequest /design/api/v1/draftECM/update/5daff8ae9b71b24fcad7b182
 * @apiHeader {String} X-authenticated-user-token Authenticity token
-* @apiParamExample {json} Request-Body:
+* @apiParamExample {json} Request:
 {
-  "code": "BL"
-  "tip": "Some tip for the criteria.",
-  "name": "Book look",
-  }   
+	"frameworkId":"5da97c8786c28965d0aa5925",
+	"code" : "PI",
+    "tip" : "Conduct principal interview on the first or second day, before the coordinator interview",
+    "name" : "Principal Interview",
+    "description" : "Conduct principal interview on the first or second day, before the coordinator interview",
+    "startTime" : "",
+    "endTime" : "",
+    "isSubmitted" : false,
+    "modeOfCollection" : "onfield",
+    "canBeNotApplicable" : false
+} 
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft ECM updated successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f575db5ad990a36381b6cfb",
+        "code": "PI",
+        "tip": "Conduct principal interview on the first or second day, before the coordinator interview",
+        "name": "Principal Interview",
+        "description": "Conduct principal interview on the first or second day, before the coordinator interview",
+        "startTime": "",
+        "endTime": "",
+        "isSubmitted": false,
+        "modeOfCollection": "onfield",
+        "isDeleted": false,
+        "canBeNotApplicable": false,
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T10:34:09.385Z",
+        "createdAt": "2020-09-08T10:32:21.194Z",
+        "__v": 0
+    }
+}
 */
 
   async update(req) {
@@ -224,6 +309,11 @@ module.exports = class DraftECM extends Abstract {
 * @apiSampleRequest /design/api/v1/draftECM/delete/5daff8ae9b71b24fcad7b182
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft ECM deleted successfully.",
+    "status": 200
+}
 */
 
   async delete(req) {

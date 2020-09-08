@@ -111,4 +111,41 @@ module.exports = class draftSectionsHelper {
             }
         })
     }
+
+
+    /**
+    * To details draft section
+    * @method
+    * @name  details
+    * @param {String} sectionId - draftt sectionId.
+    * @param {String} userId - ckeyclock user details.
+    * @returns {json} Response consists of draft section details
+    */
+   static details(sectionId, userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let draftSectionDocument = await database.models.draftSections.findOne({
+                _id: sectionId,
+                userId: userId
+              }).lean()
+        
+              if (!draftSectionDocument) {
+                throw new Error(CONSTANTS.apiResponses.SECTION_NOT_FOUND);
+              }
+        
+              return resolve({
+                message: CONSTANTS.apiResponses.SECTION_DETAILS_FETCHED,
+                result: draftSectionDocument
+              })
+
+        ;
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
+    
 }

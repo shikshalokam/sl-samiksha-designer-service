@@ -22,14 +22,32 @@ module.exports = class DraftSections extends Abstract {
 * @apiName create draftSections
 * @apiGroup Draft Sections
 * @apiSampleRequest /design/api/v1/draftSections/create
-  * @apiParamExample {json} Request-Body:
-  * {
+* @apiParamExample {json} Request:
+{
     "draftFrameworkId":"5daec85d58e6e53dbdd84e0e",
-	  "code":"DF"
+    "code":"DF",
+    "name": "DEFAULT-NAME"
  }
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Section created successfully.",
+    "status": 200,
+    "result": {
+        "code": "DF",
+        "name": "DEFAULT-NAME",
+        "isDeleted": false,
+        "_id": "5f576bfefaf5394329e1e938",
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:33:18.671Z",
+        "createdAt": "2020-09-08T11:33:18.671Z",
+        "__v": 0
+    }
+}
 */
 
   async create(req) {
@@ -72,6 +90,26 @@ module.exports = class DraftSections extends Abstract {
  * @apiSampleRequest /design/api/v1/draftSections/list/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
  * @apiUse successBody
  * @apiUse errorBody
+ * @apiParamExample {json} Response:
+ {
+    "message": "Draft Sections fetched successfully.",
+    "status": 200,
+    "result": {
+        "data": [
+            {
+                "_id": "5f55e4a759d529165d956fce",
+                "code": "DEFAULT-CODE",
+                "name": "DEFAULT-NAME"
+            },
+            {
+                "_id": "5f576bfefaf5394329e1e938",
+                "code": "DEFAULT-CODE",
+                "name": "DEFAULT-NAME"
+            }
+        ],
+        "count": 2
+    }
+}
  */
 
   async list(req) {
@@ -123,30 +161,35 @@ module.exports = class DraftSections extends Abstract {
  * @apiVersion 1.0.0
  * @apiName details draftSections
  * @apiGroup Draft Sections
- * @apiSampleRequest /design/api/v1/draftSections/details/5daec85d58e6e53dbdd84e0e
+ * @apiSampleRequest /design/api/v1/draftSections/details/5f55e4a759d529165d956fce
  * @apiHeader {String} X-authenticated-user-token Authenticity token  
  * @apiUse successBody
  * @apiUse errorBody
+ * @apiParamExample {json} Response:
+  {
+      "message": "Draft sections details fetched successfully.",
+      "status": 200,
+      "result": {
+          "_id": "5f55e4a759d529165d956fce",
+          "code": "DEFAULT-CODE",
+          "name": "DEFAULT-NAME",
+          "isDeleted": false,
+          "deleted": false,
+          "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+          "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+          "updatedAt": "2020-09-07T07:43:35.618Z",
+          "createdAt": "2020-09-07T07:43:35.618Z",
+          "__v": 0
+      }
+  }
  */
 
   async details(req) {
     return new Promise(async (resolve, reject) => {
       try {
 
-        let draftSectionDocument = await database.models.draftSections.findOne({
-          _id: req.params._id,
-          userId: req.userDetails.userId
-        }).lean()
-
-        if (!draftSectionDocument) {
-          throw { status: HTTP_STATUS_CODE["not_found"].status, message: CONSTANTS.apiResponses.SECTION_NOT_FOUND };
-        }
-
-        return resolve({
-          message: CONSTANTS.apiResponses.SECTION_DETAILS_FETCHED,
-          status: HTTP_STATUS_CODE["ok"].status,
-          result: draftSectionDocument
-        })
+        let draftSectionDocument = await draftSectionsHelper.details(req.params._id, req.userDetails.userId)
+        resolve(draftSectionDocument);
 
       } catch (error) {
         return reject({
@@ -169,9 +212,31 @@ module.exports = class DraftSections extends Abstract {
 * @apiName update draftSections
 * @apiGroup Draft Sections
 * @apiSampleRequest /design/api/v1/draftSections/update/5db01480bd197138284799cf
+* @apiParamExample {json} Request:
+{
+    "code": "SQ",
+    "name" : "Survey Questions"
+}
 * @apiHeader {String} X-authenticated-user-token Authenticity token  
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft Section updated successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f55e4a759d529165d956fce",
+        "code": "SQ",
+        "name": "Survey Questions",
+        "isDeleted": false,
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:41:22.617Z",
+        "createdAt": "2020-09-07T07:43:35.618Z",
+        "__v": 0
+    }
+}
 */
 
   async update(req) {
@@ -183,12 +248,11 @@ module.exports = class DraftSections extends Abstract {
           userId: req.userDetails.userId
         }
 
-        let draftECMDocument = await draftSectionsHelper.update(findQuery, req.body)
+        let draftSectionDocument = await draftSectionsHelper.update(findQuery, req.body)
 
         return resolve({
-          status: HTTP_STATUS_CODE["ok"].status,
           message: CONSTANTS.apiResponses.SECTION_UPDATED,
-          result: draftECMDocument
+          result: draftSectionDocument
         });
       }
       catch (error) {
@@ -213,6 +277,11 @@ module.exports = class DraftSections extends Abstract {
 * @apiGroup DraftSections
 * @apiUse successBody
 * @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Section deleted successfully.",
+    "status": 200
+}
 */
 
   async delete(req) {

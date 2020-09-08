@@ -120,4 +120,39 @@ module.exports = class draftQuestionsHelper {
     })
   }
 
+
+    /**
+    * To details draft questions
+    * @method
+    * @name  details
+    * @param {String} questionId- draftCriteriaId of the question.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of question details
+    */
+   static details(questionId, userId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        let draftQuestionDocument = await database.models.draftQuestions.findOne({
+          _id: questionId,
+          userId: userId
+        }).lean()
+      
+        if (!draftQuestionDocument) {
+          throw new Error(CONSTANTS.apiResponses.DRAFT_QUESTION_NOT_FOUND);
+        }
+      
+        return resolve({
+          message: CONSTANTS.apiResponses.DRAFT_QUESTION_DETAILS_FETCHED,
+          result: draftQuestionDocument
+        })
+
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  
+
 }

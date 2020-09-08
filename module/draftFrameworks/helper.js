@@ -165,4 +165,38 @@ module.exports = class draftFrameworksHelper {
             }
         })
     }
+
+
+    /**
+    * To get details of draft framework
+    * @method
+    * @name  details
+    * @param {String} draftFrameworkId - draft framework id.
+    * @param {String} userId - keclock user id.
+    * @returns {json} Response consists of framework details
+    */
+    static details(draftFrameworkId, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftFrameworkDocument = await database.models.draftFrameworks.findOne({
+                    _id: draftFrameworkId,
+                    userId: userId
+                }).lean();
+
+                if (!draftFrameworkDocument) {
+                    throw new Error(CONSTANTS.apiResponses.FRAMEWORK_NOT_FOUND);
+                }
+
+                return resolve({
+                    message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED,
+                    result: draftFrameworkDocument
+                })
+              
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 }
