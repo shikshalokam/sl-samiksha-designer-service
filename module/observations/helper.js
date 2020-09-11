@@ -70,14 +70,14 @@ module.exports = class draftFrameworksHelper {
     /**
     * To get framework form
     * @method
-    * @name  details
-    * @returns {json} Response consists of framework details
+    * @name  getFrameworkForm
+    * @returns {json} Response consists of framewrok create form
     */
    static getFrameworkForm() {
     return new Promise(async (resolve, reject) => {
         try {
 
-            let frameworkForm = await formsHelper.list({ name : "ObservationFramework" },["name","value"]);
+            let frameworkForm = await formsHelper.list({ name :  CONSTANTS.common.FRAMEWORK_CREATE_FORM_NAME },["name","value"]);
 
             let entityTypes =  await entityTypesHelper.list({ isObservable: true }, { name: 1 });
 
@@ -92,9 +92,37 @@ module.exports = class draftFrameworksHelper {
             return resolve({ 
                 success:true, 
                 data:frameworkForm.data,
-                message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED 
+                message: CONSTANTS.apiResponses.OBSERVATION_FRAMEWORK_FORM_FETCHED 
             });
           
+        } catch (error) {
+            reject({
+                message:error.message,
+                success:false,
+                data:false
+            })
+        }
+    })
+}
+
+    /**
+    * To update observation draft framework
+    * @method
+    * @name  update
+    * @param {String} frameworkId - framework id.
+    * @param {Object} updateData - framework information.
+    * @param {String} updateData.name - name of the framework.
+    * @param {String} updateData.description - description of the framework.
+    * @param {String} updateData.externalId - externalId of the framework.
+   * @returns {json} Response consists of framework details
+    */
+   static update(frameworkId,userId,updateData) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let frameworkDocument = await draftFrameworkHelper.update({ _id:frameworkId,userId:userId },updateData);
+            return resolve({ message:CONSTANTS.apiResponses.FRAMEWORK_UPDATED, data:frameworkDocument,success:true });
+
         } catch (error) {
             reject({
                 message:error.message,

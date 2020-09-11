@@ -6,6 +6,6 @@
  */
 
 module.exports = {
-
+    FRAMEWORK_CREATE_FORM_NAME : "ObservationFramework"
 
 }

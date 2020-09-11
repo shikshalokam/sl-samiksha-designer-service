@@ -104,6 +104,10 @@ module.exports = {
     status: {
       type: String,
       default: "draft"
+    },
+    voiceOver: {
+      type: Boolean,
+      default: false
     }
   }
 };

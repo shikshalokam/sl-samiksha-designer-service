@@ -9,7 +9,7 @@ module.exports = {
 
       let allFields = [];
 
-      let inputFields = ["solutionName", "description", "addkeywords", "language", "entitytype", "voiceover"];
+      let inputFields = ["solutionName", "description", "keywords", "language", "entityType", "voiceOver"];
 
       let inputField = {
         "field": "",
@@ -17,6 +17,7 @@ module.exports = {
         "visible": true,
         "editable": true,
         "label": "",
+        "width": 650,
         "input": "text",
         "validation": [{
           "name": "required",
@@ -35,11 +36,13 @@ module.exports = {
 
         inputObj.validation[0].message = inputObj.label + " required";
 
-        if (fields == "addkeywords" || fields == "language" || fields == "entitytype") {
+        if (fields == "keywords" || fields == "language" || fields == "entityType") {
           inputObj.input = "select";
           inputObj.options = []
-          if (fields == "addkeywords") {
+          if (fields == "keywords") {
+            inputObj.label = "Add Keywords"
             inputObj.validation = [];
+            inputObj.input = "inputchip";
           }
 
           if (fields == "language") {
@@ -56,20 +59,22 @@ module.exports = {
           }
         }
         else if (fields == "description") {
-          inputObj.input = "textarea";
+          inputObj.input = "textarea  ";
           inputObj.validation = [];
         } else if (fields == "voiceover") {
           inputObj.input = "radio";
           inputObj.validation = [];
           inputObj.options = [
             {
-              "label": "YES",
-              "value": "yes"
+               "label":"Yes",
+               "value":"yes",
+               "checked": false
             },
             {
-              "label": "NO",
-              "value": "no"
-            },
+             "label":"No",
+             "value":"no",
+             "checked": true
+           },
           ]
         }
 
