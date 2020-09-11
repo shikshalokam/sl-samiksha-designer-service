@@ -91,7 +91,7 @@ module.exports = class draftFrameworksHelper {
 
             return resolve({ 
                 success:true, 
-                data:frameworkForm.data,
+                data:frameworkForm.data[0]['value'],
                 message: CONSTANTS.apiResponses.OBSERVATION_FRAMEWORK_FORM_FETCHED 
             });
           
