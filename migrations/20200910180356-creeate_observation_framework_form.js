@@ -54,9 +54,9 @@ module.exports = {
           }
         }
         else if (fields == "description") {
-          inputObj.input = "textarea  ";
+          inputObj.input = "textarea";
           inputObj.validation = [];
-        } else if (fields == "voiceover") {
+        } else if (fields == "voiceOver") {
           inputObj.input = "radio";
           inputObj.validation = [];
           inputObj.options = [
