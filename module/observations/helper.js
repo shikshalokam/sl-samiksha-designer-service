@@ -91,7 +91,7 @@ module.exports = class draftFrameworksHelper {
             if(frameworkForm.data){
                 frameworkForm.data[0].value.map(function(data,index){
                     if(data.field=="entityType"){
-                        frameworkForm.data[0]['value'][index].options = entityTypes;
+                        frameworkForm.data[0]['value'][index].options = entityTypeArray;
                     }
                 });
             }
