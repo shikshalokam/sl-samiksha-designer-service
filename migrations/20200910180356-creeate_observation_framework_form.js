@@ -2,11 +2,6 @@ module.exports = {
   async up(db) {
     global.migrationMsg = "Create Observation Framework Form"
 
-    let userCreateForm =
-      await db.collection('forms').findOne({ name: "ObservationFramework" });
-
-    if (!userCreateForm) {
-
       let allFields = [];
 
       let inputFields = ["solutionName", "description", "keywords", "language", "entityType", "voiceOver"];
@@ -86,7 +81,7 @@ module.exports = {
         value: allFields
       }
       await db.collection('forms').insertOne(createForm);
-    }
+    
   },
 
   async down(db) {
