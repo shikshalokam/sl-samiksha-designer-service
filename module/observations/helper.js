@@ -81,6 +81,13 @@ module.exports = class draftFrameworksHelper {
 
             let entityTypes =  await entityTypesHelper.list({ isObservable: true }, { name: 1 });
 
+            let entityTypeArray = [];
+            entityTypes.map(type =>{
+                entityTypeArray.push({
+                    label:type.name,
+                    value:type._id
+                })
+            });
             if(frameworkForm.data){
                 frameworkForm.data[0].value.map(function(data,index){
                     if(data.field=="entityType"){
