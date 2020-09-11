@@ -54,10 +54,6 @@ let enviromentVariables = {
     "message" : "Required sunbird service base url",
     "optional" : false
   },
-  "SUNBIRD_URL" : {
-    "message" : "Required sunbird url",
-    "optional" : false
-  },
   "MIGRATION_COLLECTION" : {
     "message" : "Required migrations collection name",
     "optional" : false
