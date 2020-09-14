@@ -22,7 +22,7 @@ module.exports = {
     },
     language: {
       type: Array,
-      default: ["English"]
+      default: ["english"]
     },
     keywords: {
       type: Array,
