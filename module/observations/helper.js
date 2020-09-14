@@ -98,17 +98,13 @@ module.exports = class ObservationsHelper {
                         frameworkForm.data[0]['value'][index].value = formDoc.name;
                     }else if(data.field=="entityType"){
                         frameworkForm.data[0]['value'][index].options = entityTypeArray;
-                        frameworkForm.data[0]['value'][index].value = {
-                            label:formDoc.entityType,
-                            value:formDoc.entityTypeId
-                        };
+                        frameworkForm.data[0]['value'][index].value = formDoc.entityTypeId;
+                        
                     }else if(data.field=="description"){
                         frameworkForm.data[0]['value'][index].value = formDoc.description;
                     }else if(data.field=="language"){
-                        frameworkForm.data[0]['value'][index].value = {
-                            label:formDoc.language[0].charAt(0).toUpperCase() + formDoc.language[0].slice(1),
-                            value:formDoc.language[0]
-                        }
+                        frameworkForm.data[0]['value'][index].value = formDoc.language;
+                    
                     }else if(data.field=="keywords"){
                         frameworkForm.data[0]['value'][index].value = formDoc.keywords;
                     }else if(data.field=="voiceOver"){
@@ -152,7 +148,7 @@ module.exports = class ObservationsHelper {
         try {
 
             if(updateData.language){
-                updateData.language = updateData.language.value;
+                updateData.language = updateData.language;
             }
             if(updateData.entityType){
                 updateData['entityTypeId'] = updateData.entityType.value;
