@@ -4,7 +4,7 @@ module.exports = {
 
       let allFields = [];
 
-      let inputFields = ["solutionName", "description", "keywords", "language", "entityType", "voiceOver"];
+      let inputFields = ["name", "description", "keywords", "language", "entityType", "voiceOver"];
 
       let inputField = {
         "field": "",
@@ -21,6 +21,7 @@ module.exports = {
         }]
       };
 
+      
       await Promise.all(inputFields.map(async function (fields) {
 
         let inputObj = JSON.parse(JSON.stringify(inputField));
@@ -31,7 +32,9 @@ module.exports = {
 
         inputObj.validation[0].message = inputObj.label + " required";
 
-        if (fields == "keywords" || fields == "language" || fields == "entityType") {
+        if(fields == "name"){
+          inputObj.label = "Solution Name";
+        }else if (fields == "keywords" || fields == "language" || fields == "entityType") {
           inputObj.input = "select";
           inputObj.options = []
           if (fields == "keywords") {

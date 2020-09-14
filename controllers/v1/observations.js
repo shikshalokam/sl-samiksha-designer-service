@@ -273,11 +273,11 @@ module.exports = class Observations extends Abstract {
   }
 
    /**
-  * @api {post} /design/api/v1/observations/getFrameworkForm get framework form
+  * @api {post} /design/api/v1/observations/getFrameworkForm/:_id get framework form
   * @apiVersion 1.0.0
   * @apiName Get framework form
   * @apiGroup Observations
-  * @apiSampleRequest /design/api/v1/observations/getFrameworkForm
+  * @apiSampleRequest /design/api/v1/observations/getFrameworkForm/5f5b566fe82bbb7130dbb9e4
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody

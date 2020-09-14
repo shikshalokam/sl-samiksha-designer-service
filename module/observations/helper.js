@@ -47,7 +47,7 @@ module.exports = class draftFrameworksHelper {
     * @method
     * @name  details
     * @param {String} draftFrameworkId - draft framework id.
-    * @param {String} userId - keclock user id.
+    * @param {String} userId - keyclock user id.
     * @returns {json} Response consists of framework details
     */
     static details(draftFrameworkId, userId) {
@@ -55,7 +55,7 @@ module.exports = class draftFrameworksHelper {
             try {
 
                 let frameworkDocument = await draftFrameworkHelper.details(draftFrameworkId,userId);
-                return resolve({ success:true,data:frameworkDocument,message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED });
+                return resolve({ success:true,data:frameworkDocument.result,message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED });
               
             } catch (error) {
                 reject({
@@ -71,14 +71,16 @@ module.exports = class draftFrameworksHelper {
     * To get framework form
     * @method
     * @name  getFrameworkForm
+    * @param {String} draftFrameworkId - draft framework id.
+    * @param {String} userId - keyclock user id.
     * @returns {json} Response consists of framewrok create form
     */
-   static getFrameworkForm() {
+   static getFrameworkForm(draftFrameworkId,userId) {
     return new Promise(async (resolve, reject) => {
         try {
 
+            let frameworkDocument = await draftFrameworkHelper.details(draftFrameworkId,userId);
             let frameworkForm = await formsHelper.list({ name :  CONSTANTS.common.FRAMEWORK_CREATE_FORM_NAME },["name","value"]);
-
             let entityTypes =  await entityTypesHelper.list({ isObservable: true }, { name: 1 });
 
             let entityTypeArray = [];
@@ -88,10 +90,23 @@ module.exports = class draftFrameworksHelper {
                     value:type._id
                 })
             });
+            
+            let formDoc = frameworkDocument.result;
             if(frameworkForm.data){
                 frameworkForm.data[0].value.map(function(data,index){
-                    if(data.field=="entityType"){
+                    if(data.field=="name"){
+                        frameworkForm.data[0]['value'][index].value = formDoc.name;
+                    }else if(data.field=="entityType"){
                         frameworkForm.data[0]['value'][index].options = entityTypeArray;
+                        frameworkForm.data[0]['value'][index].value = formDoc.entityType;
+                    }else if(data.field=="description"){
+                        frameworkForm.data[0]['value'][index].value = formDoc.description;
+                    }else if(data.field=="language"){
+                        frameworkForm.data[0]['value'][index].vlaue = formDoc.language;
+                    }else if(data.field=="keywords"){
+                        frameworkForm.data[0]['value'][index].value = formDoc.keywords;
+                    }else if(data.field=="voiceOver"){
+                        frameworkForm.data[0]['value'][index].value = formDoc.voiceOver;
                     }
                 });
             }
