@@ -103,7 +103,7 @@ module.exports = class ObservationsHelper {
                     }else if(data.field=="description"){
                         frameworkForm.data[0]['value'][index].value = formDoc.description;
                     }else if(data.field=="language"){
-                        frameworkForm.data[0]['value'][index].value = formDoc.language;
+                        frameworkForm.data[0]['value'][index].value = formDoc.language[0];
                     
                     }else if(data.field=="keywords"){
                         frameworkForm.data[0]['value'][index].value = formDoc.keywords;
