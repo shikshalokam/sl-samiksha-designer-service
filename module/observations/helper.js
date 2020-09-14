@@ -2,16 +2,14 @@
  * name : module/helper.js
  * author : Rakesh Kumar
  * Date : 05-Sep-2020
- * Description : Draft framework related information.
+ * Description : Observations related information.
  */
 
-// const draftECMHelper = require(MODULES_BASE_PATH + "/draftECM/helper");
-// const sectionsHelper = require(MODULES_BASE_PATH + "/draftSections/helper");
 const draftFrameworkHelper = require(MODULES_BASE_PATH + "/draftFrameworks/helper");
 const formsHelper = require(MODULES_BASE_PATH + "/forms/helper");
 const entityTypesHelper = require(MODULES_BASE_PATH + "/entityTypes/helper");
 
-module.exports = class draftFrameworksHelper {
+module.exports = class ObservationsHelper {
 
     /**
     * To create draft framework
