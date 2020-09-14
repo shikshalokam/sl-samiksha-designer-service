@@ -65,12 +65,12 @@ module.exports = {
           inputObj.options = [
             {
                "label":"Yes",
-               "value":"yes",
+               "value":true,
                "checked": false
             },
             {
              "label":"No",
-             "value":"no",
+             "value":false,
              "checked": true
            },
           ]

@@ -21,7 +21,7 @@ module.exports = class Observations extends Abstract {
 * @apiSampleRequest /design/api/v1/observations/create
 * @apiHeader {String} X-authenticated-user-token Authenticity token 
 * @apiParamExample {json} Request:
-*{
+* {
 *    "externalId" : "Mantra-EXCEL-2019-001",
 *    "name" : "Mantra EXCEL School Assessment framework 2015",
 *    "description" : "Mantra EXCEL School Assessment framework 2015",
@@ -282,116 +282,125 @@ module.exports = class Observations extends Abstract {
   * @apiUse successBody
   * @apiUse errorBody
   * @apiParamExample {json} Response:
-  * {
+  *{
     "message": "Observation framework form fetched successfully.",
     "status": 200,
     "result": [
         {
-            "_id": "5f5b309700f4c0741d9f607d",
-            "name": "ObservationFramework",
+            "field": "name",
+            "value": "framework",
+            "visible": true,
+            "editable": true,
+            "label": "Solution Name",
+            "width": 650,
+            "input": "text",
+            "validation": [
+                {
+                    "name": "required",
+                    "validator": "required",
+                    "message": "Name required"
+                }
+            ]
+        },
+        {
+            "field": "description",
+            "value": "ddd",
+            "visible": true,
+            "editable": true,
+            "label": "Description",
+            "width": 650,
+            "input": "textarea",
+            "validation": []
+        },
+        {
+            "field": "keywords",
             "value": [
+                "Framework",
+                "Assessment"
+            ],
+            "visible": true,
+            "editable": true,
+            "label": "Add Keywords",
+            "width": 650,
+            "input": "inputchip",
+            "validation": [],
+            "options": []
+        },
+        {
+            "field": "language",
+            "value": {
+                "label": "English",
+                "value": "English"
+            },
+            "visible": true,
+            "editable": true,
+            "label": "Language",
+            "width": 650,
+            "input": "select",
+            "validation": [
                 {
-                    "field": "solutionName",
-                    "value": "",
-                    "visible": true,
-                    "editable": true,
-                    "label": "Solution Name",
-                    "input": "text",
-                    "validation": [
-                        {
-                            "name": "required",
-                            "validator": "required",
-                            "message": "Solution Name required"
-                        }
-                    ]
+                    "name": "required",
+                    "validator": "required",
+                    "message": "Language required"
+                }
+            ],
+            "options": [
+                {
+                    "label": "English",
+                    "value": "english"
                 },
                 {
-                    "field": "description",
-                    "value": "",
-                    "visible": true,
-                    "editable": true,
-                    "label": "Description",
-                    "input": "textarea",
-                    "validation": []
+                    "label": "Hindi",
+                    "value": "hindi"
+                }
+            ]
+        },
+        {
+            "field": "entityType",
+            "value": {
+                "label": "school",
+                "value": "5ce23d633c330302e720e65f"
+            },
+            "visible": true,
+            "editable": true,
+            "label": "Entity Type",
+            "width": 650,
+            "input": "select",
+            "validation": [
+                {
+                    "name": "required",
+                    "validator": "required",
+                    "message": "Entity Type required"
+                }
+            ],
+            "options": [
+                {
+                    "label": "school",
+                    "value": "5d15a959e9185967a6d5e8a6"
+                }
+            ]
+        },
+        {
+            "field": "voiceOver",
+            "value": {
+                "label": "No"
+            },
+            "visible": true,
+            "editable": true,
+            "label": "Voice Over",
+            "width": 650,
+            "input": "radio",
+            "validation": [],
+            "options": [
+                {
+                    "label": "Yes",
+                    "value": "yes",
+                    "checked": false
                 },
                 {
-                    "field": "addkeywords",
-                    "value": "",
-                    "visible": true,
-                    "editable": true,
-                    "label": "Addkeywords",
-                    "input": "select",
-                    "validation": [],
-                    "options": []
-                },
-                {
-                    "field": "language",
-                    "value": "",
-                    "visible": true,
-                    "editable": true,
-                    "label": "Language",
-                    "input": "select",
-                    "validation": [
-                        {
-                            "name": "required",
-                            "validator": "required",
-                            "message": "Language required"
-                        }
-                    ],
-                    "options": [
-                        {
-                            "label": "English",
-                            "value": "english"
-                        },
-                        {
-                            "label": "Hindi",
-                            "value": "hindi"
-                        }
-                    ]
-                },
-                {
-                    "field": "entitytype",
-                    "value": "",
-                    "visible": true,
-                    "editable": true,
-                    "label": "Entitytype",
-                    "input": "select",
-                    "validation": [
-                        {
-                            "name": "required",
-                            "validator": "required",
-                            "message": "Entitytype required"
-                        }
-                    ],
-                    "options": [
-                        {
-                            "_id": "5d9da6ed82a97bfe6bbc3f63",
-                            "name": "mandal"
-                        },
-                        {
-                            "_id": "5d9da79782a97bfe6bbc402b",
-                            "name": "complex"
-                        }
-                    ]
-                },
-                {
-                    "field": "voiceover",
-                    "value": "",
-                    "visible": true,
-                    "editable": true,
-                    "label": "Voiceover",
-                    "input": "radio",
-                    "validation": [],
-                    "options": [
-                        {
-                            "label": "YES",
-                            "value": "yes"
-                        },
-                        {
-                            "label": "NO",
-                            "value": "no"
-                        }
-                    ]
+                    "label": "No",
+                    "value": "no",
+                    "checked": true
                 }
             ]
         }

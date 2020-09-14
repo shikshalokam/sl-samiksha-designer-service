@@ -5,6 +5,8 @@
  * Description : Observations related information.
  */
 
+const { up } = require("../../migrations/20200910180356-creeate_observation_framework_form");
+
 const draftFrameworkHelper = require(MODULES_BASE_PATH + "/draftFrameworks/helper");
 const formsHelper = require(MODULES_BASE_PATH + "/forms/helper");
 const entityTypesHelper = require(MODULES_BASE_PATH + "/entityTypes/helper");
@@ -96,15 +98,24 @@ module.exports = class ObservationsHelper {
                         frameworkForm.data[0]['value'][index].value = formDoc.name;
                     }else if(data.field=="entityType"){
                         frameworkForm.data[0]['value'][index].options = entityTypeArray;
-                        frameworkForm.data[0]['value'][index].value = formDoc.entityType;
+                        frameworkForm.data[0]['value'][index].value = {
+                            label:formDoc.entityType,
+                            value:formDoc.entityTypeId
+                        };
                     }else if(data.field=="description"){
                         frameworkForm.data[0]['value'][index].value = formDoc.description;
                     }else if(data.field=="language"){
-                        frameworkForm.data[0]['value'][index].vlaue = formDoc.language;
+                        frameworkForm.data[0]['value'][index].value = {
+                            label:formDoc.language[0].charAt(0).toUpperCase() + formDoc.language[0].slice(1),
+                            value:formDoc.language[0]
+                        }
                     }else if(data.field=="keywords"){
                         frameworkForm.data[0]['value'][index].value = formDoc.keywords;
                     }else if(data.field=="voiceOver"){
-                        frameworkForm.data[0]['value'][index].value = formDoc.voiceOver;
+                        frameworkForm.data[0]['value'][index].value = {
+                            label:formDoc.voiceOver==true ? 'Yes':"No",
+                            value:formDoc.voiceOver
+                        }
                     }
                 });
             }
@@ -140,8 +151,19 @@ module.exports = class ObservationsHelper {
     return new Promise(async (resolve, reject) => {
         try {
 
-            let frameworkDocument = await draftFrameworkHelper.update({ _id:frameworkId,userId:userId },updateData);
-            return resolve({ message:CONSTANTS.apiResponses.FRAMEWORK_UPDATED, data:frameworkDocument,success:true });
+            if(updateData.language){
+                updateData.language = updateData.language.value;
+            }
+            if(updateData.entityType){
+                updateData['entityTypeId'] = updateData.entityType.value;
+                updateData.entityType = updateData.entityType.label;
+            }
+            if(updateData.voiceOver){
+                updateData.voiceOver = updateData.voiceOver.value;
+            }
+
+            const frameworkDoc = await draftFrameworkHelper.update({ _id:frameworkId,userId:userId },updateData);
+            return resolve({ message:CONSTANTS.apiResponses.FRAMEWORK_UPDATED, data:frameworkDoc,success:true });
 
         } catch (error) {
             reject({
