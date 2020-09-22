@@ -542,4 +542,379 @@ async update(req) {
   })
 }
 
+
+
+  /**
+  * @api {post} /design/api/v1/observations/createCriteria Create Criteria
+  * @apiVersion 1.0.0
+  * @apiName Create Criteria
+  * @apiGroup Observations
+  * @apiParamExample {json} Request:
+  * {
+	"externalId":  "SAMPLE-EXTERNAL-ID",
+    "timesUsed": 10,
+    "weightage": 20,
+    "name":  "SAMPLE-NAME",
+    "score":"",
+    "remarks": "SAMPLE-REMARKS",
+    "showRemarks": true,
+    "description": "SAMPLE DESCRIPTION",
+    "resourceType": ["observation"],
+    "language": ["English"],
+    "keywords": ["Framework", "Assessment"],
+    "concepts": [],
+    "createdFor": ["0125748495625912324", "0125747659358699520"],
+    "rubric": {
+    	"levels": {
+          "L1": {
+            "level": "L1",
+            "label": "Level 1",
+            "description": "sample description",
+            "expression": ""
+          },
+          "L2": {
+            "level": "L2",
+            "label": "Level 2",
+            "description": "sample description",
+            "expression": ""
+          },
+          "L3": {
+            "level": "L3",
+            "label": "Level 3",
+            "description": "sample description",
+            "expression": ""
+          },
+          "L4": {
+            "level": "L4",
+            "label": "Level 4",
+            "description": "sample description",
+            "expression": ""
+          }
+        }
+    },
+    "flag": {},
+    "criteriaType": "auto",
+    "draftFrameworkId":"5daec85d58e6e53dbdd84e0e"
+ }
+ * @apiUse successBody
+ * @apiUse errorBody
+ * @apiParamExample {json} Response:
+ *
+ {
+    "message": "Draft Criteria created successfully.",
+    "status": 200,
+    "result": {
+        "externalId": "SAMPLE-EXTERNAL-ID",
+        "userId": "94225c52-1761-45bc-b55a-8572aa06c3f8",
+        "timesUsed": 10,
+        "weightage": 20,
+        "name": "SAMPLE-NAME",
+        "score": "",
+        "remarks": "SAMPLE-REMARKS",
+        "showRemarks": true,
+        "description": "SAMPLE DESCRIPTION",
+        "resourceType": [
+            "observation"
+        ],
+        "language": [
+            "English"
+        ],
+        "keywords": [
+            "Framework",
+            "Assessment"
+        ],
+        "concepts": [],
+        "createdFor": [
+            "0125748495625912324",
+            "0125747659358699520"
+        ],
+        "rubric": {
+            "levels": {
+                "L1": {
+                    "level": "L1",
+                    "label": "Level 1",
+                    "description": "sample description",
+                    "expression": ""
+                },
+                "L2": {
+                    "level": "L2",
+                    "label": "Level 2",
+                    "description": "sample description",
+                    "expression": ""
+                },
+                "L3": {
+                    "level": "L3",
+                    "label": "Level 3",
+                    "description": "sample description",
+                    "expression": ""
+                },
+                "L4": {
+                    "level": "L4",
+                    "label": "Level 4",
+                    "description": "sample description",
+                    "expression": ""
+                }
+            }
+        },
+        "criteriaType": "auto",
+        "isDeleted": false,
+        "_id": "5f5751dda4d7022c2ea59432",
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "updatedAt": "2020-09-08T09:41:49.787Z",
+        "createdAt": "2020-09-08T09:41:49.787Z",
+        "__v": 0
+    }
+}
+ * 
+*/
+
+async createCriteria(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+       
+        const draftCriteriaData = _.merge(req.body, { userId: req.userDetails.userId })
+
+        let draftCriteriaDocument = await observationsHelper.createCriteria(draftCriteriaData)
+        return resolve({
+          message: draftCriteriaDocument.message,
+          result: draftCriteriaDocument.data
+        });
+
+      }
+      catch (error) {
+          console.log("error",error);
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+      }
+    })
+  }
+
+/**
+* @api {post} /design/api/v1/observations/criteriaList/{draftFrameworkId}?search=:search&page=:page&limit=:limit list criteria
+* @apiVersion 1.0.0
+* @apiName List criteria by userId
+* @apiGroup Observations
+* @apiSampleRequest /design/api/v1/observations/criteriaList/5daec85d58e6e53dbdd84e0e?search=a&page=1&limit=10
+* @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiUse successBody
+* @apiUse errorBody
+* @apiParamExample {json} Response:
+*{
+    "message": "Draft criterias fetched successfully.",
+    "status": 200,
+    "result": {
+        "data": [
+            {
+                "_id": "5f55e44859d529165d956fc9",
+                "name": "SAMPLE-NAME",
+                "description": "SAMPLE DESCRIPTION"
+            }
+        ],
+        "count": 2
+    }
+}
+*
+*/
+
+  async criteriaList(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        let matchQuery = {}
+
+        matchQuery["$match"] = {}
+        matchQuery["$match"]["draftFrameworkId"] = ObjectId(req.params._id)
+        matchQuery["$match"]["isDeleted"] = false
+        matchQuery["$match"]["userId"] = req.userDetails.userId
+
+        matchQuery["$match"]["$or"] = []
+        matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "code": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') })
+
+        let draftCriteriaList = await observationsHelper.criteriaList(matchQuery, req.pageSize, req.pageNo)
+
+        return resolve({
+            message: draftCriteriaList.message,
+            result: draftCriteriaList.data
+          });
+
+      } catch (error) {
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+      }
+    })
+  }
+
+  /**
+  * @api {post} /design/api/v1/observations/updateCriteria/{criteriaId} Update Criteria
+  * @apiVersion 1.0.0
+  * @apiName Update Criteria
+  * @apiGroup Observations
+  * @apiParamExample {json} Request:
+  * {
+    "externalId": "sample-external-id",
+  * }
+  * @apiSampleRequest /design/api/v1/observations/updateCriteria/5db0292179e31f1b85d11ca9
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+  {
+    "message": "Draft Criteria updated successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f5759a01b91c435dca61391",
+        "externalId": "DummyCriteria",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "timesUsed": 12,
+        "weightage": 20,
+        "name": "Dummy Name",
+        "score": "",
+        "remarks": "",
+        "showRemarks": true,
+        "description": "Dummy Description",
+        "resourceType": [
+            "Program",
+            "Framework",
+            "Criteria"
+        ],
+        "language": [
+            "English"
+        ],
+        "keywords": [
+            "Keyword 1",
+            "Keyword 2"
+        ],
+        "concepts": [
+            {
+                "identifier": "LPD20100",
+                "name": "Teacher_Performance",
+                "objectType": "Concept",
+                "relation": "associatedTo",
+                "description": null,
+                "index": null,
+                "status": null,
+                "depth": null,
+                "mimeType": null,
+                "visibility": null,
+                "compatibilityLevel": null
+            },
+            {
+                "identifier": "LPD20400",
+                "name": "Instructional_Programme",
+                "objectType": "Concept",
+                "relation": "associatedTo",
+                "description": null,
+                "index": null,
+                "status": null,
+                "depth": null,
+                "mimeType": null,
+                "visibility": null,
+                "compatibilityLevel": null
+            },
+            {
+                "identifier": "LPD20200",
+                "name": "Teacher_Empowerment",
+                "objectType": "Concept",
+                "relation": "associatedTo",
+                "description": null,
+                "index": null,
+                "status": null,
+                "depth": null,
+                "mimeType": null,
+                "visibility": null,
+                "compatibilityLevel": null
+            }
+        ],
+        "createdFor": [
+            "0125747659358699520",
+            "0125748495625912324"
+        ],
+        "rubric": {
+            "levels": [
+                {
+                    "level": "L1",
+                    "label": "Level 1",
+                    "description": "asdad",
+                    "expression": "",
+                    "expressionVariables": []
+                },
+                {
+                    "level": "L2",
+                    "label": "Level 2",
+                    "description": "adadad",
+                    "expression": "",
+                    "expressionVariables": []
+                },
+                {
+                    "level": "L3",
+                    "label": "Level 3",
+                    "description": "adasdad",
+                    "expression": "",
+                    "expressionVariables": []
+                },
+                {
+                    "level": "L4",
+                    "label": "Level 4",
+                    "description": "adadadasd",
+                    "expression": "",
+                    "expressionVariables": []
+                }
+            ]
+        },
+        "criteriaType": "auto",
+        "isDeleted": false,
+        "deleted": false,
+        "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+        "updatedAt": "2020-09-08T10:24:25.331Z",
+        "createdAt": "2020-09-08T10:14:56.701Z",
+        "__v": 0,
+        "flag": ""
+    }
+}
+*/
+  async updateCriteria(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        let findQuery = {
+          _id: req.params._id,
+          userId: req.userDetails.userId
+        }
+
+        let draftCriteriaDocument = await observationsHelper.updateCriteria(findQuery, req.body)
+
+        return resolve({
+          message: draftCriteriaDocument.message,
+          result: draftCriteriaDocument.data
+        });
+      }
+      catch (error) {
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+      }
+    })
+  }
+
 };

@@ -134,7 +134,6 @@ module.exports = async function (req, res, next, token = "") {
 
       if (userDetails.result.isValid == true) {
         req.userDetails = {};
-
         req.userDetails = userDetails.result.userInformation;
         req.userDetails['userToken'] = token;
         next();
