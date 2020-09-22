@@ -1,8 +1,15 @@
-const entitiyTypesHelper = require(ROOT_PATH + "/module/entityTypes/helper")
+
+/**
+ * name : controllers/entityTypes.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Entity types related information.
+ */
+const entitiyTypesHelper = require(MODULES_BASE_PATH + "/entityTypes/helper")
 
 module.exports = class EntityTypes extends Abstract {
   constructor() {
-    super(entityTypesSchema);
+    super("entityTypes");
   }
 
   static get name() {
@@ -40,18 +47,21 @@ module.exports = class EntityTypes extends Abstract {
         let result = await entitiyTypesHelper.list({ isObservable: true }, { name: 1 });
 
         return resolve({
-          message: "Entity type fetched successfully.",
+          message:  CONSTANTS.apiResponses.ENTITY_TYPE_FETCHED,
           result: result
         });
 
       } catch (error) {
 
         return reject({
-          status: error.status || 500,
-          message: error.message || "Oops! something went wrong.",
-          errorObject: error
-        })
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
 
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
       }
 
 

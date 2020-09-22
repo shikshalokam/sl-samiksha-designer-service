@@ -1,7 +1,26 @@
-const draftECMHelper = require(ROOT_PATH + "/module/draftECM/helper");
-const sectionsHelper = require(ROOT_PATH + "/module/draftSections/helper");
+
+/**
+ * name : module/helper.js
+ * author : Rakesh Kumar
+ * Date : 05-Sep-2020
+ * Description : Draft framework related information.
+ */
+
+const draftECMHelper = require(MODULES_BASE_PATH + "/draftECM/helper");
+const sectionsHelper = require(MODULES_BASE_PATH + "/draftSections/helper");
 module.exports = class draftFrameworksHelper {
 
+    /**
+    * To create draft framework
+    * @method
+    * @name  create
+    * @param {Object} frameworkData - framework information.
+    * @param {String} frameworkData.name - name of the framework.
+    * @param {String} frameworkData.description - description of the framework.
+    * @param {String} frameworkData.externalId - externalId of the framework.
+    * @param {String} userId - keyclock used id.
+    * @returns {json} Response consists of framework details
+    */
     static create(frameworkData, userId) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -18,7 +37,7 @@ module.exports = class draftFrameworksHelper {
                     frameworkDocument = await database.models.draftFrameworks.findOne(queryObject, { _id: 1 }).lean()
 
                     if (frameworkDocument) {
-                        throw "Framework already exists"
+                        throw CONSTANTS.apiResponses.FRAMEWORK_EXISTS;
                     }
                 }
 
@@ -57,6 +76,17 @@ module.exports = class draftFrameworksHelper {
         })
     }
 
+    /**
+    * To update draft framework
+    * @method
+    * @name  update
+    * @param {Object} findQuery - query details.
+    * @param {Object} updateData - framework information.
+    * @param {String} updateData.name - name of the framework.
+    * @param {String} updateData.description - description of the framework.
+    * @param {String} updateData.externalId - externalId of the framework.
+   * @returns {json} Response consists of framework details
+    */
     static update(findQuery, updateData) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -65,8 +95,8 @@ module.exports = class draftFrameworksHelper {
 
                 if (!frameworkDocument) {
                     throw {
-                        status: 404,
-                        message: "Framework doesnot exist"
+                        status: HTTP_STATUS_CODE["not_found"].status,
+                        message: CONSTANTS.apiResponses.FRAMEWORK_NOT_FOUND
                     }
                 }
 
@@ -81,6 +111,15 @@ module.exports = class draftFrameworksHelper {
         })
     }
 
+    /**
+    * To list draft framework's
+    * @method
+    * @name  list
+    * @param {Object} filteredData - query details.
+    * @param {String} pageSize - page size.
+    * @param {String} pageNo - page number.
+   * @returns {json} Response consists list of framework's
+    */
     static list(filteredData, pageSize, pageNo) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -126,4 +165,38 @@ module.exports = class draftFrameworksHelper {
             }
         })
     }
+
+
+    /**
+    * To get details of draft framework
+    * @method
+    * @name  details
+    * @param {String} draftFrameworkId - draft framework id.
+    * @param {String} userId - keclock user id.
+    * @returns {json} Response consists of framework details
+    */
+    static details(draftFrameworkId, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let draftFrameworkDocument = await database.models.draftFrameworks.findOne({
+                    _id: draftFrameworkId,
+                    userId: userId
+                }).lean();
+
+                if (!draftFrameworkDocument) {
+                    throw new Error(CONSTANTS.apiResponses.FRAMEWORK_NOT_FOUND);
+                }
+
+                return resolve({
+                    message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED,
+                    result: draftFrameworkDocument
+                })
+              
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 }
