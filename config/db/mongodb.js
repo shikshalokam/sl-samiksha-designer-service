@@ -56,7 +56,7 @@ const DB = function(config) {
         opts.options.expireAfterSeconds ||
         opts.options.expireAfterSeconds === 0
       ) {
-        log.debug("Expire Configured for " + opts.name);
+        LOGGER.debug("Expire Configured for " + opts.name);
         schema.plugin(mongoose_ttl, {
           ttl: opts.options.expireAfterSeconds * 1000
         });
