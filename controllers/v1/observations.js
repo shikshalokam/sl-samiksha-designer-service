@@ -684,7 +684,6 @@ async createCriteria(req) {
 
       }
       catch (error) {
-          console.log("error",error);
         return reject({
           status:
             error.status ||
@@ -739,7 +738,7 @@ async createCriteria(req) {
         matchQuery["$match"]["$or"] = []
         matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "code": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') })
 
-        let draftCriteriaList = await observationsHelper.criteriaList(matchQuery, req.pageSize, req.pageNo)
+        let draftCriteriaList = await observationsHelper.criteriaList(matchQuery, req.pageSize, req.pageNo,req.userDetails.userId)
 
         return resolve({
             message: draftCriteriaList.message,
@@ -904,6 +903,113 @@ async createCriteria(req) {
         });
       }
       catch (error) {
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+      }
+    })
+  }
+
+    /**
+* @api {get} /design/api/v1/draftCriteria/observations/{criteriaId} Get criteria details
+* @apiVersion 1.0.0
+* @apiName Criteria Details
+* @apiGroup Observations
+* @apiSampleRequest /design/api/v1/draftCriteria/observations/5db0292179e31f1b85d11ca9
+* @apiUse successBody
+* @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Draft criterias fetched successfully.",
+    "status": 200,
+    "result": {
+        "message": "Draft criterias fetched successfully.",
+        "result": {
+            "_id": "5f5751dda4d7022c2ea59432",
+            "externalId": "SAMPLE-EXTERNAL-ID",
+            "userId": "94225c52-1761-45bc-b55a-8572aa06c3f8",
+            "timesUsed": 10,
+            "weightage": 20,
+            "name": "SAMPLE-NAME",
+            "score": "",
+            "remarks": "SAMPLE-REMARKS",
+            "showRemarks": true,
+            "description": "SAMPLE DESCRIPTION",
+            "resourceType": [
+                "observation"
+            ],
+            "language": [
+                "English"
+            ],
+            "keywords": [
+                "Framework",
+                "Assessment"
+            ],
+            "concepts": [],
+            "createdFor": [
+                "0125748495625912324",
+                "0125747659358699520"
+            ],
+            "rubric": {
+                "levels": {
+                    "L1": {
+                        "level": "L1",
+                        "label": "Level 1",
+                        "description": "sample description",
+                        "expression": ""
+                    },
+                    "L2": {
+                        "level": "L2",
+                        "label": "Level 2",
+                        "description": "sample description",
+                        "expression": ""
+                    },
+                    "L3": {
+                        "level": "L3",
+                        "label": "Level 3",
+                        "description": "sample description",
+                        "expression": ""
+                    },
+                    "L4": {
+                        "level": "L4",
+                        "label": "Level 4",
+                        "description": "sample description",
+                        "expression": ""
+                    }
+                }
+            },
+            "criteriaType": "auto",
+            "isDeleted": false,
+            "deleted": false,
+            "draftFrameworkId": "5db13f61ab5de05e77d51c4d",
+            "updatedAt": "2020-09-08T09:41:49.787Z",
+            "createdAt": "2020-09-08T09:41:49.787Z",
+            "__v": 0
+        }
+    }
+}
+*
+*/
+
+  async criteriaDetails(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+
+        let draftCriteriaDocument = await observationsHelper.criteriaDetails(req.params._id, req.userDetails.userId);
+        
+        return resolve({
+          message: draftCriteriaDocument.message,
+          result: draftCriteriaDocument.data
+        });
+
+      } catch (error) {
         return reject({
           status:
             error.status ||

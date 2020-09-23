@@ -12,6 +12,7 @@ const formsHelper = require(MODULES_BASE_PATH + "/forms/helper");
 const entityTypesHelper = require(MODULES_BASE_PATH + "/entityTypes/helper");
 
 const draftCriteriaHelper = require(MODULES_BASE_PATH + "/draftCriteria/helper");
+const usersHelper = require(MODULES_BASE_PATH + "/users/helper");
 
 module.exports = class ObservationsHelper {
 
@@ -30,8 +31,16 @@ module.exports = class ObservationsHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let frameworkDocument = await draftFrameworkHelper.create(frameworkData, userId);
-                return resolve({ success: true, data: frameworkDocument, message: CONSTANTS.apiResponses.FRAMEWORK_CREATED });
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+
+                    let frameworkDocument = await draftFrameworkHelper.create(frameworkData, userId);
+                    return resolve({ success: true, data: frameworkDocument, message: CONSTANTS.apiResponses.FRAMEWORK_CREATED });
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
 
             } catch (error) {
                 return reject({
@@ -56,8 +65,15 @@ module.exports = class ObservationsHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let frameworkDocument = await draftFrameworkHelper.details(draftFrameworkId, userId);
-                return resolve({ success: true, data: frameworkDocument.result, message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED });
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                    let frameworkDocument = await draftFrameworkHelper.details(draftFrameworkId, userId);
+                    return resolve({ success: true, data: frameworkDocument.result, message: CONSTANTS.apiResponses.FRAMEWORK_DETAILS_FETCHED });
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
 
             } catch (error) {
                 reject({
@@ -81,48 +97,55 @@ module.exports = class ObservationsHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let frameworkDocument = await draftFrameworkHelper.details(draftFrameworkId, userId);
-                let frameworkForm = await formsHelper.list({ name: CONSTANTS.common.FRAMEWORK_CREATE_FORM_NAME }, ["name", "value"]);
-                let entityTypes = await entityTypesHelper.list({ isObservable: true }, { name: 1 });
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                let entityTypeArray = [];
-                entityTypes.map(type => {
-                    entityTypeArray.push({
-                        label: type.name,
-                        value: type._id
-                    })
-                });
+                    let frameworkDocument = await draftFrameworkHelper.details(draftFrameworkId, userId);
+                    let frameworkForm = await formsHelper.list({ name: CONSTANTS.common.FRAMEWORK_CREATE_FORM_NAME }, ["name", "value"]);
+                    let entityTypes = await entityTypesHelper.list({ isObservable: true }, { name: 1 });
 
-                let formDoc = frameworkDocument.result;
-                if (frameworkForm.data) {
-                    frameworkForm.data[0].value.map(function (data, index) {
-                        if (data.field == "name") {
-                            frameworkForm.data[0]['value'][index].value = formDoc.name;
-                        } else if (data.field == "entityType") {
-                            frameworkForm.data[0]['value'][index].options = entityTypeArray;
-                            frameworkForm.data[0]['value'][index].value = formDoc.entityTypeId;
-
-                        } else if (data.field == "description") {
-                            frameworkForm.data[0]['value'][index].value = formDoc.description;
-                        } else if (data.field == "language") {
-                            frameworkForm.data[0]['value'][index].value = formDoc.language[0];
-
-                        } else if (data.field == "keywords") {
-                            frameworkForm.data[0]['value'][index].value = formDoc.keywords;
-                        } else if (data.field == "voiceOver") {
-                            frameworkForm.data[0]['value'][index].value = {
-                                label: formDoc.voiceOver == true ? 'Yes' : "No",
-                                value: formDoc.voiceOver
-                            }
-                        }
+                    let entityTypeArray = [];
+                    entityTypes.map(type => {
+                        entityTypeArray.push({
+                            label: type.name,
+                            value: type._id
+                        })
                     });
-                }
 
-                return resolve({
-                    success: true,
-                    data: frameworkForm.data[0]['value'],
-                    message: CONSTANTS.apiResponses.OBSERVATION_FRAMEWORK_FORM_FETCHED
-                });
+                    let formDoc = frameworkDocument.result;
+                    if (frameworkForm.data) {
+                        frameworkForm.data[0].value.map(function (data, index) {
+                            if (data.field == "name") {
+                                frameworkForm.data[0]['value'][index].value = formDoc.name;
+                            } else if (data.field == "entityType") {
+                                frameworkForm.data[0]['value'][index].options = entityTypeArray;
+                                frameworkForm.data[0]['value'][index].value = formDoc.entityTypeId;
+
+                            } else if (data.field == "description") {
+                                frameworkForm.data[0]['value'][index].value = formDoc.description;
+                            } else if (data.field == "language") {
+                                frameworkForm.data[0]['value'][index].value = formDoc.language[0];
+
+                            } else if (data.field == "keywords") {
+                                frameworkForm.data[0]['value'][index].value = formDoc.keywords;
+                            } else if (data.field == "voiceOver") {
+                                frameworkForm.data[0]['value'][index].value = {
+                                    label: formDoc.voiceOver == true ? 'Yes' : "No",
+                                    value: formDoc.voiceOver
+                                }
+                            }
+                        });
+                    }
+
+                    return resolve({
+                        success: true,
+                        data: frameworkForm.data[0]['value'],
+                        message: CONSTANTS.apiResponses.OBSERVATION_FRAMEWORK_FORM_FETCHED
+                    });
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
 
             } catch (error) {
                 reject({
@@ -149,19 +172,26 @@ module.exports = class ObservationsHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                if (updateData.language) {
-                    updateData.language = updateData.language;
-                }
-                if (updateData.entityType) {
-                    updateData['entityTypeId'] = updateData.entityType.value;
-                    updateData.entityType = updateData.entityType.label;
-                }
-                if (updateData.voiceOver) {
-                    updateData.voiceOver = updateData.voiceOver.value;
-                }
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                const frameworkDoc = await draftFrameworkHelper.update({ _id: frameworkId, userId: userId }, updateData);
-                return resolve({ message: CONSTANTS.apiResponses.FRAMEWORK_UPDATED, data: frameworkDoc, success: true });
+                    if (updateData.language) {
+                        updateData.language = updateData.language;
+                    }
+                    if (updateData.entityType) {
+                        updateData['entityTypeId'] = updateData.entityType.value;
+                        updateData.entityType = updateData.entityType.label;
+                    }
+                    if (updateData.voiceOver) {
+                        updateData.voiceOver = updateData.voiceOver.value;
+                    }
+
+                    const frameworkDoc = await draftFrameworkHelper.update({ _id: frameworkId, userId: userId }, updateData);
+                    return resolve({ message: CONSTANTS.apiResponses.FRAMEWORK_UPDATED, data: frameworkDoc, success: true });
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
 
             } catch (error) {
                 reject({
@@ -186,15 +216,18 @@ module.exports = class ObservationsHelper {
     static createCriteria(draftCriteriaData) {
         return new Promise(async (resolve, reject) => {
             try {
-                console.log("draftCriteriaDocument");
-                let draftCriteriaDocument = await draftCriteriaHelper.create(draftCriteriaData);
-
-                console.log("draftCriteriaDocument",draftCriteriaDocument);
-                return resolve({ 
-                    data: draftCriteriaDocument, 
-                    success: true, 
-                    message: CONSTANTS.apiResponses.DRAFT_CRITERIA_CREATED
-                 })
+                let users = await usersHelper.getUserRoles(draftCriteriaData.userId);
+              
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                    let draftCriteriaDocument = await draftCriteriaHelper.create(draftCriteriaData);
+                    return resolve({
+                        data: draftCriteriaDocument,
+                        success: true,
+                        message: CONSTANTS.apiResponses.DRAFT_CRITERIA_CREATED
+                    })
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
             } catch (error) {
                 reject({
                     message: error.message,
@@ -215,21 +248,27 @@ module.exports = class ObservationsHelper {
    * @param {String} pageNo - page number of the request.
    * @returns {json} Response consists of list of criteria's
    */
-    static criteriaList(filteredData, pageSize, pageNo) {
+    static criteriaList(filteredData, pageSize, pageNo, userId) {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let draftCriteriaList = await draftCriteriaHelper.list(filteredData, pageSize, pageNo);
-                let messageData = CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED;
-                if (!draftCriteriaList[0].count) {
-                    draftCriteriaList[0].count = 0
-                    messageData = CONSTANTS.apiResponses.DRAFT_CRITERIAS_NOT_FOUND;
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                    let draftCriteriaList = await draftCriteriaHelper.list(filteredData, pageSize, pageNo);
+                    let messageData = CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED;
+                    if (!draftCriteriaList[0].count) {
+                        draftCriteriaList[0].count = 0
+                        messageData = CONSTANTS.apiResponses.DRAFT_CRITERIAS_NOT_FOUND;
+                    }
+                    return resolve({
+                        success: true,
+                        data: draftCriteriaList[0],
+                        message: messageData
+                    })
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
                 }
-                return resolve({
-                    success: true,
-                    data: draftCriteriaList[0].data,
-                    message: messageData
-                })
 
             } catch (error) {
                 reject({
@@ -256,15 +295,23 @@ module.exports = class ObservationsHelper {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery,updateData);
-                return resolve({
-                    success: true,
-                    result: draftCriteriaDocument,
-                    message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_UPDATED
-                })
-               
+                let users = await usersHelper.getUserRoles(findQuery.userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                    
+                    let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, updateData);
+                    return resolve({
+                        success: true,
+                        result: draftCriteriaDocument,
+                        message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_UPDATED
+                    });
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
+
+
             } catch (error) {
-                
+
                 reject({
                     message: error.message,
                     success: false,
@@ -273,5 +320,42 @@ module.exports = class ObservationsHelper {
             }
         })
     }
+
+     /**
+    * To get details draft criteria
+    * @method
+    * @name  criteriaDetails
+    * @param {String} criteriaId - draft criteria id.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of criteria details
+    */
+   static criteriaDetails(criteriaId, userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                
+                let draftCriteriaDocument = await draftCriteriaHelper.details(criteriaId, userId);
+
+                return resolve({
+                    success: true,
+                    data: draftCriteriaDocument.result,
+                    message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED
+                });
+
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
+
+        } catch (error) {
+            reject({
+                message: error.message,
+                success: false,
+                data: false
+            });
+        }
+    })
+}
 
 }
