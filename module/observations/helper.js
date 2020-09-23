@@ -281,7 +281,7 @@ module.exports = class ObservationsHelper {
     }
 
     /**
-    * To update draft criteria
+    * To update criteria
     * @method
     * @name  update
     * @param {Object} findQuery - query information.
@@ -322,7 +322,7 @@ module.exports = class ObservationsHelper {
     }
 
      /**
-    * To get details draft criteria
+    * To get details of criteria
     * @method
     * @name  criteriaDetails
     * @param {String} criteriaId - draft criteria id.
@@ -357,5 +357,42 @@ module.exports = class ObservationsHelper {
         }
     })
 }
+
+ /**
+    * To get criteria form
+    * @method
+    * @name  getCriteriaForm
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of criteria create form
+    */
+   static getCriteriaForm(userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                let criteriaForm = await formsHelper.list({ name: CONSTANTS.common.CRITERIA_FORM_NAME }, ["name", "value"]);
+              
+                return resolve({
+                    success: true,
+                    data: criteriaForm.data[0]['value'],
+                    message: CONSTANTS.apiResponses.CRITERIA_FORM_FETCHED
+                });
+
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
+
+        } catch (error) {
+            reject({
+                message: error.message,
+                success: false,
+                data: false
+            })
+        }
+    })
+}
+
 
 }

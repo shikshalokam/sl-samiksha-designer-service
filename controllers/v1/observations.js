@@ -1023,4 +1023,76 @@ async createCriteria(req) {
     })
   }
 
+
+     /**
+  * @api {post} /design/api/v1/observations/getCriteriaForm/ get criteria form
+  * @apiVersion 1.0.0
+  * @apiName Get criteria form
+  * @apiGroup Observations
+  * @apiSampleRequest /design/api/v1/observations/getCriteriaForm
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+  *{
+    "message": "Criteria form fetched successfully.",
+    "status": 200,
+    "result": [
+        {
+            "field": "name",
+            "value": "",
+            "visible": true,
+            "editable": true,
+            "label": "Solution Name",
+            "width": 650,
+            "input": "text",
+            "validation": [
+                {
+                    "name": "required",
+                    "validator": "required",
+                    "message": "Name required"
+                }
+            ]
+        },
+        {
+            "field": "description",
+            "value": "",
+            "visible": true,
+            "editable": true,
+            "label": "Description",
+            "width": 650,
+            "input": "textarea",
+            "validation": []
+        }
+     
+    ]
+}
+  * 
+  * **/
+
+ async getCriteriaForm(req) {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let criteriaForm = await observationsHelper.getCriteriaForm(req.params._id, req.userDetails.userId);
+      return resolve({ 
+        message:criteriaForm.message, 
+        result:criteriaForm.data 
+      });
+
+    } catch (error) {
+      return reject({
+        status:
+          error.status ||
+          HTTP_STATUS_CODE["internal_server_error"].status,
+
+        message:
+          error.message ||
+          HTTP_STATUS_CODE["internal_server_error"].message
+      });
+
+    }
+  })
+}
+
 };
