@@ -13,6 +13,8 @@ const entityTypesHelper = require(MODULES_BASE_PATH + "/entityTypes/helper");
 
 const draftCriteriaHelper = require(MODULES_BASE_PATH + "/draftCriteria/helper");
 const usersHelper = require(MODULES_BASE_PATH + "/users/helper");
+const unnatiService = require(GENERIC_SERVICES_PATH + "/unnati");
+
 
 module.exports = class ObservationsHelper {
 
@@ -217,7 +219,6 @@ module.exports = class ObservationsHelper {
         return new Promise(async (resolve, reject) => {
             try {
                 let users = await usersHelper.getUserRoles(draftCriteriaData.userId);
-              
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
                     let draftCriteriaDocument = await draftCriteriaHelper.create(draftCriteriaData);
                     return resolve({
@@ -384,6 +385,45 @@ module.exports = class ObservationsHelper {
                 throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
             }
 
+        } catch (error) {
+            reject({
+                message: error.message,
+                success: false,
+                data: false
+            })
+        }
+    })
+}
+
+ /**
+    * To get criteria form
+    * @method
+    * @name  impCategoryList
+    * @param {String} token - keyclock access token.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of improvemnt crategory list
+    */
+   static impCategoryList(token,userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                let criteriaList = await unnatiService.impCategoryList(token);
+                if(criteriaList && criteriaList.status ==  HTTP_STATUS_CODE["ok"].status  && criteriaList.result){
+                    return resolve({
+                        success: true,
+                        data: criteriaList.result,
+                        message: criteriaList.message
+                    });
+                } else {
+                    throw new Error(criteriaList.message);
+                }
+           
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
         } catch (error) {
             reject({
                 message: error.message,

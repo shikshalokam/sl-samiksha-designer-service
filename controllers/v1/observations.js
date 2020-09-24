@@ -1074,7 +1074,7 @@ async createCriteria(req) {
   return new Promise(async (resolve, reject) => {
     try {
 
-      let criteriaForm = await observationsHelper.getCriteriaForm(req.params._id, req.userDetails.userId);
+      let criteriaForm = await observationsHelper.getCriteriaForm(req.userDetails.userId);
       return resolve({ 
         message:criteriaForm.message, 
         result:criteriaForm.data 
@@ -1094,5 +1094,32 @@ async createCriteria(req) {
     }
   })
 }
+
+async impCategoryList(req) {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let improvementCategories = await observationsHelper.impCategoryList(req.userDetails.userToken,req.userDetails.userId);
+      return resolve({ 
+        message:improvementCategories.message, 
+        result:improvementCategories.data 
+      });
+
+    } catch (error) {
+      return reject({
+        status:
+          error.status ||
+          HTTP_STATUS_CODE["internal_server_error"].status,
+
+        message:
+          error.message ||
+          HTTP_STATUS_CODE["internal_server_error"].message
+      });
+
+    }
+  })
+}
+
+
 
 };
