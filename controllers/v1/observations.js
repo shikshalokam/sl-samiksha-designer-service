@@ -1360,7 +1360,7 @@ async learningResoucesList(req) {
   return new Promise(async (resolve, reject) => {
     try {
 
-      let learningResoucesList = await observationsHelper.learningResoucesList(req.userDetails.userToken,req.userDetails.userId);
+      let learningResoucesList = await observationsHelper.learningResoucesList(req.userDetails.userToken,req.userDetails.userId,req.pageNo,req.pageSize);
       return resolve({ 
         message:learningResoucesList.message, 
         result:learningResoucesList.data 
@@ -1383,9 +1383,9 @@ async learningResoucesList(req) {
 
 
 /**
-  * @api {post} /design/api/v1/observations/learningResoucesFilters get learning resources
+  * @api {post} /design/api/v1/observations/learningResoucesFilters get learning resources Filters
   * @apiVersion 1.0.0
-  * @apiName Learning resources list
+  * @apiName Learning resources filters
   * @apiGroup Observations
   * @apiSampleRequest /design/api/v1/observations/learningResoucesFilters
   * @apiHeader {String} X-authenticated-user-token Authenticity token  

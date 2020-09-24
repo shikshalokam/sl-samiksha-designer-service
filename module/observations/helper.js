@@ -485,14 +485,14 @@ module.exports = class ObservationsHelper {
     * @param {String} userId - keyclock user id.
     * @returns {json} Response consists of learning resources list
     */
-   static learningResoucesList(token,userId) {
+   static learningResoucesList(token,userId,pageNo,pageSize) {
     return new Promise(async (resolve, reject) => {
         try {
 
             let users = await usersHelper.getUserRoles(userId);
             if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                let learningResoucesList = await sunbirdService.learningResoucesList(token);
+                let learningResoucesList = await sunbirdService.learningResoucesList(token,pageNo,pageSize);
                 if(learningResoucesList && learningResoucesList.status ==  HTTP_STATUS_CODE["ok"].status  && learningResoucesList.result){
                     return resolve({
                         success: true,

@@ -49,7 +49,6 @@ function callToSunbird(requestType, url, token="", requestBody = "") {
         }
 
         function callback(err, data) {
-
             if (err) {
                  return reject({
                     message: CONSTANTS.apiResponses.SUNBIRD_SERVICE_DOWN
@@ -104,17 +103,13 @@ const learningResoucesFilters = function (token) {
     })
 }
 
-const learningResoucesList = function (token) {
+const learningResoucesList = function (token,pageNo,pageSize) {
     return new Promise(async (resolve, reject) => {
         try {
-            const learningResoucesEndpoint = CONSTANTS.endpoints.LEARNING_RESOURCES_LIST;
-
-            let requestBody = {
-            }
-            let response = await callToSunbird("POST", learningResoucesEndpoint, token,requestBody);
+            const learningResoucesEndpoint = CONSTANTS.endpoints.LEARNING_RESOURCES_LIST+"?page="+pageNo+"&limit="+pageSize;
+            let response = await callToSunbird("POST", learningResoucesEndpoint, token,"");
             return resolve(response);
         } catch (error) {
-
             reject({ message: CONSTANTS.apiResponses.SUNBIRD_SERVICE_DOWN });
         }
     })
