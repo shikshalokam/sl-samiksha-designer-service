@@ -15,6 +15,8 @@ const draftCriteriaHelper = require(MODULES_BASE_PATH + "/draftCriteria/helper")
 const usersHelper = require(MODULES_BASE_PATH + "/users/helper");
 const unnatiService = require(GENERIC_SERVICES_PATH + "/unnati");
 
+const sunbirdService = require(GENERIC_SERVICES_PATH + "/sunbird");
+
 
 module.exports = class ObservationsHelper {
 
@@ -474,6 +476,84 @@ module.exports = class ObservationsHelper {
     })
 }
 
+
+ /**
+    * To get learning resource list
+    * @method
+    * @name  learningResoucesList
+    * @param {String} token - keyclock access token.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of learning resources list
+    */
+   static learningResoucesList(token,userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                let learningResoucesList = await sunbirdService.learningResoucesList(token);
+                if(learningResoucesList && learningResoucesList.status ==  HTTP_STATUS_CODE["ok"].status  && learningResoucesList.result){
+                    return resolve({
+                        success: true,
+                        data: learningResoucesList.result,
+                        message: learningResoucesList.message
+                    });
+                } else {
+                    throw new Error(learningResoucesList.message);
+                }
+           
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
+        } catch (error) {
+            reject({
+                message: error.message,
+                success: false,
+                data: false
+            })
+        }
+    })
+}
+
+ /**
+    * To get learning resource filters
+    * @method
+    * @name  learningResoucesFilters
+    * @param {String} token - keyclock access token.
+    * @param {String} userId - keyclock user id.
+    * @returns {json} Response consists of learning resources filters
+    */
+   static learningResoucesFilters(token,userId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                let learningResoucesFilters = await sunbirdService.learningResoucesFilters(token);
+                if(learningResoucesFilters && learningResoucesFilters.status ==  HTTP_STATUS_CODE["ok"].status  && learningResoucesFilters.result){
+                    return resolve({
+                        success: true,
+                        data: learningResoucesFilters.result,
+                        message: learningResoucesFilters.message
+                    });
+                } else {
+                    throw new Error(learningResoucesFilters.message);
+                }
+           
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
+        } catch (error) {
+            reject({
+                message: error.message,
+                success: false,
+                data: false
+            })
+        }
+    })
+}
 
 
 }

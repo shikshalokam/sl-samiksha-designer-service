@@ -12,7 +12,7 @@ module.exports = {
         "visible": true,
         "editable": true,
         "label": "",
-        "width": 650,
+        "width": 500,
         "input": "text",
         "validation": [{
           "name": "required",

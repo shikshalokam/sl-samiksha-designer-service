@@ -55,7 +55,12 @@ function callToSunbird(requestType, url, token="", requestBody = "") {
                     message: CONSTANTS.apiResponses.SUNBIRD_SERVICE_DOWN
                 });
             } else {
-                return resolve(data.body);
+                if(data.body && data.body.message){
+                    return resolve(data.body);
+                } else {
+                    return resolve(JSON.parse(data.body));
+                }
+            
             }
         }
 
@@ -86,7 +91,39 @@ const verifyToken = function (token) {
     })
 }
 
+const learningResoucesFilters = function (token) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const resourcesFilters = CONSTANTS.endpoints.LEARNING_RESOURCES_FILTER;
+            let response = await callToSunbird("GET", resourcesFilters,token);
+            return resolve(response);
+        } catch (error) {
+
+            reject({ message: CONSTANTS.apiResponses.SUNBIRD_SERVICE_DOWN });
+        }
+    })
+}
+
+const learningResoucesList = function (token) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const learningResoucesEndpoint = CONSTANTS.endpoints.LEARNING_RESOURCES_LIST;
+
+            let requestBody = {
+            }
+            let response = await callToSunbird("POST", learningResoucesEndpoint, token,requestBody);
+            return resolve(response);
+        } catch (error) {
+
+            reject({ message: CONSTANTS.apiResponses.SUNBIRD_SERVICE_DOWN });
+        }
+    })
+}
+
 
 module.exports = {
-    verifyToken: verifyToken
+    verifyToken: verifyToken,
+    learningResoucesList: learningResoucesList,
+    learningResoucesFilters: learningResoucesFilters
+
 };

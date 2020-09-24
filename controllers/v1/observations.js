@@ -1168,7 +1168,7 @@ async impCategoryList(req) {
 
 
 /**
-  * @api {post} /design/api/v1/observations/improvementProjects/_id get improvement category list
+  * @api {post} /design/api/v1/observations/improvementProjects/_id get improvement projects
   * @apiVersion 1.0.0
   * @apiName Improvement projects list
   * @apiGroup Observations
@@ -1204,6 +1204,257 @@ async improvementProjects(req) {
       return resolve({ 
         message:improvementProjects.message, 
         result:improvementProjects.data 
+      });
+
+    } catch (error) {
+      return reject({
+        status:
+          error.status ||
+          HTTP_STATUS_CODE["internal_server_error"].status,
+
+        message:
+          error.message ||
+          HTTP_STATUS_CODE["internal_server_error"].message
+      });
+
+    }
+  })
+}
+
+/**
+  * @api {post} /design/api/v1/observations/learningResoucesList get learning resources
+  * @apiVersion 1.0.0
+  * @apiName Learning resources list
+  * @apiGroup Observations
+  * @apiSampleRequest /design/api/v1/observations/learningResoucesList
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+{
+    "message": "Learning resources found successfully.",
+    "status": 200,
+    "result": {
+      "content": [
+            {
+                "ownershipType": [
+                    "createdBy"
+                ],
+                "copyright": "Abhyas Organisation, SLDEV",
+                "previewUrl": "https://sldevsunbird.blob.core.windows.net/sl-dev-assets/content/ecml/do_113078100229644288146-latest",
+                "keywords": [
+                    "image",
+                    "andra"
+                ],
+                "subject": "Science",
+                "plugins": [
+                    {
+                        "identifier": "org.ekstep.stage",
+                        "semanticVersion": "1.0"
+                    },
+                    {
+                        "identifier": "org.ekstep.image",
+                        "semanticVersion": "1.1"
+                    },
+                    {
+                        "identifier": "org.ekstep.navigation",
+                        "semanticVersion": "1.0"
+                    }
+                ],
+                "channel": "01305447637218918413",
+                "downloadUrl": "https://sldevsunbird.blob.core.windows.net/sl-dev-assets/ecar_files/do_113078100229644288146/ap-test_1596448053733_do_113078100229644288146_1.0.ecar",
+                "organisation": [
+                    "Abhyas Organisation",
+                    "SLDEV"
+                ],
+                "language": [
+                    "English"
+                ],
+                "mimeType": "application/vnd.ekstep.ecml-archive",
+                "variants": {
+                    "spine": {
+                        "ecarUrl": "https://sldevsunbird.blob.core.windows.net/sl-dev-assets/ecar_files/do_113078100229644288146/ap-test_1596448054258_do_113078100229644288146_1.0_spine.ecar",
+                        "size": 2550
+                    }
+                },
+                "editorState": "{\"plugin\":{\"noOfExtPlugins\":12,\"extPlugins\":[{\"plugin\":\"org.ekstep.contenteditorfunctions\",\"version\":\"1.2\"},{\"plugin\":\"org.ekstep.keyboardshortcuts\",\"version\":\"1.0\"},{\"plugin\":\"org.ekstep.richtext\",\"version\":\"1.0\"},{\"plugin\":\"org.ekstep.iterator\",\"version\":\"1.0\"},{\"plugin\":\"org.ekstep.navigation\",\"version\":\"1.0\"},{\"plugin\":\"org.ekstep.reviewercomments\",\"version\":\"1.0\"},{\"plugin\":\"org.ekstep.questionunit.mtf\",\"version\":\"1.2\"},{\"plugin\":\"org.ekstep.questionunit.mcq\",\"version\":\"1.3\"},{\"plugin\":\"org.ekstep.keyboard\",\"version\":\"1.1\"},{\"plugin\":\"org.ekstep.questionunit.reorder\",\"version\":\"1.1\"},{\"plugin\":\"org.ekstep.questionunit.sequence\",\"version\":\"1.1\"},{\"plugin\":\"org.ekstep.questionunit.ftb\",\"version\":\"1.1\"}]},\"stage\":{\"noOfStages\":1,\"currentStage\":\"4dcc1389-2d31-4ccd-8237-8d80b0643d17\",\"selectedPluginObject\":\"9120be5c-2d01-4c3d-a5c6-baec010647ae\"},\"sidebar\":{\"selectedMenu\":\"settings\"}}",
+                "objectType": "Content",
+                "gradeLevel": [
+                    "Class1"
+                ],
+                "appIcon": "https://sldevsunbird.blob.core.windows.net/sl-dev-assets/content/do_113078101852602368148/artifact/icons8-about-30.png",
+                "assets": [
+                    "do_113078101273190400147"
+                ],
+                "collections": [
+                    "do_113078121430204416149"
+                ],
+                "appId": "dev.dev.portal",
+                "contentEncoding": "gzip",
+                "artifactUrl": "https://sldevsunbird.blob.core.windows.net/sl-dev-assets/content/do_113078100229644288146/artifact/1596448053389_do_113078100229644288146.zip",
+                "lockKey": "0575e41b-ae5d-48b1-8f31-015052ff2e08",
+                "contentType": "Resource",
+                "identifier": "do_113078100229644288146",
+                "lastUpdatedBy": "56dcb023-7b5d-459d-9e92-1b679f5afe59",
+                "audience": [
+                    "Learner"
+                ],
+                "visibility": "Default",
+                "consumerId": "1546ae3f-84a7-45d7-8d88-ccbbf9d37e3e",
+                "mediaType": "content",
+                "osId": "org.ekstep.quiz.app",
+                "graph_id": "domain",
+                "nodeType": "DATA_NODE",
+                "lastPublishedBy": "e4326f7c-abdc-4c4d-bcaf-e483adf5bb21",
+                "version": 2,
+                "pragma": [],
+                "license": "CC BY 4.0",
+                "prevState": "Review",
+                "size": 80593,
+                "lastPublishedOn": "2020-08-03T09:47:33.729+0000",
+                "IL_FUNC_OBJECT_TYPE": "Content",
+                "name": "AP Test",
+                "status": "Live",
+                "totalQuestions": 0,
+                "code": "org.sunbird.kZn1HV",
+                "prevStatus": "Processing",
+                "description": "Enter description for Resource",
+                "medium": "English",
+                "streamingUrl": "https://sldevsunbird.blob.core.windows.net/sl-dev-assets/content/ecml/do_113078100229644288146-latest",
+                "idealScreenSize": "normal",
+                "createdOn": "2020-08-03T09:43:01.941+0000",
+                "contentDisposition": "inline",
+                "lastUpdatedOn": "2020-08-03T09:47:31.259+0000",
+                "SYS_INTERNAL_LAST_UPDATED_ON": "2020-08-03T09:47:35.975+0000",
+                "dialcodeRequired": "No",
+                "lastStatusChangedOn": "2020-08-03T09:47:35.968+0000",
+                "createdFor": [
+                    "01305447637218918413",
+                    "01307587033424691266"
+                ],
+                "creator": "ap creator",
+                "IL_SYS_NODE_TYPE": "DATA_NODE",
+                "os": [
+                    "All"
+                ],
+                "totalScore": 0,
+                "pkgVersion": 1,
+                "versionKey": "1596448051259",
+                "idealScreenDensity": "hdpi",
+                "framework": "SLDEV",
+                "s3Key": "ecar_files/do_113078100229644288146/ap-test_1596448053733_do_113078100229644288146_1.0.ecar",
+                "lastSubmittedOn": "2020-08-03T09:46:26.727+0000",
+                "createdBy": "56dcb023-7b5d-459d-9e92-1b679f5afe59",
+                "compatibilityLevel": 2,
+                "IL_UNIQUE_ID": "do_113078100229644288146",
+                "board": "sldev",
+                "resourceType": "Teach",
+                "node_id": 483
+            }
+          ],
+        "count": 19
+    }
+}
+**/
+async learningResoucesList(req) {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let learningResoucesList = await observationsHelper.learningResoucesList(req.userDetails.userToken,req.userDetails.userId);
+      return resolve({ 
+        message:learningResoucesList.message, 
+        result:learningResoucesList.data 
+      });
+
+    } catch (error) {
+      return reject({
+        status:
+          error.status ||
+          HTTP_STATUS_CODE["internal_server_error"].status,
+
+        message:
+          error.message ||
+          HTTP_STATUS_CODE["internal_server_error"].message
+      });
+
+    }
+  })
+}
+
+
+/**
+  * @api {post} /design/api/v1/observations/learningResoucesFilters get learning resources
+  * @apiVersion 1.0.0
+  * @apiName Learning resources list
+  * @apiGroup Observations
+  * @apiSampleRequest /design/api/v1/observations/learningResoucesFilters
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+{
+  "message": "filters fetched successfully.",
+  "status": 200,
+  "result": [
+      {
+          "code": "board",
+          "terms": [
+              {
+                  "code": "sldev",
+                  "name": "sldev"
+              }
+          ]
+      },
+      {
+          "code": "medium",
+          "terms": [
+              {
+                  "code": "english",
+                  "name": "English"
+              },
+              {
+                  "code": "tamil",
+                  "name": "Tamil"
+              },
+              {
+                  "code": "hindi",
+                  "name": "Hindi"
+              },
+              {
+                  "code": "kannada",
+                  "name": "Kannada"
+              }
+          ]
+      },
+      {
+          "code": "gradeLevel",
+          "terms": [
+              {
+                  "code": "class1",
+                  "name": "Class1"
+              }
+          ]
+      },
+      {
+          "code": "subject",
+          "terms": [
+              {
+                  "code": "science",
+                  "name": "Science"
+              }
+          ]
+      }
+  ]
+}
+**/
+async learningResoucesFilters(req) {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let learningResoucesFilter = await observationsHelper.learningResoucesFilters(req.userDetails.userToken,req.userDetails.userId);
+      return resolve({ 
+        message:learningResoucesFilter.message, 
+        result:learningResoucesFilter.data 
       });
 
     } catch (error) {
