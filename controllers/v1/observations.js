@@ -1095,6 +1095,52 @@ async createCriteria(req) {
   })
 }
 
+ /**
+  * @api {post} /design/api/v1/observations/impCategoryList/ get improvement category list
+  * @apiVersion 1.0.0
+  * @apiName Improvement category list
+  * @apiGroup Observations
+  * @apiSampleRequest /design/api/v1/observations/impCategoryList
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+{
+  "message": "Project categories fetched successfully",
+  "status": 200,
+  "result": [
+      {
+          "name": "Community",
+          "type": "community",
+          "updatedAt": "2020-08-18T06:51:59.054Z",
+          "projectsCount": 69,
+          "url": "https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/static%2FprojectCategories%2Fdrafts.png?alt=media"
+      },
+      {
+          "name": "Infrastructure",
+          "type": "infrastructure",
+          "updatedAt": "2020-08-18T06:51:59.054Z",
+          "projectsCount": 11,
+          "url": "https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/static%2FprojectCategories%2FobservationSolutions.png?alt=media"
+      },
+      {
+          "name": "Students",
+          "type": "students",
+          "updatedAt": "2020-08-18T06:51:59.054Z",
+          "projectsCount": 22,
+          "url": "https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/static%2FprojectCategories%2FinstitutionalAssessments.png?alt=media"
+      },
+      {
+          "name": "Teachers",
+          "type": "teachers",
+          "updatedAt": "2020-08-18T06:51:59.054Z",
+          "projectsCount": 19,
+          "url": "https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/static%2FprojectCategories%2FindividualAssessments.png?alt=media"
+      }
+  ]
+}
+**/
+
 async impCategoryList(req) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -1103,6 +1149,61 @@ async impCategoryList(req) {
       return resolve({ 
         message:improvementCategories.message, 
         result:improvementCategories.data 
+      });
+
+    } catch (error) {
+      return reject({
+        status:
+          error.status ||
+          HTTP_STATUS_CODE["internal_server_error"].status,
+
+        message:
+          error.message ||
+          HTTP_STATUS_CODE["internal_server_error"].message
+      });
+
+    }
+  })
+}
+
+
+/**
+  * @api {post} /design/api/v1/observations/improvementProjects/_id get improvement category list
+  * @apiVersion 1.0.0
+  * @apiName Improvement projects list
+  * @apiGroup Observations
+  * @apiSampleRequest /design/api/v1/observations/improvementProjects/student
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+{
+    "message": "Successfully fetched projects",
+    "status": 200,
+    "result": {
+        "data": [
+            {
+                "_id": "5f6b89bf09c8f34675c6ee0b",
+                "averageRating": 0,
+                "noOfRatings": 0,
+                "name": "Test-template13",
+                "externalId": "Test-template-13",
+                "description": "improving school library",
+                "createdAt": "2020-09-23T17:45:35.200Z",
+                "new": true
+            }
+  ]
+}
+**/
+
+async improvementProjects(req) {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let improvementProjects = await observationsHelper.improvementProjects(req.userDetails.userToken,req.userDetails.userId,req.params._id);
+      return resolve({ 
+        message:improvementProjects.message, 
+        result:improvementProjects.data 
       });
 
     } catch (error) {

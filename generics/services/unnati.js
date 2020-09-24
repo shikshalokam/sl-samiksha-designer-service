@@ -74,7 +74,7 @@ function callToUnnati(requestType, url, token="", requestBody = "") {
   * @function
   * @name categoryList
   * @param token - user token for verification 
-  * @returns {JSON} - consist of token verification details
+  * @returns {JSON} - consist of improvement projects catgory list
 */
 const impCategoryList = function (token) {
     return new Promise(async (resolve, reject) => {
@@ -88,7 +88,30 @@ const impCategoryList = function (token) {
     })
 }
 
+/**
+  * To get  improvement category list
+  * @function
+  * @name improvementProjects
+  * @param token - user token for verification 
+  * @param category - improvement project category
+  * @returns {JSON} - consist of improvement projects details
+*/
+const improvementProjects = function (token,category) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const impProjectsEndPoint = CONSTANTS.endpoints.IMPROVEMENT_PROJECTS+category;
+            let response = await callToUnnati("GET", impProjectsEndPoint,token,"");
+            return resolve(response);
+        } catch (error) {
+            reject({ message: CONSTANTS.apiResponses.UNNATI_SERVICE_DOWN });
+        }
+    })
+}
+
+
+
 
 module.exports = {
-    impCategoryList: impCategoryList
+    impCategoryList: impCategoryList,
+    improvementProjects: improvementProjects
 };

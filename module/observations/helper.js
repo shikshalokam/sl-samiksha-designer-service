@@ -434,5 +434,46 @@ module.exports = class ObservationsHelper {
     })
 }
 
+ /**
+    * To get criteria form
+    * @method
+    * @name  improvementProjects
+    * @param {String} token - keyclock access token.
+    * @param {String} userId - keyclock user id.
+    * @param {String} category - improvement projects category
+    * @returns {json} Response consists of improvemnts projects list
+    */
+   static improvementProjects(token,userId,category) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                let improvemntProjects = await unnatiService.improvementProjects(token,category);
+                if(improvemntProjects && improvemntProjects.status ==  HTTP_STATUS_CODE["ok"].status  && improvemntProjects.result){
+                    return resolve({
+                        success: true,
+                        data: improvemntProjects.result,
+                        message: improvemntProjects.message
+                    });
+                } else {
+                    throw new Error(improvemntProjects.message);
+                }
+           
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
+        } catch (error) {
+            reject({
+                message: error.message,
+                success: false,
+                data: false
+            })
+        }
+    })
+}
+
+
 
 }

@@ -7,5 +7,6 @@
 
 module.exports = {
     VERIFY_TOKEN: "/token/verify",
-    IMPROVEMENT_CATEGORY_LIST: "/library/categories/list"
+    IMPROVEMENT_CATEGORY_LIST: "/library/categories/list",
+    IMPROVEMENT_PROJECTS : "/library/categories/projects/"
 };
