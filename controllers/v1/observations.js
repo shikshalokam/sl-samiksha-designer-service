@@ -1172,7 +1172,7 @@ async impCategoryList(req) {
   * @apiVersion 1.0.0
   * @apiName Improvement projects list
   * @apiGroup Observations
-  * @apiSampleRequest /design/api/v1/observations/improvementProjects/student
+  * @apiSampleRequest /design/api/v1/observations/improvementProjects/student?page=1&limit=10&search=a
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
   * @apiUse successBody
   * @apiUse errorBody
@@ -1234,8 +1234,14 @@ async improvementProjects(req) {
   * @apiVersion 1.0.0
   * @apiName Learning resources list
   * @apiGroup Observations
-  * @apiSampleRequest /design/api/v1/observations/learningResoucesList
+  * @apiSampleRequest /design/api/v1/observations/learningResoucesList?page=1&limit=10&search=a
   * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiParamExample {json} Request:
+  * {
+  * 	"filters":{
+		    "subject":["science"]
+	    }
+  * }
   * @apiUse successBody
   * @apiUse errorBody
   * @apiParamExample {json} Response:
@@ -1373,7 +1379,8 @@ async learningResoucesList(req) {
         req.userDetails.userId,
         req.pageNo,
         req.pageSize,
-        req.searchText
+        req.searchText,
+        req.body.filters ? req.body.filters : {}
         );
       return resolve({ 
         message:learningResoucesList.message, 

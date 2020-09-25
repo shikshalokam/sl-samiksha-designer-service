@@ -119,9 +119,14 @@ const learningResoucesFilters = function (token) {
        * @param {String} pageSize - page size
        * @param {String} searchText - search text in learning resources
        * @param {String} category - learning resource category 
+       * @param {Object} filters - learning resource filters
+       * @param {Array} filters.board - board's for the learning resource
+       * @param {Array} filters.medium - medium's for the learning resource
+       * @param {Array} filters.gradeLevel - gradeLevel's for the learning resource
+       * @param {Array} filters.subject - subject's of the learning resources
        * @returns {json} Response consists of learning resources list
 */
-const learningResoucesList = function (token, pageNo, pageSize, searchText,category="") {
+const learningResoucesList = function (token, pageNo, pageSize, searchText,filters) {
     return new Promise(async (resolve, reject) => {
         try {
             const learningResoucesEndpoint = CONSTANTS.endpoints.LEARNING_RESOURCES_LIST
@@ -129,9 +134,12 @@ const learningResoucesList = function (token, pageNo, pageSize, searchText,categ
                 + "&limit=" + pageSize
                 + "&search=" + searchText;
 
+            let requestBody = {
+                filters:filters
+            }
 
             
-            let response = await callToSunbird("POST", learningResoucesEndpoint, token, "");
+            let response = await callToSunbird("POST", learningResoucesEndpoint, token, requestBody);
             return resolve(response);
         } catch (error) {
             reject({ message: CONSTANTS.apiResponses.SUNBIRD_SERVICE_DOWN });

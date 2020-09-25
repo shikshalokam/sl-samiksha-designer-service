@@ -520,16 +520,21 @@ module.exports = class ObservationsHelper {
        * @param {String} pageNo - page number
        * @param {String} pageSize - page size
        * @param {String} searchText - search text in learning resources
+       * @param {Object} filters - resource filters
+       * @param {Array} filters.board - board's for the learning resource
+       * @param {Array} filters.medium - medium's for the learning resource
+       * @param {Array} filters.gradeLevel - gradeLevel's for the learning resource
+       * @param {Array} filters.subject - subject's of the learning resources
        * @returns {json} Response consists of learning resources list
        */
-    static learningResoucesList(token, userId, pageNo, pageSize,searchText) {
+    static learningResoucesList(token, userId, pageNo, pageSize,searchText,filters) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let users = await usersHelper.getUserRoles(userId);
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize,searchText);
+                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize,searchText,filters);
                     if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status && learningResoucesList.result) {
                         return resolve({
                             success: true,
