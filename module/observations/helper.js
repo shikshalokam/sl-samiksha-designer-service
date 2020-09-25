@@ -517,16 +517,19 @@ module.exports = class ObservationsHelper {
        * @name  learningResoucesList
        * @param {String} token - keyclock access token.
        * @param {String} userId - keyclock user id.
+       * @param {String} pageNo - page number
+       * @param {String} pageSize - page size
+       * @param {String} searchText - search text in learning resources
        * @returns {json} Response consists of learning resources list
        */
-    static learningResoucesList(token, userId, pageNo, pageSize) {
+    static learningResoucesList(token, userId, pageNo, pageSize,searchText) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let users = await usersHelper.getUserRoles(userId);
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize);
+                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize,searchText);
                     if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status && learningResoucesList.result) {
                         return resolve({
                             success: true,

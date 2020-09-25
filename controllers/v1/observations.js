@@ -1368,8 +1368,13 @@ async learningResoucesList(req) {
   return new Promise(async (resolve, reject) => {
     try {
 
-      console.log("req",req.searchText)
-      let learningResoucesList = await observationsHelper.learningResoucesList(req.userDetails.userToken,req.userDetails.userId,req.pageNo,req.pageSize);
+      let learningResoucesList = await observationsHelper.learningResoucesList(
+        req.userDetails.userToken,
+        req.userDetails.userId,
+        req.pageNo,
+        req.pageSize,
+        req.searchText
+        );
       return resolve({ 
         message:learningResoucesList.message, 
         result:learningResoucesList.data 
