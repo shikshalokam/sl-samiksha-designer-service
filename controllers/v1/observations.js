@@ -1200,7 +1200,15 @@ async improvementProjects(req) {
   return new Promise(async (resolve, reject) => {
     try {
 
-      let improvementProjects = await observationsHelper.improvementProjects(req.userDetails.userToken,req.userDetails.userId,req.params._id);
+      let improvementProjects = await observationsHelper.improvementProjects(
+        req.userDetails.userToken,
+        req.userDetails.
+        userId,
+        req.params._id,
+        req.searchText,
+        req.pageNo,
+        req.pageSize
+        );
       return resolve({ 
         message:improvementProjects.message, 
         result:improvementProjects.data 
@@ -1360,6 +1368,7 @@ async learningResoucesList(req) {
   return new Promise(async (resolve, reject) => {
     try {
 
+      console.log("req",req.searchText)
       let learningResoucesList = await observationsHelper.learningResoucesList(req.userDetails.userToken,req.userDetails.userId,req.pageNo,req.pageSize);
       return resolve({ 
         message:learningResoucesList.message, 

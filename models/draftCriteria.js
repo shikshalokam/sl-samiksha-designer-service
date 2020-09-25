@@ -114,6 +114,15 @@ module.exports = {
     draftFrameworkId: {
       type: "ObjectId",
       required: true
+    },
+    improvementProjects:{
+      type:"Array",
+      default:[]
+    },
+    learningResources:{
+      type:"Array",
+      default:[]
     }
+
   }
 };

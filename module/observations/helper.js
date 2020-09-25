@@ -300,7 +300,38 @@ module.exports = class ObservationsHelper {
 
                 let users = await usersHelper.getUserRoles(findQuery.userId);
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
-                    
+
+
+                    let impProjects = [];
+                    if (updateData.improvementProjects) {
+                        await Promise.all(updateData.improvementProjects.map(async function (impProject) {
+                            let projectData = await unnatiService.improvementProjects(token, impProject._id);
+                            if (projectData && projectData.result) {
+                                impProjects.push(
+                                    {
+                                        "_id": projectData._id,
+                                        "title": projectData.title,
+                                        "goal": projectData.goal,
+                                        "externalId": projectData.externalId
+                                    });
+                            }
+                        }));
+                       
+                    }
+                    updateData['improvementProjects'] = impProjects;
+
+                    let resources = [];
+                    if (updateData.learningResources) {
+                        await Promise.all(updateData.learningResources.map(async function (resource) {
+                            resources.push({
+                                        "_id": resource.identifier,
+                                        "name": resource.name,
+                                        "description": resource.description,
+                            });
+                        }));
+                    }
+                    updateData['learningResources'] = resources;
+
                     let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, updateData);
                     return resolve({
                         success: true,
@@ -324,236 +355,239 @@ module.exports = class ObservationsHelper {
         })
     }
 
-     /**
-    * To get details of criteria
-    * @method
-    * @name  criteriaDetails
-    * @param {String} criteriaId - draft criteria id.
-    * @param {String} userId - keyclock user id.
-    * @returns {json} Response consists of criteria details
-    */
-   static criteriaDetails(criteriaId, userId) {
-    return new Promise(async (resolve, reject) => {
-        try {
+    /**
+   * To get details of criteria
+   * @method
+   * @name  criteriaDetails
+   * @param {String} criteriaId - draft criteria id.
+   * @param {String} userId - keyclock user id.
+   * @returns {json} Response consists of criteria details
+   */
+    static criteriaDetails(criteriaId, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
 
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
-                
-                let draftCriteriaDocument = await draftCriteriaHelper.details(criteriaId, userId);
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                return resolve({
-                    success: true,
-                    data: draftCriteriaDocument.result,
-                    message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED
+                    let draftCriteriaDocument = await draftCriteriaHelper.details(criteriaId, userId);
+
+                    return resolve({
+                        success: true,
+                        data: draftCriteriaDocument.result,
+                        message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_FETCHED
+                    });
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
+
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
                 });
-
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
             }
+        })
+    }
 
-        } catch (error) {
-            reject({
-                message: error.message,
-                success: false,
-                data: false
-            });
-        }
-    })
-}
+    /**
+       * To get criteria form
+       * @method
+       * @name  getCriteriaForm
+       * @param {String} userId - keyclock user id.
+       * @returns {json} Response consists of criteria create form
+       */
+    static getCriteriaForm(userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
 
- /**
-    * To get criteria form
-    * @method
-    * @name  getCriteriaForm
-    * @param {String} userId - keyclock user id.
-    * @returns {json} Response consists of criteria create form
-    */
-   static getCriteriaForm(userId) {
-    return new Promise(async (resolve, reject) => {
-        try {
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                    let criteriaForm = await formsHelper.list({ name: CONSTANTS.common.CRITERIA_FORM_NAME }, ["name", "value"]);
 
-                let criteriaForm = await formsHelper.list({ name: CONSTANTS.common.CRITERIA_FORM_NAME }, ["name", "value"]);
-              
-                return resolve({
-                    success: true,
-                    data: criteriaForm.data[0]['value'],
-                    message: CONSTANTS.apiResponses.CRITERIA_FORM_FETCHED
-                });
-
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
-            }
-
-        } catch (error) {
-            reject({
-                message: error.message,
-                success: false,
-                data: false
-            })
-        }
-    })
-}
-
- /**
-    * To get criteria form
-    * @method
-    * @name  impCategoryList
-    * @param {String} token - keyclock access token.
-    * @param {String} userId - keyclock user id.
-    * @returns {json} Response consists of improvemnt crategory list
-    */
-   static impCategoryList(token,userId) {
-    return new Promise(async (resolve, reject) => {
-        try {
-
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
-
-                let criteriaList = await unnatiService.impCategoryList(token);
-                if(criteriaList && criteriaList.status ==  HTTP_STATUS_CODE["ok"].status  && criteriaList.result){
                     return resolve({
                         success: true,
-                        data: criteriaList.result,
-                        message: criteriaList.message
+                        data: criteriaForm.data[0]['value'],
+                        message: CONSTANTS.apiResponses.CRITERIA_FORM_FETCHED
                     });
+
                 } else {
-                    throw new Error(criteriaList.message);
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
                 }
-           
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
             }
-        } catch (error) {
-            reject({
-                message: error.message,
-                success: false,
-                data: false
-            })
-        }
-    })
-}
+        })
+    }
 
- /**
-    * To get criteria form
-    * @method
-    * @name  improvementProjects
-    * @param {String} token - keyclock access token.
-    * @param {String} userId - keyclock user id.
-    * @param {String} category - improvement projects category
-    * @returns {json} Response consists of improvemnts projects list
-    */
-   static improvementProjects(token,userId,category) {
-    return new Promise(async (resolve, reject) => {
-        try {
+    /**
+       * To get criteria form
+       * @method
+       * @name  impCategoryList
+       * @param {String} token - keyclock access token.
+       * @param {String} userId - keyclock user id.
+       * @returns {json} Response consists of improvemnt crategory list
+       */
+    static impCategoryList(token, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
 
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                let improvemntProjects = await unnatiService.improvementProjects(token,category);
-                if(improvemntProjects && improvemntProjects.status ==  HTTP_STATUS_CODE["ok"].status  && improvemntProjects.result){
-                    return resolve({
-                        success: true,
-                        data: improvemntProjects.result,
-                        message: improvemntProjects.message
-                    });
+                    let criteriaList = await unnatiService.impCategoryList(token);
+                    if (criteriaList && criteriaList.status == HTTP_STATUS_CODE["ok"].status && criteriaList.result) {
+                        return resolve({
+                            success: true,
+                            data: criteriaList.result,
+                            message: criteriaList.message
+                        });
+                    } else {
+                        throw new Error(criteriaList.message);
+                    }
+
                 } else {
-                    throw new Error(improvemntProjects.message);
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
                 }
-           
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
             }
-        } catch (error) {
-            reject({
-                message: error.message,
-                success: false,
-                data: false
-            })
-        }
-    })
-}
+        })
+    }
 
+    /**
+       * To get criteria form
+       * @method
+       * @name  improvementProjects
+       * @param {String} token - keyclock access token.
+       * @param {String} userId - keyclock user id.
+       * @param {String} category - improvement projects category
+       * @param {String} searchText - improvement project search
+       * @param {String} pageNo - page number
+       * @param {String} pageSize - page size
+       * @returns {json} Response consists of improvemnts projects list
+       */
+    static improvementProjects(token, userId, category,searchText,pageNo,pageSize) {
+        return new Promise(async (resolve, reject) => {
+            try {
 
- /**
-    * To get learning resource list
-    * @method
-    * @name  learningResoucesList
-    * @param {String} token - keyclock access token.
-    * @param {String} userId - keyclock user id.
-    * @returns {json} Response consists of learning resources list
-    */
-   static learningResoucesList(token,userId,pageNo,pageSize) {
-    return new Promise(async (resolve, reject) => {
-        try {
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                    let improvemntProjects = await unnatiService.improvementProjects(token, category, searchText,pageNo,pageSize);
+                    if (improvemntProjects && improvemntProjects.status == HTTP_STATUS_CODE["ok"].status && improvemntProjects.result) {
+                        return resolve({
+                            success: true,
+                            data: improvemntProjects.result,
+                            message: improvemntProjects.message
+                        });
+                    } else {
+                        throw new Error(improvemntProjects.message);
+                    }
 
-                let learningResoucesList = await sunbirdService.learningResoucesList(token,pageNo,pageSize);
-                if(learningResoucesList && learningResoucesList.status ==  HTTP_STATUS_CODE["ok"].status  && learningResoucesList.result){
-                    return resolve({
-                        success: true,
-                        data: learningResoucesList.result,
-                        message: learningResoucesList.message
-                    });
                 } else {
-                    throw new Error(learningResoucesList.message);
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
                 }
-           
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
             }
-        } catch (error) {
-            reject({
-                message: error.message,
-                success: false,
-                data: false
-            })
-        }
-    })
-}
+        })
+    }
 
- /**
-    * To get learning resource filters
-    * @method
-    * @name  learningResoucesFilters
-    * @param {String} token - keyclock access token.
-    * @param {String} userId - keyclock user id.
-    * @returns {json} Response consists of learning resources filters
-    */
-   static learningResoucesFilters(token,userId) {
-    return new Promise(async (resolve, reject) => {
-        try {
 
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+    /**
+       * To get learning resource list
+       * @method
+       * @name  learningResoucesList
+       * @param {String} token - keyclock access token.
+       * @param {String} userId - keyclock user id.
+       * @returns {json} Response consists of learning resources list
+       */
+    static learningResoucesList(token, userId, pageNo, pageSize) {
+        return new Promise(async (resolve, reject) => {
+            try {
 
-                let learningResoucesFilters = await sunbirdService.learningResoucesFilters(token);
-                if(learningResoucesFilters && learningResoucesFilters.status ==  HTTP_STATUS_CODE["ok"].status  && learningResoucesFilters.result){
-                    return resolve({
-                        success: true,
-                        data: learningResoucesFilters.result,
-                        message: learningResoucesFilters.message
-                    });
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize);
+                    if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status && learningResoucesList.result) {
+                        return resolve({
+                            success: true,
+                            data: learningResoucesList.result,
+                            message: learningResoucesList.message
+                        });
+                    } else {
+                        throw new Error(learningResoucesList.message);
+                    }
+
                 } else {
-                    throw new Error(learningResoucesFilters.message);
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
                 }
-           
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
             }
-        } catch (error) {
-            reject({
-                message: error.message,
-                success: false,
-                data: false
-            })
-        }
-    })
-}
+        })
+    }
+
+    /**
+       * To get learning resource filters
+       * @method
+       * @name  learningResoucesFilters
+       * @param {String} token - keyclock access token.
+       * @param {String} userId - keyclock user id.
+       * @returns {json} Response consists of learning resources filters
+       */
+    static learningResoucesFilters(token, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                    let learningResoucesFilters = await sunbirdService.learningResoucesFilters(token);
+                    if (learningResoucesFilters && learningResoucesFilters.status == HTTP_STATUS_CODE["ok"].status && learningResoucesFilters.result) {
+                        return resolve({
+                            success: true,
+                            data: learningResoucesFilters.result,
+                            message: learningResoucesFilters.message
+                        });
+                    } else {
+                        throw new Error(learningResoucesFilters.message);
+                    }
+
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
+            }
+        })
+    }
 
 
 }
