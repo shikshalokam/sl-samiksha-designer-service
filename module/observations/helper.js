@@ -294,7 +294,7 @@ module.exports = class ObservationsHelper {
     * @param {String} updateData.name - name of criteria
     * @returns {json} Response consists of updated criteria details
     */
-    static updateCriteria(findQuery, updateData) {
+    static updateCriteria(findQuery, updateData, token) {
         return new Promise(async (resolve, reject) => {
             try {
 

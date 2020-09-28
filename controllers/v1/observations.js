@@ -895,7 +895,7 @@ async createCriteria(req) {
           userId: req.userDetails.userId
         }
 
-        let draftCriteriaDocument = await observationsHelper.updateCriteria(findQuery, req.body)
+        let draftCriteriaDocument = await observationsHelper.updateCriteria(findQuery, req.body,req.userDetails.userToken)
 
         return resolve({
           message: draftCriteriaDocument.message,
@@ -917,11 +917,11 @@ async createCriteria(req) {
   }
 
     /**
-* @api {get} /design/api/v1/draftCriteria/observations/{criteriaId} Get criteria details
+* @api {get} /design/api/v1/draftCriteria/observations/criteriaDetails/{criteriaId} Get criteria details
 * @apiVersion 1.0.0
 * @apiName Criteria Details
 * @apiGroup Observations
-* @apiSampleRequest /design/api/v1/draftCriteria/observations/5db0292179e31f1b85d11ca9
+* @apiSampleRequest /design/api/v1/draftCriteria/observations/criteriaDetails/5db0292179e31f1b85d11ca9
 * @apiUse successBody
 * @apiUse errorBody
 * @apiParamExample {json} Response:
