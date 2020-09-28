@@ -309,10 +309,10 @@ module.exports = class ObservationsHelper {
                             if (projectData && projectData.result) {
                                 impProjects.push(
                                     {
-                                        "_id": projectData._id,
-                                        "title": projectData.title,
-                                        "goal": projectData.goal,
-                                        "externalId": projectData.externalId
+                                        "_id": projectData.result._id,
+                                        "title": projectData.result.title,
+                                        "goal": projectData.result.goal,
+                                        "externalId": projectData.result.externalId
                                     });
                             }
                         }));
