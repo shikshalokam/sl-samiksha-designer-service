@@ -116,11 +116,11 @@ module.exports = {
       required: true
     },
     improvementProjects:{
-      type:"Array",
+      type:Array,
       default:[]
     },
     learningResources:{
-      type:"Array",
+      type:Array,
       default:[]
     }
 

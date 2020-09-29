@@ -323,7 +323,7 @@ module.exports = class ObservationsHelper {
                     if (updateData.learningResources) {
                         await Promise.all(updateData.learningResources.map(async function (resource) {
                             resources.push({
-                                        "_id": resource.identifier,
+                                        "_id": resource._id,
                                         "name": resource.name,
                                         "description": resource.description,
                             });
@@ -334,7 +334,7 @@ module.exports = class ObservationsHelper {
                     let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, updateData);
                     return resolve({
                         success: true,
-                        result: draftCriteriaDocument,
+                        data: draftCriteriaDocument,
                         message: CONSTANTS.apiResponses.DRAFT_CRITERIAS_UPDATED
                     });
 
