@@ -307,8 +307,6 @@ module.exports = class ObservationsHelper {
                         await Promise.all(updateData.improvementProjects.map(async function (impProject) {
                             let projectData = await unnatiService.improvementProjectDetails(token, impProject._id);
                             if (projectData && projectData.result) {
-
-                                console.log("projectData.result",projectData.result);
                                 impProjects.push(
                                     {
                                         "_id": projectData.result._id,
@@ -318,9 +316,9 @@ module.exports = class ObservationsHelper {
                                     });
                             }
                         }));
-                       
                     }
                   
+                    updateData['improvementProjects'] = impProjects;
                     let resources = [];
                     if (updateData.learningResources) {
                         await Promise.all(updateData.learningResources.map(async function (resource) {
