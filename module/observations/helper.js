@@ -305,21 +305,22 @@ module.exports = class ObservationsHelper {
                     let impProjects = [];
                     if (updateData.improvementProjects) {
                         await Promise.all(updateData.improvementProjects.map(async function (impProject) {
-                            let projectData = await unnatiService.improvementProjects(token, impProject._id);
+                            let projectData = await unnatiService.improvementProjectDetails(token, impProject._id);
                             if (projectData && projectData.result) {
+
+                                console.log("projectData.result",projectData.result);
                                 impProjects.push(
                                     {
                                         "_id": projectData.result._id,
-                                        "title": projectData.result.title,
-                                        "goal": projectData.result.goal,
+                                        "title": projectData.result.name,
+                                        "goal": projectData.result.description,
                                         "externalId": projectData.result.externalId
                                     });
                             }
                         }));
                        
                     }
-                    updateData['improvementProjects'] = impProjects;
-
+                  
                     let resources = [];
                     if (updateData.learningResources) {
                         await Promise.all(updateData.learningResources.map(async function (resource) {
@@ -536,9 +537,22 @@ module.exports = class ObservationsHelper {
 
                     let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize,searchText,filters);
                     if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status && learningResoucesList.result) {
+                        
+                        
+                        let resources = [];
+                        if(learningResoucesList.result.content && learningResoucesList.result.content.length > 0){
+                        learningResoucesList.result.content.map(async function (resource) {
+                            resources.push({
+                                        "_id": resource.identifier,
+                                        "name": resource.name,
+                                        "description": resource.description,
+                            });
+                        });
+                    }
+
                         return resolve({
                             success: true,
-                            data: learningResoucesList.result,
+                            data: { content: resources, count:learningResoucesList.result.count },
                             message: learningResoucesList.message
                         });
                     } else {

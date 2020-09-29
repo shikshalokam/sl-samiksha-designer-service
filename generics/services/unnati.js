@@ -57,6 +57,7 @@ function callToUnnati(requestType, url, token = "", requestBody = "") {
                 });
             } else {
 
+                console.log(url,"data.body",data.body)
                 if (data.body && data.body.message) {
                     return resolve(data.body);
                 } else {
