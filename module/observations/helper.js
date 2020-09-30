@@ -317,15 +317,15 @@ module.exports = class ObservationsHelper {
                             }
                         }));
                     }
-                  
+
                     updateData['improvementProjects'] = impProjects;
                     let resources = [];
                     if (updateData.learningResources) {
                         await Promise.all(updateData.learningResources.map(async function (resource) {
                             resources.push({
-                                        "_id": resource._id,
-                                        "name": resource.name,
-                                        "description": resource.description,
+                                "_id": resource._id,
+                                "name": resource.name,
+                                "description": resource.description,
                             });
                         }));
                     }
@@ -478,14 +478,14 @@ module.exports = class ObservationsHelper {
        * @param {String} pageSize - page size
        * @returns {json} Response consists of improvemnts projects list
        */
-    static improvementProjects(token, userId, category,searchText,pageNo,pageSize) {
+    static improvementProjects(token, userId, category, searchText, pageNo, pageSize) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let users = await usersHelper.getUserRoles(userId);
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                    let improvemntProjects = await unnatiService.improvementProjects(token, category, searchText,pageNo,pageSize);
+                    let improvemntProjects = await unnatiService.improvementProjects(token, category, searchText, pageNo, pageSize);
                     if (improvemntProjects && improvemntProjects.status == HTTP_STATUS_CODE["ok"].status && improvemntProjects.result) {
                         return resolve({
                             success: true,
@@ -526,31 +526,31 @@ module.exports = class ObservationsHelper {
        * @param {Array} filters.subject - subject's of the learning resources
        * @returns {json} Response consists of learning resources list
        */
-    static learningResoucesList(token, userId, pageNo, pageSize,searchText,filters) {
+    static learningResoucesList(token, userId, pageNo, pageSize, searchText, filters) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let users = await usersHelper.getUserRoles(userId);
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize,searchText,filters);
+                    let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize, searchText, filters);
                     if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status && learningResoucesList.result) {
-                        
-                        
+
+
                         let resources = [];
-                        if(learningResoucesList.result.content && learningResoucesList.result.content.length > 0){
-                        learningResoucesList.result.content.map(async function (resource) {
-                            resources.push({
-                                        "_id": resource.identifier,
-                                        "name": resource.name,
-                                        "description": resource.description,
+                        if (learningResoucesList.result.content && learningResoucesList.result.content.length > 0) {
+                            learningResoucesList.result.content.map(async function (resource) {
+                                resources.push({
+                                    "_id": resource.identifier,
+                                    "name": resource.name,
+                                    "description": resource.description,
+                                });
                             });
-                        });
-                    }
+                        }
 
                         return resolve({
                             success: true,
-                            data: { content: resources, count:learningResoucesList.result.count },
+                            data: { content: resources, count: learningResoucesList.result.count },
                             message: learningResoucesList.message
                         });
                     } else {

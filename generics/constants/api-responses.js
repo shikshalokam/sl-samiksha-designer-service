@@ -50,5 +50,4 @@ module.exports = {
     INVALID_ACCESS: "Invalid access.",
     CRITERIA_FORM_FETCHED: "Criteria form fetched successfully.",
     UNNATI_SERVICE_DOWN: "Unnati service down."
-    
 };
