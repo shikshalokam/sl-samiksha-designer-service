@@ -111,8 +111,15 @@ let enviromentVariables = {
     "message" : "Please specify the value for logger directory",
     "optional" : true,
     "default" : "logs"
+  },
+  "UNNATI_SERIVCE_HOST" : {
+    "message" : "Required unnati service host",
+    "optional" : false
+  },
+  "UNNATI_SERIVCE_BASE_URL" : {
+    "message" : "Required unnati service base url",
+    "optional" : false
   }
-
 }
 
 const validRequiredIfOperators = [

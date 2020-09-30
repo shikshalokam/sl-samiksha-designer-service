@@ -6,6 +6,7 @@
  */
 
 module.exports = {
-    FRAMEWORK_CREATE_FORM_NAME : "ObservationFramework"
-
+    FRAMEWORK_CREATE_FORM_NAME: "ObservationFramework",
+    DESIGNER_ROLE: "PLATFORM_ADMIN",
+    CRITERIA_FORM_NAME: "criteriaForm"
 }

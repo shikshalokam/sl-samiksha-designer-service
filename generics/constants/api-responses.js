@@ -47,5 +47,7 @@ module.exports = {
     SECTION_UPDATED: "Draft Section updated successfully.",
     SECTION_DELETED: "Section deleted successfully.",
     OBSERVATION_FRAMEWORK_FORM_FETCHED: "Observation framework form fetched successfully.",
-    
+    INVALID_ACCESS: "Invalid access.",
+    CRITERIA_FORM_FETCHED: "Criteria form fetched successfully.",
+    UNNATI_SERVICE_DOWN: "Unnati service down."
 };
