@@ -15,10 +15,10 @@ const request = require('request');
   * Call to unnati service. 
   * @function
   * @name callToUnnati
-  * @param requestBody - Logged in user Id.
-  * @param token - Logged in user token.
-  * @param url - url of the api call.
-  * @param requestType - http request method
+  * @param {String} requestBody - Logged in user Id.
+  * @param {String} token - Logged in user token.
+  * @param {String} url - url of the api call.
+  * @param {String} requestType - http request method
   * @returns {JSON} - unnati service response
 */
 
@@ -73,7 +73,7 @@ function callToUnnati(requestType, url, token = "", requestBody = "") {
   * To get  improvement category list
   * @function
   * @name categoryList
-  * @param token - user token for verification 
+  * @param {String} token - user token for verification 
   * @returns {JSON} - consist of improvement projects catgory list
 */
 const impCategoryList = function (token) {
@@ -89,12 +89,12 @@ const impCategoryList = function (token) {
 }
 
 /**
-  * To get  improvement category list
+  * To get  improvement projects in a category
   * @function
   * @name improvementProjects
-  * @param token - user token for verification 
-  * @param category - improvement project category
-  * @param searchText - search text
+  * @param {String} token - user token for verification 
+  * @param {String} category - improvement project category
+  * @param {String} searchText - search text
   * @param {String} pageNo - page number
   * @param {String} pageSize - page size
   * @returns {JSON} - response consist of improvement projects
@@ -118,8 +118,8 @@ const improvementProjects = function (token, category,searchText,pageNo,pageSize
   * To get  improvement project details
   * @function
   * @name improvementProjectDetails
-  * @param token - user token for verification 
-  * @param projectId - improvement project id
+  * @param {String} token - user token for verification 
+  * @param {String} projectId - improvement project id
   * @returns {JSON} - response consist of improvement project details
 */
 const improvementProjectDetails = function (token, projectId) {

@@ -15,10 +15,10 @@ const request = require('request');
   * Call to sunbird service. 
   * @function
   * @name callToSunbird
-  * @param requestBody - Logged in user Id.
-  * @param token - Logged in user token.
-  * @param url - url of the api call.
-  * @param requestType - http request method
+  * @param {String} requestBody - Logged in user Id.
+  * @param {String} token - Logged in user token.
+  * @param {String} url - url of the api call.
+  * @param {String} requestType - http request method
   * @returns {JSON} - sunbird service response
 */
 
@@ -70,7 +70,7 @@ function callToSunbird(requestType, url, token = "", requestBody = "") {
   * To Varify token is valid or not
   * @function
   * @name verifyToken
-  * @param token - user token for verification 
+  * @param {String} token - user token for verification 
   * @returns {JSON} - consist of token verification details
 */
 const verifyToken = function (token) {
@@ -94,7 +94,7 @@ const verifyToken = function (token) {
   * To get learning resource filters
   * @function
   * @name learningResoucesFilters
-  * @param token - user token for verification 
+  * @param {String} token - user token for verification 
   * @returns {JSON} - response consists of learning resources filters
 */
 const learningResoucesFilters = function (token) {

@@ -428,7 +428,7 @@ module.exports = class ObservationsHelper {
     }
 
     /**
-       * To get criteria form
+       * To get improvement category list
        * @method
        * @name  impCategoryList
        * @param {String} token - keyclock access token.
