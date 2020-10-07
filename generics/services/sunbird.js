@@ -137,8 +137,6 @@ const learningResoucesList = function (token, pageNo, pageSize, searchText,filte
             let requestBody = {
                 filters:filters
             }
-
-            
             let response = await callToSunbird("POST", learningResoucesEndpoint, token, requestBody);
             return resolve(response);
         } catch (error) {

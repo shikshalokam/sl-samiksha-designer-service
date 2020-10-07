@@ -534,11 +534,10 @@ module.exports = class ObservationsHelper {
                 if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
                     let learningResoucesList = await sunbirdService.learningResoucesList(token, pageNo, pageSize, searchText, filters);
-                    if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status && learningResoucesList.result) {
-
+                    if (learningResoucesList && learningResoucesList.status == HTTP_STATUS_CODE["ok"].status) {
 
                         let resources = [];
-                        if (learningResoucesList.result.content && learningResoucesList.result.content.length > 0) {
+                        if (learningResoucesList.result && learningResoucesList.result.content && learningResoucesList.result.content.length > 0) {
                             learningResoucesList.result.content.map(async function (resource) {
                                 resources.push({
                                     "_id": resource.identifier,
