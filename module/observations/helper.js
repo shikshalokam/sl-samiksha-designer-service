@@ -316,9 +316,10 @@ module.exports = class ObservationsHelper {
                                     });
                             }
                         }));
+                        updateData['improvementProjects'] = impProjects;
                     }
 
-                    updateData['improvementProjects'] = impProjects;
+                 
                     let resources = [];
                     if (updateData.learningResources) {
                         await Promise.all(updateData.learningResources.map(async function (resource) {
@@ -328,8 +329,9 @@ module.exports = class ObservationsHelper {
                                 "description": resource.description,
                             });
                         }));
+                        updateData['learningResources'] = resources;
                     }
-                    updateData['learningResources'] = resources;
+                    
 
                     let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, updateData);
                     return resolve({
