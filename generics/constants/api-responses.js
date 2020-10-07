@@ -49,5 +49,6 @@ module.exports = {
     OBSERVATION_FRAMEWORK_FORM_FETCHED: "Observation framework form fetched successfully.",
     INVALID_ACCESS: "Invalid access.",
     CRITERIA_FORM_FETCHED: "Criteria form fetched successfully.",
-    UNNATI_SERVICE_DOWN: "Unnati service down."
+    UNNATI_SERVICE_DOWN: "Unnati service down.",
+    LEARNING_RESOURCE_FOUND: "Learning resources fetched successfully."
 };

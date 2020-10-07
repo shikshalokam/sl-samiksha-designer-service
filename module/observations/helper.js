@@ -547,10 +547,15 @@ module.exports = class ObservationsHelper {
                             });
                         }
 
+
+                        let count = 0;
+                        if(learningResoucesList.result.count){
+                            count = learningResoucesList.result.count;
+                        }
                         return resolve({
                             success: true,
-                            data: { content: resources, count: learningResoucesList.result.count },
-                            message: learningResoucesList.message
+                            data: { content: resources, count: count },
+                            message: CONSTANTS.apiResponses.LEARNING_RESOURCE_FOUND
                         });
                     } else {
                         throw new Error(learningResoucesList.message);
