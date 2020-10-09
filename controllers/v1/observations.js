@@ -1492,4 +1492,123 @@ module.exports = class Observations extends Abstract {
       }
     })
   }
+
+  /**
+    * @api {post} /design/api/v1/observations/list get framework list
+    * @apiVersion 1.0.0
+    * @apiName Frameworks list
+    * @apiGroup Observations
+    * @apiSampleRequest /design/api/v1/observations/list?page=1&limit=10&search=framework
+    * @apiHeader {String} X-authenticated-user-token Authenticity token  
+    * @apiUse successBody
+    * @apiUse errorBody
+    * @apiParamExample {json} Response:
+    * {
+    "message": "Frameworks fetched successfully",
+    "status": 200,
+    "result": [
+        {
+            "data": [
+                {
+                    "_id": "5f50ef4b2cb6f165eb70fcc5",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "framework name",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f55e49b59d529165d956fcb",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f55e7a5804f8d349542dd85",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f5761c576e5a43c47d2da94",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f5a163666b6083691236b4a",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f5a164166b6083691236b4d",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f5b46515d79dc66b5c5d4de",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                },
+                {
+                    "_id": "5f5b566fe82bbb7130dbb9e4",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "framework",
+                    "description": "ddd"
+                },
+                {
+                    "_id": "5f69e7a4ceeab41eb713d749",
+                    "externalId": "SAMPLE-EXTERNAL-ID",
+                    "name": "DRAFT FRAMEWORK",
+                    "description": "SAMPLE DESCRIPTION"
+                }
+            ],
+            "count": 9
+        }
+    ]
+   }
+    **/
+
+  async list(req) {
+    return new Promise(async (resolve, reject) => {
+
+      try {
+
+        let matchQuery = {}
+
+        matchQuery["$match"] = {}
+        matchQuery["$match"]["isDeleted"] = false
+        matchQuery["$match"]["userId"] = req.userDetails.userId;
+
+        if (req.query.listType) {
+          matchQuery["$match"]["status"] = req.query.listType;
+        }
+
+        matchQuery["$match"]["$or"] = []
+        matchQuery["$match"]["$or"].push({ "name": new RegExp(req.searchText, 'i') }, { "description": new RegExp(req.searchText, 'i') }, { "externalId": new RegExp(req.searchText, 'i') })
+
+        let frameworkList = await observationsHelper.list(req.userDetails.userId, matchQuery, req.pageSize, req.pageNo);
+
+        return resolve({
+          message: frameworkList.message,
+          result: frameworkList.data
+        });
+
+      } catch (error) {
+
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+
+      }
+    })
+  }
+
 };

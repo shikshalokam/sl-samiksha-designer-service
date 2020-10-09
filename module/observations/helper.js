@@ -89,6 +89,39 @@ module.exports = class ObservationsHelper {
         })
     }
 
+
+    /**
+       * To get list of framework
+       * @method
+       * @name  list
+       * @param {String} pageNo - page number
+       * @param {String} pageSize - page size
+       * @param {String} filteredData - search data
+       */
+    static list(userId,filteredData,pageNo, pageSize) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let users = await usersHelper.getUserRoles(userId);
+            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                let frameworkDetails = await draftFrameworkHelper.list(filteredData, pageNo, pageSize);
+                return resolve({ success: true, data: frameworkDetails, message: CONSTANTS.apiResponses.FRAMEWORK_FETCHED });
+
+            } else {
+                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+            }
+
+        } catch (error) {
+            return reject({
+                message: error.message,
+                success: false,
+                data: false
+            })
+        }
+    })
+   }
+
     /**
     * To get framework form
     * @method
