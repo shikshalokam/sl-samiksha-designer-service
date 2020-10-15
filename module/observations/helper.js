@@ -172,6 +172,11 @@ module.exports = class ObservationsHelper {
                                     label: formDoc.voiceOver == true ? 'Yes' : "No",
                                     value: formDoc.voiceOver
                                 }
+                            } else if (data.field == "scoring") {
+                                frameworkForm.data[0]['value'][index].value = {
+                                    label: formDoc.scoring == true ? 'Yes' : "No",
+                                    value: formDoc.scoring
+                                }
                             }
                         });
                     }
@@ -223,6 +228,9 @@ module.exports = class ObservationsHelper {
                     }
                     if (updateData.voiceOver) {
                         updateData.voiceOver = updateData.voiceOver.value;
+                    }
+                    if (updateData.scoring) {
+                        updateData.scoring = updateData.scoring.value;
                     }
 
                     const frameworkDoc = await draftFrameworkHelper.update({ _id: frameworkId, userId: userId }, updateData);
