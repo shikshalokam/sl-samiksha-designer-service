@@ -12,6 +12,8 @@ const formsHelper = require(MODULES_BASE_PATH + "/forms/helper");
 const entityTypesHelper = require(MODULES_BASE_PATH + "/entityTypes/helper");
 
 const draftCriteriaHelper = require(MODULES_BASE_PATH + "/draftCriteria/helper");
+const draftQuestionsHelper = require(MODULES_BASE_PATH + "/draftQuestions/helper");
+
 const usersHelper = require(MODULES_BASE_PATH + "/users/helper");
 const unnatiService = require(GENERIC_SERVICES_PATH + "/unnati");
 
@@ -98,29 +100,29 @@ module.exports = class ObservationsHelper {
        * @param {String} pageSize - page size
        * @param {String} filteredData - search data
        */
-    static list(userId,filteredData,pageNo, pageSize) {
-    return new Promise(async (resolve, reject) => {
-        try {
+    static list(userId, filteredData, pageNo, pageSize) {
+        return new Promise(async (resolve, reject) => {
+            try {
 
-            let users = await usersHelper.getUserRoles(userId);
-            if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+                let users = await usersHelper.getUserRoles(userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
 
-                let frameworkDetails = await draftFrameworkHelper.list(filteredData, pageNo, pageSize);
-                return resolve({ success: true, data: frameworkDetails, message: CONSTANTS.apiResponses.FRAMEWORK_FETCHED });
+                    let frameworkDetails = await draftFrameworkHelper.list(filteredData, pageNo, pageSize);
+                    return resolve({ success: true, data: frameworkDetails, message: CONSTANTS.apiResponses.FRAMEWORK_FETCHED });
 
-            } else {
-                throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
+
+            } catch (error) {
+                return reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
             }
-
-        } catch (error) {
-            return reject({
-                message: error.message,
-                success: false,
-                data: false
-            })
-        }
-    })
-   }
+        })
+    }
 
     /**
     * To get framework form
@@ -352,7 +354,7 @@ module.exports = class ObservationsHelper {
                         updateData['improvementProjects'] = impProjects;
                     }
 
-                 
+
                     let resources = [];
                     if (updateData.learningResources) {
                         await Promise.all(updateData.learningResources.map(async function (resource) {
@@ -364,7 +366,7 @@ module.exports = class ObservationsHelper {
                         }));
                         updateData['learningResources'] = resources;
                     }
-                    
+
 
                     let draftCriteriaDocument = await draftCriteriaHelper.update(findQuery, updateData);
                     return resolve({
@@ -584,7 +586,7 @@ module.exports = class ObservationsHelper {
 
 
                         let count = 0;
-                        if(learningResoucesList.result.count){
+                        if (learningResoucesList.result.count) {
                             count = learningResoucesList.result.count;
                         }
                         return resolve({
@@ -648,5 +650,88 @@ module.exports = class ObservationsHelper {
         })
     }
 
+
+
+    /**
+       * To create question
+       * @method
+       * @name  createQuestion
+       * @param {Object} draftQuestionData - question details.
+       * @param {String} draftQuestionData.externalId - externalId of the question.
+       * @param {String} draftQuestionData.draftCriteriaId - draftCriteriaId of the question.
+       * @param {String} draftQuestionData.questionType - type of question.
+       * @param {String} draftQuestionData.questionNumber - number of the question.
+       * @param {String} draftQuestionData.value - value of the question.
+       * @returns {json} Response consists of created question
+    */
+    static createQuestion(draftQuestionData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let users = await usersHelper.getUserRoles(draftQuestionData.userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                    let draftQuestionDocument = await draftQuestionsHelper.create(draftQuestionData);
+
+                    return resolve({
+                        success: true,
+                        data: draftQuestionDocument,
+                        message: CONSTANTS.apiResponses.DRAFT_QUESTION_CREATED
+                    });
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
+            }
+        })
+    }
+
+
+
+
+    /**
+    * To update draft questions
+    * @method
+    * @name  update
+    * @param {Object} findQuery - query details.
+    * @param {Object} updateData - question details.
+    * @param {String} updateData.externalId - externalId of the question.
+    * @param {String} updateData.draftCriteriaId - draftCriteriaId of the question.
+    * @param {String} updateData.questionType - type of question.
+    * @param {String} updateData.questionNumber - number of the question.
+    * @param {String} updateData.value - value of the question.
+    * @returns {json} Response consists of updated question details
+    */
+    static updateQuestion(findQuery, updateData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let users = await usersHelper.getUserRoles(findQuery.userId);
+                if (users && users.data && users.data.includes(CONSTANTS.common.DESIGNER_ROLE)) {
+
+                    let draftQuestionDocument = await draftQuestionsHelper.update(findQuery, updateData);
+
+                    return resolve({
+                        success: true,
+                        data: draftQuestionDocument,
+                        message: CONSTANTS.apiResponses.DRAFT_QUESTION_UPDATED
+                    });
+                } else {
+                    throw new Error(CONSTANTS.apiResponses.INVALID_ACCESS);
+                }
+            } catch (error) {
+                reject({
+                    message: error.message,
+                    success: false,
+                    data: false
+                })
+            }
+        })
+    }
 
 }

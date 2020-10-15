@@ -7,11 +7,11 @@ module.exports = {
     },
     name: {
       type: String,
-      default: "DRAFT FRAMEWORK",
+      default: "",
     },
     description: {
       type: String,
-      default: "SAMPLE DESCRIPTION",
+      default: "",
     },
     userId: {
       type: String,
@@ -106,6 +106,10 @@ module.exports = {
       default: "draft"
     },
     voiceOver: {
+      type: Boolean,
+      default: false
+    },
+    scoring: {
       type: Boolean,
       default: false
     }

@@ -4,7 +4,7 @@ module.exports = {
 
       let allFields = [];
 
-      let inputFields = ["name", "description", "keywords", "language", "entityType", "voiceOver"];
+      let inputFields = ["name", "description", "keywords", "language", "entityType", "voiceOver","scoring"];
 
       let inputField = {
         "field": "",
@@ -59,7 +59,7 @@ module.exports = {
         else if (fields == "description") {
           inputObj.input = "textarea";
           inputObj.validation = [];
-        } else if (fields == "voiceOver") {
+        } else if (fields == "voiceOver"  || fields == "scoring") {
           inputObj.input = "radio";
           inputObj.validation = [];
           inputObj.options = [

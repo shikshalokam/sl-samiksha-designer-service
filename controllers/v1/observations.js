@@ -1611,4 +1611,235 @@ module.exports = class Observations extends Abstract {
     })
   }
 
+
+/**
+* @api {post} /design/api/v1/observations/createQuestion Question create
+* @apiVersion 1.0.0
+* @apiName Question create
+* @apiGroup Observations
+* @apiParamExample {json} Request:
+{
+	"externalId":"SAMPLE-EXTERNAL-ID",
+    "draftCriteriaId":"5db0292179e31f1b85d11ca9",
+    "draftFrameworkId":"5daec85d58e6e53dbdd84e0e",
+    "draftEvidenceMethodId":"5daff8ae9b71b24fcad7b182",
+    "draftSectionId":"5db01480bd197138284799cf",
+    "question":[],
+    "tip":"DRAFT-QUESTION-TIP",
+    "hint":"DRAFT-QUESTION-HINT",
+    "responseType":"DRAFT-RESPONSE-TYPE",
+    "value":"DRAFT-VALUE",
+    "isCompleted": false,
+    "showRemarks": false,
+    "remarks":"DRAFT-REMARKS",
+    "visibleIf":{},
+    "createdBy":"",
+    "updatedBy":"",
+    "options":[],
+    "children":[],
+    "questionGroup": ["A1"],
+    "questionType":"DRAFT-QUESTION-TYPE",
+    "modeOfCollection":"DRAFT-MODE-OF-COLLECTION",
+    "usedForScoring":"percentage",
+    "file":{},
+    "fileName": [],
+    "validation": {},
+    "accessibility":"DRAFT-ACCESSIBILITY",
+    "instanceIdentifier":"DRAFT-INSTANCE-IDENTIFIER",
+    "noOfInstances":0,
+    "notApplicable": false,
+    "canBeNotApplicable":false,
+    "instanceQuestionsString":"",
+    "instanceQuestions":[],
+    "isAGeneralQuestion":false,
+    "dateFormat":"dd-mm-yyyy",
+    "autoCapture":"SAMPLE-AUTO-CAPTURE",
+    "rubricLevel":"RUBRIC-LEVEL",
+    "sectionHeader":"SAMPLE-SECTION-HEADER",
+    "allowAudioRecording":false,
+    "page":"SAMPLE-PAGE",
+    "questionNumber":"SAMPLE-QUESTION-NUMBER"
+}
+* @apiSampleRequest /design/api/v1/observations/createQuestion
+* @apiHeader {String} X-authenticated-user-token Authenticity token  
+* @apiUse successBody
+* @apiUse errorBody
+* @apiParamExample {json} Response:
+{
+    "message": "Question created successfully.",
+    "status": 200,
+    "result": {
+        "externalId": "SAMPLE-EXTERNAL-ID",
+        "question": [],
+        "tip": "DRAFT-QUESTION-TIP",
+        "hint": "DRAFT-QUESTION-HINT",
+        "responseType": "DRAFT-RESPONSE-TYPE",
+        "value": "DRAFT-VALUE",
+        "isCompleted": false,
+        "showRemarks": false,
+        "remarks": "DRAFT-REMARKS",
+        "createdBy": "",
+        "updatedBy": "",
+        "options": [],
+        "children": [],
+        "questionGroup": [
+            "A1"
+        ],
+        "questionType": "DRAFT-QUESTION-TYPE",
+        "modeOfCollection": "DRAFT-MODE-OF-COLLECTION",
+        "usedForScoring": "percentage",
+        "fileName": [],
+        "accessibility": "DRAFT-ACCESSIBILITY",
+        "instanceIdentifier": "DRAFT-INSTANCE-IDENTIFIER",
+        "noOfInstances": 0,
+        "notApplicable": false,
+        "canBeNotApplicable": false,
+        "instanceQuestionsString": "",
+        "instanceQuestions": [],
+        "isAGeneralQuestion": false,
+        "dateFormat": "dd-mm-yyyy",
+        "autoCapture": "SAMPLE-AUTO-CAPTURE",
+        "rubricLevel": "RUBRIC-LEVEL",
+        "sectionHeader": "SAMPLE-SECTION-HEADER",
+        "allowAudioRecording": false,
+        "page": "SAMPLE-PAGE",
+        "questionNumber": "SAMPLE-QUESTION-NUMBER",
+        "isDeleted": false,
+        "_id": "5f5769c9659c7e3e78f05dc9",
+        "deleted": false,
+        "draftCriteriaId": "5db0292179e31f1b85d11ca9",
+        "draftFrameworkId": "5daec85d58e6e53dbdd84e0e",
+        "draftEvidenceMethodId": "5daff8ae9b71b24fcad7b182",
+        "draftSectionId": "5db01480bd197138284799cf",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:23:53.676Z",
+        "createdAt": "2020-09-08T11:23:53.676Z",
+        "__v": 0
+    }
+}
+*/
+  async createQuestion(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        let draftQuestionData = _.merge(req.body, { userId: req.userDetails.userId })
+
+        let draftQuestionDocument = await observationsHelper.createQuestion(draftQuestionData)
+
+
+        return resolve({
+          message: draftQuestionDocument.message,
+          result: draftQuestionDocument.data
+        });
+
+      }
+      catch (error) {
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+      }
+    })
+  }
+
+   /**
+  * @api {post} /design/api/v1/observations/updateQuestion/{draftQuestionId} Question update
+  * @apiVersion 1.0.0
+  * @apiName Question update
+  * @apiGroup Observations
+  * @apiSampleRequest /design/api/v1/observations/updateQuestion/5f5769c9659c7e3e78f05dc9
+  * @apiHeader {String} X-authenticated-user-token Authenticity token  
+  * @apiUse successBody
+  * @apiUse errorBody
+  * @apiParamExample {json} Response:
+  {
+    "message": "Draft Question updated successfully.",
+    "status": 200,
+    "result": {
+        "_id": "5f5769c9659c7e3e78f05dc9",
+        "externalId": "Ia/1",
+        "question": [],
+        "tip": "DRAFT-QUESTION-TIP",
+        "hint": "DRAFT-QUESTION-HINT",
+        "responseType": "DRAFT-RESPONSE-TYPE",
+        "value": "DRAFT-VALUE",
+        "isCompleted": false,
+        "showRemarks": false,
+        "remarks": "DRAFT-REMARKS",
+        "createdBy": "",
+        "updatedBy": "",
+        "options": [],
+        "children": [],
+        "questionGroup": [
+            "A1"
+        ],
+        "questionType": "DRAFT-QUESTION-TYPE",
+        "modeOfCollection": "DRAFT-MODE-OF-COLLECTION",
+        "usedForScoring": "percentage",
+        "fileName": [],
+        "accessibility": "DRAFT-ACCESSIBILITY",
+        "instanceIdentifier": "DRAFT-INSTANCE-IDENTIFIER",
+        "noOfInstances": 0,
+        "notApplicable": false,
+        "canBeNotApplicable": false,
+        "instanceQuestionsString": "",
+        "instanceQuestions": [],
+        "isAGeneralQuestion": false,
+        "dateFormat": "dd-mm-yyyy",
+        "autoCapture": "SAMPLE-AUTO-CAPTURE",
+        "rubricLevel": "RUBRIC-LEVEL",
+        "sectionHeader": "SAMPLE-SECTION-HEADER",
+        "allowAudioRecording": false,
+        "page": "SAMPLE-PAGE",
+        "questionNumber": "SAMPLE-QUESTION-NUMBER",
+        "isDeleted": false,
+        "deleted": false,
+        "draftCriteriaId": "5db0292179e31f1b85d11ca9",
+        "draftFrameworkId": "5daec85d58e6e53dbdd84e0e",
+        "draftEvidenceMethodId": "5daff8ae9b71b24fcad7b182",
+        "draftSectionId": "5db01480bd197138284799cf",
+        "userId": "7068c45d-ba9c-484e-a52c-20bbab139ca9",
+        "updatedAt": "2020-09-08T11:31:37.812Z",
+        "createdAt": "2020-09-08T11:23:53.676Z",
+        "__v": 0
+    }
+}
+  */
+  async updateQuestion(req) {
+    return new Promise(async (resolve, reject) => {
+      try {
+
+        let findQuery = {
+          _id: req.params._id,
+          userId: req.userDetails.userId
+        }
+      
+        let draftQuestionDocument = await observationsHelper.updateQuestion(findQuery, req.body)
+
+
+        return resolve({
+          message: draftQuestionDocument.message,
+          result: draftQuestionDocument.data
+        });
+
+      }
+      catch (error) {
+        return reject({
+          status:
+            error.status ||
+            HTTP_STATUS_CODE["internal_server_error"].status,
+
+          message:
+            error.message ||
+            HTTP_STATUS_CODE["internal_server_error"].message
+        });
+      }
+    })
+  }
+
 };

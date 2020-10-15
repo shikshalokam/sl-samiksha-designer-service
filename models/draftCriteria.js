@@ -3,7 +3,7 @@ module.exports = {
   schema: {
     externalId: {
       type: String,
-      default: "SAMPLE-EXTERNAL-ID",
+      default: "",
       required: true
     },
     userId: {
@@ -23,7 +23,7 @@ module.exports = {
     },
     name: {
       type: String,
-      default: "SAMPLE-NAME",
+      default: "",
       required: true
     },
     score: {
@@ -33,7 +33,7 @@ module.exports = {
     },
     remarks: {
       type: String,
-      default: "SAMPLE-REMARKS",
+      default: "",
       required: true
     },
     showRemarks: {
@@ -43,7 +43,7 @@ module.exports = {
     },
     description: {
       type: String,
-      default: "SAMPLE DESCRIPTION",
+      default: "",
       required: true
     },
     resourceType: {
