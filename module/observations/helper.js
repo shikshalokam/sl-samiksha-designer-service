@@ -172,11 +172,46 @@ module.exports = class ObservationsHelper {
                                     label: formDoc.voiceOver == true ? 'Yes' : "No",
                                     value: formDoc.voiceOver
                                 }
+
+                                frameworkForm.data[0]['value'][index].options.map(function(option,optionIndex){
+                                    if(option && option.label=="Yes" ){
+                                        if(formDoc.voiceOver == true){
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = true;
+                                        } else {
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = false;
+                                        }
+                                        
+                                    } else if(option.label=="No"){
+                                        if(formDoc.voiceOver == false){
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = true;
+                                        } else {
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = false;
+                                        }
+                                    }
+                                });
+
                             } else if (data.field == "scoring") {
                                 frameworkForm.data[0]['value'][index].value = {
                                     label: formDoc.scoring == true ? 'Yes' : "No",
                                     value: formDoc.scoring
                                 }
+
+                                frameworkForm.data[0]['value'][index].options.map(function(option,optionIndex){
+                                    if(option && option.label=="Yes" ){
+                                        if(formDoc.scoring == true){
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = true;
+                                        } else {
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = false;
+                                        }
+                                        
+                                    } else if(option.label=="No"){
+                                        if(formDoc.scoring == false){
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = true;
+                                        } else {
+                                            frameworkForm.data[0]['value'][index].options[optionIndex].checked = false;
+                                        }
+                                    }
+                                });
                             }
                         });
                     }
